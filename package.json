@@ -1,0 +1,26 @@
+{
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "name": "gamers-backend",
+  "version": "1.0.0",
+  "description": "Système intelligenct de l'application GAMERS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ERP-CNAM/back.git"
+  },
+  "keywords": [
+    "api",
+    "backend"
+  ],
+  "author": "BACK",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ERP-CNAM/back/issues"
+  },
+  "homepage": "https://github.com/ERP-CNAM/back#readme"
+}
