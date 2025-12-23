@@ -1,15 +1,18 @@
 {
   "dependencies": {
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "swagger-ui-express": "^5.0.1",
+    "yamljs": "^0.3.0"
   },
   "name": "gamers-backend",
   "version": "1.0.0",
   "description": "Système intelligenct de l'application GAMERS",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "ts-node index.ts",
+    "dev": "nodemon index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "generate": "openapi-generator-cli generate -i openapi.yaml -g typescript-node -o ./server"
   },
   "repository": {
     "type": "git",
@@ -26,6 +29,10 @@
   },
   "homepage": "https://github.com/ERP-CNAM/back#readme",
   "devDependencies": {
-    "nodemon": "^3.1.11"
+    "@types/express": "^5.0.6",
+    "@types/swagger-ui-express": "^4.1.8",
+    "@types/yamljs": "^0.2.34",
+    "nodemon": "^3.1.11",
+    "ts-node": "^10.9.2"
   }
 }

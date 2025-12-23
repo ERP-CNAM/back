@@ -11,7 +11,7 @@ info:
     Hypothèse : abonnements mensuels complets, pas de prorata journalier.
 
 servers:
-  - url: https://api.groupe2.local
+  - url: http://localhost:3000
     description: Serveur de test
 
 tags:
