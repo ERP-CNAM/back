@@ -24,5 +24,8 @@
   "bugs": {
     "url": "https://github.com/ERP-CNAM/back/issues"
   },
-  "homepage": "https://github.com/ERP-CNAM/back#readme"
+  "homepage": "https://github.com/ERP-CNAM/back#readme",
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
 }
