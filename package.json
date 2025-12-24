@@ -12,7 +12,7 @@
     "start": "ts-node index.ts",
     "dev": "nodemon index.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "generate": "openapi-generator-cli generate -i openapi.yaml -g typescript-node -o ./server"
+    "generate": "openapi-generator-cli generate -i openapi.yaml -g nodejs-express-server -o ./server"
   },
   "repository": {
     "type": "git",
@@ -29,6 +29,7 @@
   },
   "homepage": "https://github.com/ERP-CNAM/back#readme",
   "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^2.26.0",
     "@types/express": "^5.0.6",
     "@types/swagger-ui-express": "^4.1.8",
     "@types/yamljs": "^0.2.34",
