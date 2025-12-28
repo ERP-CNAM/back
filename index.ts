@@ -1,49 +1,35 @@
-import express, { Request, Response } from 'express';
-import * as http from 'http';
-import swaggerUi from 'swagger-ui-express';
-import YAML from 'yamljs';
-import path from 'path';
-
-import { User, UserStatus } from './server/model/models';
-import usersData from './mock/users.json';
+import express from 'express';
+import { createRouter, bootstrap } from './server/generated';
+import * as implementation from './server/implementation';
 
 const app = express();
+
+// Middleware
 app.use(express.json());
 
-const swaggerDocument = YAML.load(path.join(__dirname, 'api/openapi.yaml'));
-app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+// Create the API router with your implementation
+const apiRouter = createRouter(implementation);
+app.use(apiRouter);
 
-const usersMock = (usersData as unknown) as User[];
+// Error handling middleware
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.error('Error:', err);
 
-/**
- * GET /users
- */
-app.get('/users', (req: Request, res: Response) => {
-    const statusQuery = req.query.status as unknown as UserStatus;
+  const statusCode = err.statusCode || 500;
+  const message = err.message || 'Internal Server Error';
 
-    if (statusQuery) {
-        const filtered = usersMock.filter(u => u.status === statusQuery);
-        return res.json(filtered);
-    }
-
-    res.json(usersMock);
+  res.status(statusCode).json({
+    error: message,
+    ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
+  });
 });
 
-/**
- * GET /users/{userId}
- */
-app.get('/users/:userId', (req: Request, res: Response) => {
-    const { userId } = req.params;
-    const user = usersMock.find(u => u.id === userId);
+// Start server
+const PORT = process.env.PORT || 3000;
 
-    if (!user) {
-        return res.status(404).json({ message: "Utilisateur non trouvé" });
-    }
-    res.json(user);
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`📚 API endpoints available based on OpenAPI spec`);
 });
 
-const server = http.createServer(app);
-server.listen(3000, () => {
-    console.log('🚀 Serveur sur http://localhost:3000');
-    console.log('📚 Docs sur http://localhost:3000/docs');
-});
+export default app;
