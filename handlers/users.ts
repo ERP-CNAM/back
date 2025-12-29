@@ -1,8 +1,10 @@
 import type { ListUsers, CreateUser, GetUser, UpdateUser, DeleteUser, UpdateUserStatus } from '../server/generated';
 import type { t_User } from '../server/models';
 import usersData from '../mock/users.json';
+import { writeFile } from 'fs/promises';
+import path from 'path';
 
-// In-memory data store
+// Mock json data store
 let users: t_User[] = usersData as t_User[];
 
 /**
@@ -33,6 +35,7 @@ export const createUser: CreateUser = async (params, respond) => {
   };
 
   users.push(newUser);
+  await saveUsers();
 
   return respond.with201().body(newUser);
 };
@@ -72,6 +75,8 @@ export const updateUser: UpdateUser = async (params, respond) => {
     updatedAt: new Date().toISOString(),
   };
 
+  await saveUsers();
+
   return respond.with200().body(users[index]);
 };
 
@@ -90,6 +95,8 @@ export const deleteUser: DeleteUser = async (params, respond) => {
   // Soft delete - mark as BLOQUE
   users[index].status = 'BLOQUE';
   users[index].updatedAt = new Date().toISOString();
+
+  await saveUsers();
 
   return respond.with204().body();
 };
@@ -110,6 +117,7 @@ export const updateUserStatus: UpdateUserStatus = async (params, respond) => {
   if (status) {
     users[index].status = status;
     users[index].updatedAt = new Date().toISOString();
+    await saveUsers();
   }
 
   return respond.with200().body(users[index]);
@@ -124,4 +132,12 @@ function generateUUID(): string {
     const v = c === 'x' ? r : (r & 0x3 | 0x8);
     return v.toString(16);
   });
+}
+
+/**
+ * Helper function to persist users to JSON file (for now, maybe need repository later)
+ */
+async function saveUsers(): Promise<void> {
+  const filePath = path.join(__dirname, '../mock/users.json');
+  await writeFile(filePath, JSON.stringify(users, null, 2), 'utf-8');
 }
