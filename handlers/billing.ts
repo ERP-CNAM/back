@@ -15,7 +15,7 @@ export const generateMonthlyBilling: GenerateMonthlyBilling = async (params, res
 };
 
 /**
- * Export monthly invoices for accounting
+ * Export monthly invoices for accounting (Groupe 3)
  */
 export const exportMonthlyInvoices: ExportMonthlyInvoices = async (params, respond) => {
   // TODO: Implement export logic

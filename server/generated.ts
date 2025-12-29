@@ -1314,6 +1314,6 @@ export function createRouter(implementation: Implementation): Router {
 }
 
 export async function bootstrap(config: ServerConfig) {
-  // Backoffice Abonnés - Groupe 2
+  // Gamers ERP - Backoffice Abonnés
   return startServer(config)
 }
