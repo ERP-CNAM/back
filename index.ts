@@ -1,35 +1,24 @@
-import express from 'express';
+import swaggerUi from 'swagger-ui-express';
+import YAML from 'yamljs';
+import path from 'path';
 import { createRouter, bootstrap } from './server/generated';
-import * as implementation from './server/implementation';
+import { handlers } from './handlers';
 
-const app = express();
-
-// Middleware
-app.use(express.json());
-
-// Create the API router with your implementation
-const apiRouter = createRouter(implementation);
-app.use(apiRouter);
-
-// Error handling middleware
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error('Error:', err);
-
-  const statusCode = err.statusCode || 500;
-  const message = err.message || 'Internal Server Error';
-
-  res.status(statusCode).json({
-    error: message,
-    ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
-  });
-});
+// Load OpenAPI spec for Swagger UI
+const swaggerDocument = YAML.load(path.join(__dirname, 'api/openapi.yaml'));
 
 // Start server
-const PORT = process.env.PORT || 3000;
+const PORT = Number(process.env.PORT) || 3000;
 
-app.listen(PORT, () => {
+bootstrap({
+  port: PORT,
+  router: createRouter(handlers),
+  cors: undefined, // Allow all origins by default
+  middleware: swaggerUi.serve,
+}).then(({ app }) => {
+  app.use('/swagger', swaggerUi.setup(swaggerDocument));
+
   console.log(`🚀 Server running on http://localhost:${PORT}`);
-  console.log(`📚 API endpoints available based on OpenAPI spec`);
+  console.log(`📚 Swagger UI: http://localhost:${PORT}/swagger`);
+  console.log(`📡 API endpoints available`);
 });
-
-export default app;

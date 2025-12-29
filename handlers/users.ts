@@ -1,8 +1,8 @@
-import type { Implementation, ListUsers, CreateUser, GetUser, UpdateUser, DeleteUser, UpdateUserStatus } from './generated';
-import type { t_User } from './models';
+import type { ListUsers, CreateUser, GetUser, UpdateUser, DeleteUser, UpdateUserStatus } from '../server/generated';
+import type { t_User } from '../server/models';
 import usersData from '../mock/users.json';
 
-// In-memory data store (replace with database later)
+// In-memory data store
 let users: t_User[] = usersData as t_User[];
 
 /**
@@ -115,57 +115,9 @@ export const updateUserStatus: UpdateUserStatus = async (params, respond) => {
   return respond.with200().body(users[index]);
 };
 
-// TODO: Implement subscription handlers
-export const listSubscriptions: Implementation['listSubscriptions'] = async (params, respond) => {
-  // TODO: Implement
-  return respond.with200().body([]);
-};
-
-export const createSubscription: Implementation['createSubscription'] = async (params, respond) => {
-  // TODO: Implement
-  throw new Error('Not implemented');
-};
-
-export const getSubscription: Implementation['getSubscription'] = async (params, respond) => {
-  // TODO: Implement
-  return respond.with404();
-};
-
-export const updateSubscription: Implementation['updateSubscription'] = async (params, respond) => {
-  // TODO: Implement
-  return respond.with404();
-};
-
-export const cancelSubscription: Implementation['cancelSubscription'] = async (params, respond) => {
-  // TODO: Implement
-  return respond.with404();
-};
-
-// TODO: Implement billing handlers
-export const generateMonthlyBilling: Implementation['generateMonthlyBilling'] = async (params, respond) => {
-  // TODO: Implement
-  return respond.with200().body({
-    billingDate: params.body?.billingDate,
-    invoices: [],
-  });
-};
-
-export const exportMonthlyInvoices: Implementation['exportMonthlyInvoices'] = async (params, respond) => {
-  // TODO: Implement
-  return respond.with200().body([]);
-};
-
-export const exportDirectDebits: Implementation['exportDirectDebits'] = async (params, respond) => {
-  // TODO: Implement
-  return respond.with200().body([]);
-};
-
-export const getMonthlyRevenue: Implementation['getMonthlyRevenue'] = async (params, respond) => {
-  // TODO: Implement
-  return respond.with200().body([]);
-};
-
-// Helper function to generate UUID
+/**
+ * Helper function to generate UUID
+ */
 function generateUUID(): string {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
     const r = Math.random() * 16 | 0;

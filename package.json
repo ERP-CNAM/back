@@ -3,7 +3,9 @@
     "@nahkies/typescript-express-runtime": "^0.22.0",
     "cors": "^2.8.5",
     "express": "^5.2.1",
+    "swagger-ui-express": "^5.0.1",
     "ts-node": "^10.9.2",
+    "yamljs": "^0.3.0",
     "zod": "^4.2.1"
   },
   "name": "gamers-backend",
@@ -14,7 +16,8 @@
     "start": "ts-node index.ts",
     "dev": "nodemon index.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "generate": "openapi-code-generator --input api/openapi.yaml --output ./server --template typescript-express --schema-builder zod-v4"
+    "generate": "openapi-code-generator --input api/openapi.yaml --output ./server --template typescript-express --schema-builder zod-v4",
+    "clean": "rm -rf server/*"
   },
   "repository": {
     "type": "git",
@@ -34,6 +37,8 @@
     "@nahkies/openapi-code-generator": "^0.22.0",
     "@types/express": "^5.0.6",
     "@types/node": "^25.0.3",
+    "@types/swagger-ui-express": "^4.1.8",
+    "@types/yamljs": "^0.2.34",
     "nodemon": "^3.1.11"
   }
 }
