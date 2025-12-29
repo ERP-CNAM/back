@@ -1,3 +1,4 @@
+name: Gamers ERP Database
 services:
   gamers_db:
     image: postgres:17

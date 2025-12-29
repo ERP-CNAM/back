@@ -2,12 +2,13 @@ openapi: 3.1.0
 info:
   title: Gamers ERP - Backoffice Abonnés
   version: 1.0.0
-  description: >
+  description: |
     API BACK de gestion des joueurs abonnés.
     - Gestion des utilisateurs et abonnements
     - Transmission des facturations au Groupe Money
     - Transmission des prélèvements au Groupe Bank
     - Mise à jour des statuts joueurs, chiffre d’affaires et règlements
+    
     Hypothèse : abonnements mensuels complets, pas de prorata journalier.
 
 servers:
@@ -30,7 +31,7 @@ paths:
   /users:
     get:
       operationId: listUsers
-      tags: [Users]
+      tags: [ Users ]
       summary: Lister les utilisateurs
       description: Retourne la liste des joueurs/abonnés.
       parameters:
@@ -50,7 +51,7 @@ paths:
                   $ref: "#/components/schemas/User"
     post:
       operationId: createUser
-      tags: [Users]
+      tags: [ Users ]
       summary: Créer un utilisateur
       description: Création d'un joueur / client (généralement issu de la plateforme Gamers).
       requestBody:
@@ -70,7 +71,7 @@ paths:
   /users/{userId}:
     get:
       operationId: getUser
-      tags: [Users]
+      tags: [ Users ]
       summary: Récupérer un utilisateur
       parameters:
         - in: path
@@ -90,7 +91,7 @@ paths:
           description: Utilisateur non trouvé
     put:
       operationId: updateUser
-      tags: [Users]
+      tags: [ Users ]
       summary: Mettre à jour un utilisateur
       parameters:
         - in: path
@@ -116,7 +117,7 @@ paths:
           description: Utilisateur non trouvé
     delete:
       operationId: deleteUser
-      tags: [Users]
+      tags: [ Users ]
       summary: Supprimer (logiquement) un utilisateur
       description: Marque l'utilisateur comme supprimé/inactif.
       parameters:
@@ -135,11 +136,9 @@ paths:
   /users/{userId}/status:
     patch:
       operationId: updateUserStatus
-      tags: [Users]
+      tags: [ Users ]
       summary: Mettre à jour le statut financier / d'accès du joueur
-      description: >
-        Permet la mise à jour du statut (OK, SUSPENDED, BLOQUE) en fonction
-        de la situation de paiement, pour conditionner l'accès à la plateforme de jeux.
+      description: Permet la mise à jour du statut (OK, SUSPENDED, BLOQUE) en fonction de la situation de paiement, pour conditionner l'accès à la plateforme de jeux.
       parameters:
         - in: path
           name: userId
@@ -169,7 +168,7 @@ paths:
   /subscriptions:
     get:
       operationId: listSubscriptions
-      tags: [Subscriptions]
+      tags: [ Subscriptions ]
       summary: Lister les abonnements
       parameters:
         - in: query
@@ -193,10 +192,9 @@ paths:
                   $ref: "#/components/schemas/Subscription"
     post:
       operationId: createSubscription
-      tags: [Subscriptions]
+      tags: [ Subscriptions ]
       summary: Créer un abonnement
-      description: >
-        Création d'un abonnement mensuel complet (non proratisé) pour un utilisateur.
+      description: Création d'un abonnement mensuel complet (non proratisé) pour un utilisateur.
       requestBody:
         required: true
         content:
@@ -214,7 +212,7 @@ paths:
   /subscriptions/{subscriptionId}:
     get:
       operationId: getSubscription
-      tags: [Subscriptions]
+      tags: [ Subscriptions ]
       summary: Récupérer un abonnement
       parameters:
         - in: path
@@ -234,7 +232,7 @@ paths:
           description: Abonnement non trouvé
     put:
       operationId: updateSubscription
-      tags: [Subscriptions]
+      tags: [ Subscriptions ]
       summary: Mettre à jour un abonnement
       parameters:
         - in: path
@@ -260,7 +258,7 @@ paths:
           description: Abonnement non trouvé
     delete:
       operationId: cancelSubscription
-      tags: [Subscriptions]
+      tags: [ Subscriptions ]
       summary: Résilier un abonnement
       description: Résiliation de l'abonnement (mise à jour de la date de résiliation et du statut).
       parameters:
@@ -283,7 +281,7 @@ paths:
   /billing/monthly:
     post:
       operationId: generateMonthlyBilling
-      tags: [Billing]
+      tags: [ Billing ]
       summary: Générer les facturations mensuelles
       description: >
         Génère les factures mensuelles pour tous les abonnements actifs
@@ -320,11 +318,9 @@ paths:
   /exports/accounting/monthly-invoices:
     get:
       operationId: exportMonthlyInvoices
-      tags: [Billing]
+      tags: [ Billing ]
       summary: Export des factures mensuelles pour le Groupe Money
-      description: >
-        Fournit les écritures de facturation mensuelle à destination de
-        l'application MONEY (Groupe Money).
+      description: Fournit les écritures de facturation mensuelle à destination de l'application MONEY (Groupe Money).
       parameters:
         - in: query
           name: billingMonth
@@ -346,11 +342,9 @@ paths:
   /exports/banking/direct-debits:
     get:
       operationId: exportDirectDebits
-      tags: [BankingExports]
+      tags: [ BankingExports ]
       summary: Export des prélèvements pour le Groupe Bank
-      description: >
-        Liste des prélèvements bancaires à réaliser, à destination de l'application BANK (Groupe Bank).
-        Les prélèvements sont à exécuter le premier jour du mois suivant la facturation.
+      description: Liste des prélèvements bancaires à réaliser, à destination de l'application BANK (Groupe Bank). Les prélèvements sont à exécuter le premier jour du mois suivant la facturation.
       parameters:
         - in: query
           name: executionDate
@@ -373,11 +367,9 @@ paths:
   /reports/revenue/monthly:
     get:
       operationId: getMonthlyRevenue
-      tags: [Reports]
+      tags: [ Reports ]
       summary: Chiffre d'affaires mensuel
-      description: >
-        Retourne le chiffre d'affaires par mois sur la période demandée,
-        calculé à partir des factures générées.
+      description: Retourne le chiffre d'affaires par mois sur la période demandée, calculé à partir des factures générées.
       parameters:
         - in: query
           name: from
@@ -418,18 +410,17 @@ components:
   schemas:
     UserStatus:
       type: string
-      enum: [OK, SUSPENDED, BLOQUE, DELETED]
-      description: >
-        Statut d'accès du joueur. OK = accès plateforme autorisé.
+      enum: [ OK, SUSPENDED, BLOQUE, DELETED ]
+      description: Statut d'accès du joueur. OK = accès plateforme autorisé.
 
     SubscriptionStatus:
       type: string
-      enum: [ACTIVE, CANCELLED, PENDING_CANCEL]
+      enum: [ ACTIVE, CANCELLED, PENDING_CANCEL ]
       description: Statut de l'abonnement.
 
     PaymentMethodType:
       type: string
-      enum: [SEPA, CARD]
+      enum: [ SEPA, CARD ]
       description: Type de moyen de paiement principal.
 
     User:
@@ -461,7 +452,7 @@ components:
 
     UserCreate:
       type: object
-      required: [firstName, lastName, email]
+      required: [ firstName, lastName, email ]
       properties:
         firstName:
           type: string
@@ -536,7 +527,7 @@ components:
 
     SubscriptionCreate:
       type: object
-      required: [userId, contractCode, startDate, monthlyAmount]
+      required: [ userId, contractCode, startDate, monthlyAmount ]
       properties:
         userId:
           type: string
@@ -608,7 +599,7 @@ components:
           example: 15.0
         status:
           type: string
-          enum: [PENDING, SENT, PAID, FAILED]
+          enum: [ PENDING, SENT, PAID, FAILED ]
 
     AccountingExportLine:
       type: object
@@ -662,6 +653,6 @@ components:
           format: float
         status:
           type: string
-          enum: [TO_SEND, SENT, EXECUTED, REJECTED]
+          enum: [ TO_SEND, SENT, EXECUTED, REJECTED ]
         paymentMethod:
           $ref: "#/components/schemas/PaymentMethodType"
