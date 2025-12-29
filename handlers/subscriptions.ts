@@ -9,15 +9,15 @@ import type {
 /**
  * List subscriptions with optional filters
  */
-export const listSubscriptions: ListSubscriptions = async (params, respond) => {
+export const listSubscriptions: ListSubscriptions = async (req, resp) => {
   // TODO: Implement with database
-  return respond.with200().body([]);
+  throw new Error('Not implemented');
 };
 
 /**
  * Create a new subscription
  */
-export const createSubscription: CreateSubscription = async (params, respond) => {
+export const createSubscription: CreateSubscription = async (req, resp) => {
   // TODO: Implement with database
   throw new Error('Not implemented');
 };
@@ -25,23 +25,23 @@ export const createSubscription: CreateSubscription = async (params, respond) =>
 /**
  * Get a subscription by ID
  */
-export const getSubscription: GetSubscription = async (params, respond) => {
+export const getSubscription: GetSubscription = async (req, resp) => {
   // TODO: Implement with database
-  return respond.with404();
+  throw new Error('Not implemented');
 };
 
 /**
  * Update a subscription
  */
-export const updateSubscription: UpdateSubscription = async (params, respond) => {
+export const updateSubscription: UpdateSubscription = async (req, resp) => {
   // TODO: Implement with database
-  return respond.with404();
+  throw new Error('Not implemented');
 };
 
 /**
  * Cancel a subscription
  */
-export const cancelSubscription: CancelSubscription = async (params, respond) => {
+export const cancelSubscription: CancelSubscription = async (req, resp) => {
   // TODO: Implement with database
-  return respond.with404();
+  throw new Error('Not implemented');
 };

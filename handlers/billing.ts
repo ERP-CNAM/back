@@ -6,18 +6,15 @@ import type {
 /**
  * Generate monthly billing for all active subscriptions
  */
-export const generateMonthlyBilling: GenerateMonthlyBilling = async (params, respond) => {
+export const generateMonthlyBilling: GenerateMonthlyBilling = async (req, resp) => {
   // TODO: Implement billing logic
-  return respond.with200().body({
-    billingDate: params.body?.billingDate,
-    invoices: [],
-  });
+  throw new Error('Not implemented');
 };
 
 /**
- * Export monthly invoices for accounting (Groupe 3)
+ * Export monthly invoices for accounting
  */
-export const exportMonthlyInvoices: ExportMonthlyInvoices = async (params, respond) => {
+export const exportMonthlyInvoices: ExportMonthlyInvoices = async (req, resp) => {
   // TODO: Implement export logic
-  return respond.with200().body([]);
+  throw new Error('Not implemented');
 };

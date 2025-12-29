@@ -8,21 +8,21 @@ let users: t_User[] = usersData as t_User[];
 /**
  * List users with optional status filter
  */
-export const listUsers: ListUsers = async (params, respond) => {
-  const { status } = params.query || {};
+export const listUsers: ListUsers = async (req, resp) => {
+  const { status } = req.query || {};
 
   const filteredUsers = status
     ? users.filter(u => u.status === status)
     : users;
 
-  return respond.with200().body(filteredUsers);
+  return resp.with200().body(filteredUsers);
 };
 
 /**
  * Create a new user
  */
-export const createUser: CreateUser = async (params, respond) => {
-  const userData = params.body;
+export const createUser: CreateUser = async (req, resp) => {
+  const userData = req.body;
 
   const newUser: t_User = {
     id: generateUUID(),
@@ -34,35 +34,35 @@ export const createUser: CreateUser = async (params, respond) => {
 
   users.push(newUser);
 
-  return respond.with201().body(newUser);
+  return resp.with201().body(newUser);
 };
 
 /**
  * Get a single user by ID
  */
-export const getUser: GetUser = async (params, respond) => {
-  const { userId } = params.params;
+export const getUser: GetUser = async (req, resp) => {
+  const { userId } = req.params;
 
   const user = users.find(u => u.id === userId);
 
   if (!user) {
-    return respond.with404();
+    return resp.with404();
   }
 
-  return respond.with200().body(user);
+  return resp.with200().body(user);
 };
 
 /**
  * Update a user
  */
-export const updateUser: UpdateUser = async (params, respond) => {
-  const { userId } = params.params;
-  const updates = params.body;
+export const updateUser: UpdateUser = async (req, resp) => {
+  const { userId } = req.params;
+  const updates = req.body;
 
   const index = users.findIndex(u => u.id === userId);
 
   if (index === -1) {
-    return respond.with404();
+    return resp.with404();
   }
 
   users[index] = {
@@ -72,39 +72,39 @@ export const updateUser: UpdateUser = async (params, respond) => {
     updatedAt: new Date().toISOString(),
   };
 
-  return respond.with200().body(users[index]);
+  return resp.with200().body(users[index]);
 };
 
 /**
  * Delete (soft delete) a user
  */
-export const deleteUser: DeleteUser = async (params, respond) => {
-  const { userId } = params.params;
+export const deleteUser: DeleteUser = async (req, resp) => {
+  const { userId } = req.params;
 
   const index = users.findIndex(u => u.id === userId);
 
   if (index === -1) {
-    return respond.with404();
+    return resp.with404();
   }
 
   // Soft delete - mark as BLOQUE
   users[index].status = 'BLOQUE';
   users[index].updatedAt = new Date().toISOString();
 
-  return respond.with204();
+  return resp.with204();
 };
 
 /**
  * Update user status
  */
-export const updateUserStatus: UpdateUserStatus = async (params, respond) => {
-  const { userId } = params.params;
-  const { status } = params.body || {};
+export const updateUserStatus: UpdateUserStatus = async (req, resp) => {
+  const { userId } = req.params;
+  const { status } = req.body || {};
 
   const index = users.findIndex(u => u.id === userId);
 
   if (index === -1) {
-    return respond.with404();
+    return resp.with404();
   }
 
   if (status) {
@@ -112,7 +112,7 @@ export const updateUserStatus: UpdateUserStatus = async (params, respond) => {
     users[index].updatedAt = new Date().toISOString();
   }
 
-  return respond.with200().body(users[index]);
+  return resp.with200().body(users[index]);
 };
 
 /**
