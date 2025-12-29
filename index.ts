@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
 import path from 'path';
