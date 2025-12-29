@@ -6,7 +6,7 @@ import type {
 /**
  * Generate monthly billing for all active subscriptions
  */
-export const generateMonthlyBilling: GenerateMonthlyBilling = async (req, resp) => {
+export const generateMonthlyBilling: GenerateMonthlyBilling = async (params, respond) => {
   // TODO: Implement billing logic
   throw new Error('Not implemented');
 };
@@ -14,7 +14,7 @@ export const generateMonthlyBilling: GenerateMonthlyBilling = async (req, resp) 
 /**
  * Export monthly invoices for accounting
  */
-export const exportMonthlyInvoices: ExportMonthlyInvoices = async (req, resp) => {
+export const exportMonthlyInvoices: ExportMonthlyInvoices = async (params, respond) => {
   // TODO: Implement export logic
   throw new Error('Not implemented');
 };

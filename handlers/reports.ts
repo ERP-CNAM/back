@@ -6,7 +6,7 @@ import type {
 /**
  * Export direct debits for banking
  */
-export const exportDirectDebits: ExportDirectDebits = async (req, resp) => {
+export const exportDirectDebits: ExportDirectDebits = async (params, respond) => {
   // TODO: Implement export logic
   throw new Error('Not implemented');
 };
@@ -14,7 +14,7 @@ export const exportDirectDebits: ExportDirectDebits = async (req, resp) => {
 /**
  * Get monthly revenue report
  */
-export const getMonthlyRevenue: GetMonthlyRevenue = async (req, resp) => {
+export const getMonthlyRevenue: GetMonthlyRevenue = async (params, respond) => {
   // TODO: Implement revenue calculation
   throw new Error('Not implemented');
 };
