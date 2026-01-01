@@ -1,26 +1,27 @@
 /**
- * Central export point for all handlers
- * This file combines all handler modules into a single Implementation object
+ * This file combines all handler modules with dependency injection for repositories
  */
 
 import type { Implementation } from '../server/generated';
-import * as users from './users';
+import type { t_User } from '../server/models';
+import { InMemoryUserRepository } from '../repositories/implementations/memory/InMemoryUserRepository';
+import { createUserHandlers } from './users';
 import * as subscriptions from './subscriptions';
 import * as billing from './billing';
 import * as reports from './reports';
+import mockUsers from '../mock/users.json';
 
-/**
- * Complete implementation of all API handlers
- * This object matches the Implementation interface from generated code
- */
+const userRepository = new InMemoryUserRepository(mockUsers as t_User[]);
+const userHandlers = createUserHandlers(userRepository);
+
 export const handlers: Implementation = {
   // Users
-  listUsers: users.listUsers,
-  createUser: users.createUser,
-  getUser: users.getUser,
-  updateUser: users.updateUser,
-  deleteUser: users.deleteUser,
-  updateUserStatus: users.updateUserStatus,
+  listUsers: userHandlers.listUsers,
+  createUser: userHandlers.createUser,
+  getUser: userHandlers.getUser,
+  updateUser: userHandlers.updateUser,
+  deleteUser: userHandlers.deleteUser,
+  updateUserStatus: userHandlers.updateUserStatus,
 
   // Subscriptions
   listSubscriptions: subscriptions.listSubscriptions,
