@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { InMemoryUserRepository } from '../../repositories/implementations/memory/InMemoryUserRepository';
 import type { CreateUserData, UpdateUserData } from '../../repositories/interfaces/IUserRepository';
-import type { t_User } from '../../server/models';
+import type { t_User, t_UserStatus } from '../../server/models';
 
 describe('InMemoryUserRepository', () => {
   let repository: InMemoryUserRepository;
@@ -267,7 +267,7 @@ describe('InMemoryUserRepository', () => {
     });
 
     it('should allow all valid status values', async () => {
-      const statuses: Array<'OK' | 'SUSPENDED' | 'BLOQUE' | 'DELETED'> = ['OK', 'SUSPENDED', 'BLOQUE', 'DELETED'];
+      const statuses: Array<t_UserStatus> = ['OK', 'SUSPENDED', 'BLOQUE', 'DELETED'];
 
       for (const status of statuses) {
         const updated = await repository.updateStatus('user-1', status);
