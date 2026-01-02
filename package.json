@@ -11,9 +11,9 @@
     "yamljs": "^0.3.0",
     "zod": "^4.2.1"
   },
-  "name": "gamers-backend",
+  "name": "erp-cnam-backend",
   "version": "1.0.0",
-  "description": "Système de gestion intelligenct de l'application GAMERS",
+  "description": "Système de gestion intelligent de l'application ERP-CNAM",
   "main": "index.ts",
   "scripts": {
     "start": "ts-node index.ts",
@@ -48,7 +48,7 @@
     "@types/yamljs": "^0.2.34",
     "@vitest/coverage-v8": "^4.0.16",
     "@vitest/ui": "^4.0.16",
-    "drizzle-kit": "^0.20.0",
+    "drizzle-kit": "^0.18.1",
     "nodemon": "^3.1.11",
     "vitest": "^4.0.16"
   }
