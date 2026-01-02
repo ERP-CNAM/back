@@ -1,16 +1,16 @@
 import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 import { eq } from 'drizzle-orm';
 import type {
-  IUserRepository,
+  UserRepository,
   UserQueryOptions,
   CreateUserData,
   UpdateUserData
-} from '../../interfaces/IUserRepository';
-import type { t_User, t_UserStatus } from '../../../server/models';
-import { users } from '../../../database/memory/schema';
-import { generateUUID } from '../../../utils/uuid';
+} from '../user.repository';
+import type { t_User, t_UserStatus } from '../../server/models';
+import { users } from '../../database/memory/schema';
+import { generateUUID } from '../../utils/uuid';
 
-export class InMemoryUserRepository implements IUserRepository {
+export class InMemoryUserRepository implements UserRepository {
   constructor(private db: BetterSQLite3Database) {}
 
   private toUser(row: any): t_User {

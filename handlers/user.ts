@@ -6,13 +6,13 @@ import type {
   DeleteUser,
   UpdateUserStatus
 } from '../server/generated';
-import type { IUserRepository } from '../repositories/interfaces/IUserRepository';
+import type { UserRepository } from '../repositories/user.repository';
 
-export function createUserHandlers(userRepository: IUserRepository) {
+export function createUserHandlers(repository: UserRepository) {
   const listUsers: ListUsers = async (params, respond) => {
     const { status } = params.query || {};
 
-    const users = await userRepository.findAll({ status });
+    const users = await repository.findAll({ status });
 
     return respond.with200().body(users);
   };
@@ -20,7 +20,7 @@ export function createUserHandlers(userRepository: IUserRepository) {
   const createUser: CreateUser = async (params, respond) => {
     const userData = params.body;
 
-    const newUser = await userRepository.create(userData);
+    const newUser = await repository.create(userData);
 
     return respond.with201().body(newUser);
   };
@@ -28,7 +28,7 @@ export function createUserHandlers(userRepository: IUserRepository) {
   const getUser: GetUser = async (params, respond) => {
     const { userId } = params.params;
 
-    const user = await userRepository.findById(userId);
+    const user = await repository.findById(userId);
 
     if (!user) {
       return respond.with404().body();
@@ -41,7 +41,7 @@ export function createUserHandlers(userRepository: IUserRepository) {
     const { userId } = params.params;
     const updates = params.body;
 
-    const updatedUser = await userRepository.update(userId, updates);
+    const updatedUser = await repository.update(userId, updates);
 
     if (!updatedUser) {
       return respond.with404().body();
@@ -53,7 +53,7 @@ export function createUserHandlers(userRepository: IUserRepository) {
   const deleteUser: DeleteUser = async (params, respond) => {
     const { userId } = params.params;
 
-    const deleted = await userRepository.delete(userId);
+    const deleted = await repository.delete(userId);
 
     if (!deleted) {
       return respond.with404().body();
@@ -68,14 +68,14 @@ export function createUserHandlers(userRepository: IUserRepository) {
 
     // If no status provided, just return the current user
     if (!status) {
-      const user = await userRepository.findById(userId);
+      const user = await repository.findById(userId);
       if (!user) {
         return respond.with404().body();
       }
       return respond.with200().body(user);
     }
 
-    const updatedUser = await userRepository.updateStatus(userId, status);
+    const updatedUser = await repository.updateStatus(userId, status);
 
     if (!updatedUser) {
       return respond.with404().body();

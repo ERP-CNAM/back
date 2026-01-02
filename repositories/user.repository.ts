@@ -1,4 +1,4 @@
-import type { t_User, t_UserStatus, t_PaymentMethod } from '../../server/models';
+import type { t_User, t_UserStatus, t_PaymentMethod } from '../server/models';
 
 export interface UserQueryOptions {
   status?: t_UserStatus;
@@ -22,7 +22,7 @@ export interface UpdateUserData {
 /**
  * Repository interface for User entity
  */
-export interface IUserRepository {
+export interface UserRepository {
   findAll(options?: UserQueryOptions): Promise<t_User[]>;
   findById(id: string): Promise<t_User | null>;
   findByEmail(email: string): Promise<t_User | null>;

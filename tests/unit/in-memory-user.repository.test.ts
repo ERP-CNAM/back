@@ -1,10 +1,10 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { InMemoryUserRepository } from '../../repositories/implementations/memory/InMemoryUserRepository';
-import type { CreateUserData, UpdateUserData } from '../../repositories/interfaces/IUserRepository';
+import { InMemoryUserRepository } from '../../repositories/memory/in-memory-user.repository';
+import type { CreateUserData, UpdateUserData } from '../../repositories/user.repository';
 import type { t_User, t_UserStatus } from '../../server/models';
 import { createTestDatabase } from '../../database/memory/client';
 
-describe('InMemoryUserRepository', () => {
+describe('InmemoryUserRepository', () => {
   let repository: InMemoryUserRepository;
   const data: t_User[] = [
     {

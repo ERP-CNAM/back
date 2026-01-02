@@ -3,12 +3,12 @@
  */
 
 import type { Implementation } from '../server/generated';
-import { InMemoryUserRepository } from '../repositories/implementations/memory/InMemoryUserRepository';
+import { InMemoryUserRepository } from '../repositories/memory/in-memory-user.repository';
 import { getDatabase } from '../database/memory/client';
-import { createUserHandlers } from './users';
-import * as subscriptions from './subscriptions';
+import { createUserHandlers } from './user';
+import * as subscriptions from './subscription';
 import * as billing from './billing';
-import * as reports from './reports';
+import * as reports from './report';
 
 const db = getDatabase();
 const userRepository = new InMemoryUserRepository(db);
