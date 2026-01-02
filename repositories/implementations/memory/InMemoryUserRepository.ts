@@ -1,3 +1,5 @@
+import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
+import { eq } from 'drizzle-orm';
 import type {
   IUserRepository,
   UserQueryOptions,
@@ -5,35 +7,43 @@ import type {
   UpdateUserData
 } from '../../interfaces/IUserRepository';
 import type { t_User, t_UserStatus } from '../../../server/models';
+import { users } from '../../../database/schema';
 import { generateUUID } from '../../../utils/uuid';
 
 export class InMemoryUserRepository implements IUserRepository {
-  private users: Map<string, t_User>;
+  constructor(private db: BetterSQLite3Database) {}
 
-  constructor(initialData: t_User[] = []) {
-    this.users = new Map();
-    initialData.forEach(user => {
-      this.users.set(user.id!, user);
-    });
+  private toUser(row: any): t_User {
+    return {
+      id: row.id,
+      firstName: row.firstName,
+      lastName: row.lastName,
+      email: row.email,
+      status: row.status,
+      paymentMethod: row.paymentMethod ? JSON.parse(row.paymentMethod) : undefined,
+      createdAt: row.createdAt,
+      updatedAt: row.updatedAt,
+    };
   }
 
   async findAll(options?: UserQueryOptions): Promise<t_User[]> {
-    let results = Array.from(this.users.values());
+    let query = this.db.select().from(users);
 
     if (options?.status) {
-      results = results.filter(u => u.status === options.status);
+      query = query.where(eq(users.status, options.status)) as any;
     }
 
-    return results;
+    return query.all().map(row => this.toUser(row));
   }
 
   async findById(id: string): Promise<t_User | null> {
-    return this.users.get(id) || null;
+    const rows = this.db.select().from(users).where(eq(users.id, id)).limit(1).all();
+    return rows.length > 0 ? this.toUser(rows[0]) : null;
   }
 
   async findByEmail(email: string): Promise<t_User | null> {
-    const user = Array.from(this.users.values()).find(u => u.email === email);
-    return user || null;
+    const rows = this.db.select().from(users).where(eq(users.email, email)).limit(1).all();
+    return rows.length > 0 ? this.toUser(rows[0]) : null;
   }
 
   async create(data: CreateUserData): Promise<t_User> {
@@ -45,13 +55,22 @@ export class InMemoryUserRepository implements IUserRepository {
       updatedAt: new Date().toISOString(),
     };
 
-    this.users.set(newUser.id!, newUser);
+    this.db.insert(users).values({
+      id: newUser.id!,
+      firstName: newUser.firstName,
+      lastName: newUser.lastName,
+      email: newUser.email,
+      paymentMethod: newUser.paymentMethod ? JSON.stringify(newUser.paymentMethod) : null,
+      status: newUser.status,
+      createdAt: newUser.createdAt,
+      updatedAt: newUser.updatedAt,
+    }).run();
 
     return newUser;
   }
 
   async update(id: string, data: UpdateUserData): Promise<t_User | null> {
-    const existingUser = this.users.get(id);
+    const existingUser = await this.findById(id);
 
     if (!existingUser) {
       return null;
@@ -64,25 +83,26 @@ export class InMemoryUserRepository implements IUserRepository {
       updatedAt: new Date().toISOString(),
     };
 
-    this.users.set(id, updatedUser);
+    this.db.update(users).set({
+      firstName: updatedUser.firstName,
+      lastName: updatedUser.lastName,
+      email: updatedUser.email,
+      paymentMethod: updatedUser.paymentMethod ? JSON.stringify(updatedUser.paymentMethod) : null,
+      status: updatedUser.status,
+      updatedAt: updatedUser.updatedAt,
+    }).where(eq(users.id, id)).run();
 
     return updatedUser;
   }
 
   async delete(id: string): Promise<boolean> {
-    const user = this.users.get(id);
+    const user = await this.findById(id);
+    if (!user) return false;
 
-    if (!user) {
-      return false;
-    }
-
-    const deletedUser: t_User = {
-      ...user,
+    this.db.update(users).set({
       status: 'BLOQUE',
       updatedAt: new Date().toISOString(),
-    };
-
-    this.users.set(id, deletedUser);
+    }).where(eq(users.id, id)).run();
 
     return true;
   }

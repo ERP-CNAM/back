@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { InMemoryUserRepository } from '../../repositories/implementations/memory/InMemoryUserRepository';
 import type { CreateUserData, UpdateUserData } from '../../repositories/interfaces/IUserRepository';
 import type { t_User, t_UserStatus } from '../../server/models';
+import { createTestDatabase } from '../../database/client';
 
 describe('InMemoryUserRepository', () => {
   let repository: InMemoryUserRepository;
@@ -36,7 +37,8 @@ describe('InMemoryUserRepository', () => {
   ];
 
   beforeEach(() => {
-    repository = new InMemoryUserRepository(data);
+    const db = createTestDatabase(data);
+    repository = new InMemoryUserRepository(db);
   });
 
   describe('findAll', () => {
@@ -61,7 +63,8 @@ describe('InMemoryUserRepository', () => {
     });
 
     it('should return empty array when repository is empty', async () => {
-      const emptyRepo = new InMemoryUserRepository();
+      const emptyDb = createTestDatabase();
+      const emptyRepo = new InMemoryUserRepository(emptyDb);
       const users = await emptyRepo.findAll();
 
       expect(users).toEqual([]);
@@ -175,7 +178,7 @@ describe('InMemoryUserRepository', () => {
         firstName: 'Alicia',
         lastName: 'J.',
       };
-
+      
       const updatedUser = await repository.update('user-1', updateData);
 
       expect(updatedUser).toBeDefined();
@@ -183,33 +186,13 @@ describe('InMemoryUserRepository', () => {
       expect(updatedUser?.lastName).toBe('J.');
       expect(updatedUser?.email).toBe('alice@example.com'); // Unchanged
       expect(updatedUser?.id).toBe('user-1'); // ID preserved
+      expect(updatedUser?.updatedAt).not.toBe('2026-01-01T00:00:00Z'); // updatedAt changed
     });
 
     it('should return null when updating non-existent user', async () => {
       const result = await repository.update('non-existent', { firstName: 'Test' });
 
       expect(result).toBeNull();
-    });
-
-    it('should update the updatedAt timestamp', async () => {
-      const originalUser = await repository.findById('user-1');
-      const originalUpdatedAt = originalUser?.updatedAt;
-
-      // Wait a bit to ensure timestamp difference
-      await new Promise(resolve => setTimeout(resolve, 10));
-
-      const updatedUser = await repository.update('user-1', { firstName: 'New Name' });
-
-      expect(updatedUser?.updatedAt).toBeDefined();
-      expect(updatedUser?.updatedAt).not.toBe(originalUpdatedAt);
-    });
-
-    it('should allow partial updates', async () => {
-      const updatedUser = await repository.update('user-1', { firstName: 'NewFirstName' });
-
-      expect(updatedUser?.firstName).toBe('NewFirstName');
-      expect(updatedUser?.lastName).toBe('Johnson'); // Unchanged
-      expect(updatedUser?.email).toBe('alice@example.com'); // Unchanged
     });
   });
 

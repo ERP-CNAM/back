@@ -3,15 +3,15 @@
  */
 
 import type { Implementation } from '../server/generated';
-import type { t_User } from '../server/models';
 import { InMemoryUserRepository } from '../repositories/implementations/memory/InMemoryUserRepository';
+import { getDatabase } from '../database/client';
 import { createUserHandlers } from './users';
 import * as subscriptions from './subscriptions';
 import * as billing from './billing';
 import * as reports from './reports';
-import mockUsers from '../mock/users.json';
 
-const userRepository = new InMemoryUserRepository(mockUsers as t_User[]);
+const db = getDatabase();
+const userRepository = new InMemoryUserRepository(db);
 const userHandlers = createUserHandlers(userRepository);
 
 export const handlers: Implementation = {
