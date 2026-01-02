@@ -4,7 +4,7 @@
 
 import type { Implementation } from '../server/generated';
 import { InMemoryUserRepository } from '../repositories/implementations/memory/InMemoryUserRepository';
-import { getDatabase } from '../database/client';
+import { getDatabase } from '../database/memory/client';
 import { createUserHandlers } from './users';
 import * as subscriptions from './subscriptions';
 import * as billing from './billing';

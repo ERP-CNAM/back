@@ -7,7 +7,7 @@ import type {
   UpdateUserData
 } from '../../interfaces/IUserRepository';
 import type { t_User, t_UserStatus } from '../../../server/models';
-import { users } from '../../../database/schema';
+import { users } from '../../../database/memory/schema';
 import { generateUUID } from '../../../utils/uuid';
 
 export class InMemoryUserRepository implements IUserRepository {

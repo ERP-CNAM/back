@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { InMemoryUserRepository } from '../../repositories/implementations/memory/InMemoryUserRepository';
 import type { CreateUserData, UpdateUserData } from '../../repositories/interfaces/IUserRepository';
 import type { t_User, t_UserStatus } from '../../server/models';
-import { createTestDatabase } from '../../database/client';
+import { createTestDatabase } from '../../database/memory/client';
 
 describe('InMemoryUserRepository', () => {
   let repository: InMemoryUserRepository;
