@@ -1,134 +1,201 @@
-# BACK - ERP CNAM API
+# ERP CNAM - BACK
 
-Système intelligent de l'application ERP CNAM. API de gestion des joueurs abonnés.
+API de gestion des joueurs abonnés pour l'application ERP CNAM.
 
-## Installation
+**Choix d'architecture : Design First avec génération automatique du code depuis OpenAPI**
 
-### 1. Cloner le projet
+---
+
+## Démarrage rapide
 
 ```bash
+# Cloner et installer
 git clone https://github.com/ERP-CNAM/back.git
 cd back
-```
-
-### 2. Installer les dépendances
-
-```bash
 npm install
-```
 
-### 3. Configuration
-
-Créer un fichier `.env` à la racine du projet selon vos besoins de configuration.
-
-```bash
+# Définisser les variables d'environnement
 cp .env.example .env
-```
 
-### 4. Base de données
-
-Le projet utilise SQLite avec Drizzle ORM. La base de données est configurée pour fonctionner en mémoire pour le moment.
-Une intégration avec PostgreSQL sera réalisé prochainement.
-
-## Développement
-
-### Lancer l'API en mode développement
-
-```bash
+# Lancer en mode développement
 npm run dev
 ```
 
-Le serveur se lancera avec nodemon et redémarrera automatiquement à chaque modification.
+L'API sera accessible sur `http://localhost:3000` et la documentation de l'API sur `http://localhost:3000/swagger`
 
-### Lancer l'API
+---
 
-```bash
-npm start
+## Workflow Design to Code API
+
+Ce projet suit une approche **Design First** : vous définissez d'abord le contrat API dans OpenAPI, puis le code est
+généré automatiquement.
+
+### 1. Design - Définir l'API
+
+Modifiez `api/openapi.yaml` pour ajouter ou modifier un endpoint :
+
+```yaml
+paths:
+  /users/{userId}:
+    get:
+      operationId: getUser
+      tags: [ Users ]
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Utilisateur trouvé
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "404":
+          description: Utilisateur non trouvé
+...
 ```
 
-L'API sera accessible sur le port configuré dans le fichier `.env` ou à défaut sur le port `:3000`.
-
-## Génération du code depuis OpenAPI
-
-Le projet utilise un générateur de code basé sur la spécification OpenAPI (`api/openapi.yaml`).
-
-### Regénérer le code serveur
+### 2. Generate - Générer les interfaces, routes, et types
 
 ```bash
 npm run generate
 ```
 
-Cette commande génère le code TypeScript dans le dossier `server` à partir du fichier OpenAPI, en utilisant le
-générateur [@nahkies/openapi-code-generator](https://openapi-code-generator.nahkies.co.nz/overview/about)
+Cette commande génère automatiquement dans `server/` :
 
-## Tests
+- Types TypeScript (`GetUser`, `GetUserResponder`)
+- Schémas de validation Zod v4
+- Interface `Implementation` pour assembler les handlers
 
-Le projet utilise [Vitest](https://vitest.dev/) pour les tests.
+> Le dossier `server/` est généré automatiquement - ne le modifiez jamais manuellement !
 
-### Lancer les tests
+### 3. Implement - Implémenter la logique métier
+
+Créez votre handler dans `handlers/user.ts` en utilisant les types générés :
+
+```typescript
+import type { GetUser } from '../server/generated';
+
+const getUser: GetUser = async (params, respond) => {
+  const { userId } = params.params;
+
+  const user = await repository.findById(userId);
+
+  if (!user) {
+    return respond.with404().body();
+  }
+
+  return respond.with200().body(user);
+};
+```
+
+Enregistrez ensuite le handler dans `handlers/index.ts` :
+
+```typescript
+export const handlers: Implementation = {
+  getUser: userHandlers.getUser,
+  // ... autres handlers
+};
+```
+
+### Test - Valider les implémentations
 
 ```bash
+# Lancer les tests
 npm test
-```
 
-### Lancer les tests en mode watch pour le développement
-
-```bash
+# Tests en mode watch (pratique en mode développement)
 npm run test:watch
-```
 
-### Générer le rapport de couverture
-
-```bash
+# Rapport de couverture
 npm run test:coverage
 ```
+
+---
+
+## Pourquoi cette approche ?
+
+| Avantage                       | Bénéfice                                           |
+|--------------------------------|----------------------------------------------------|
+| **Contrat respecté**           | L'implémentation respecte toujours la spec OpenAPI |
+| **Type Safety**                | TypeScript détecte les erreurs à la compilation    |
+| **Validation automatique**     | Zod valide les entrées/sorties automatiquement     |
+| **Documentation synchronisée** | Swagger UI toujours à jour                         |
+| **Productivité**               | Moins de code générique à écrire                   |
+
+---
 
 ## Structure du projet
 
 ```
 back/
-├── api/              # Spécification OpenAPI
-│   └── openapi.yaml
-├── database/         # Configuration base de données
-├── server/           # Code généré (ne pas modifier manuellement)
-├── utils/            # Utilitaires
-└── index.ts          # Point d'entrée de l'application
+├── api/
+│   └── openapi.yaml        # Source de vérité - Contrat API
+├── handlers/               # Logique métier (vous codez ici)
+│   ├── user.ts
+│   ├── subscription.ts
+│   └── index.ts
+├── server/                 # Code généré (ne pas toucher)
+│   ├── generated.ts
+│   ├── models.ts
+│   └── schemas.ts
+├── repositories/           # Accès aux données
+├── database/               # Configuration DB (SQLite/PostgreSQL)
+└── index.ts                # Point d'entrée
 ```
 
-## Comment contribuer au développement de l'API
+---
 
-### 1. Créer une branche
+## Contribuer au développement
 
-```bash
-git checkout -b nom-de-votre-branche
-```
-
-### 2. Faire vos modifications
-
-- Modifier le fichier `api/openapi.yaml` pour les changements d'API
-- Regénérer le code avec `npm run generate`
-- Implémenter la logique métier
-- Ajouter des tests
-
-### 3. Tester vos modifications
+### Workflow recommandé
 
 ```bash
+# 1. Créer une branche
+git checkout -b feature/nom-de-la-feature
+
+# 2. Modifier l'API
+# Éditez api/openapi.yaml
+
+# 3. Générer et implémenter
+npm run generate
+
+# 4. Implémenter vos handlers dans handlers/
+
+# 5. Tester
 npm test
-npm run dev  # Vérifier que tout fonctionne
+npm run dev
+
+# 6. Push et PR
+git add .
+git commit -m "feat: description"
+git push origin feature/nom-de-la-feature
 ```
 
-### 4. Créer une Pull Request
+### Règles d'or
 
-Créez une Pull Request sur GitHub vers la branche `main`.
+- Toujours commencer par modifier `api/openapi.yaml`
+- Toujours regénérer après modification OpenAPI
+- Écrire des tests pour chaque nouveau handler
+- Ne jamais modifier le dossier `server/` manuellement
+- Ne jamais commit sans avoir lancé les tests
 
-## Bonnes pratiques
+---
 
-- Toujours regénérer le code serveur après modification de `openapi.yaml`
-- Ne jamais modifier directement les fichiers dans le dossier `server/`
-- Écrire des tests pour toutes les nouvelles fonctionnalités
-- Suivre les conventions de nommage TypeScript
-- Vérifier que les tests passent avant de créer une PR
+## Technologies utilisées
+
+- **Runtime** : Node.js + TypeScript
+- **API Framework** : Express
+- **Validation schemas** : Zod v4
+- **Base de données** : SQLite in-memory (Drizzle ORM) → PostgreSQL à venir
+- **Framework de tests** : [Vitest](https://vitest.dev/)
+- **Générateur de code** : [@nahkies/openapi-code-generator](https://openapi-code-generator.nahkies.co.nz)
+
+---
 
 ## Support
 
-Pour toute question ou problème, ouvrez une issue sur GitHub.
+Pour toute question ou problème, ouvrez une [issue sur GitHub](https://github.com/ERP-CNAM/back/issues).
