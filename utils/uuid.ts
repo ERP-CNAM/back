@@ -1,5 +1,5 @@
 /**
- * Generate a UUID v4 string
+ * Generate a UUID v4 string (https://pythonguides.com/typescript-uuid/)
  */
 export function generateUUID(): string {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
