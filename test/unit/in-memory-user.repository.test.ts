@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { InMemoryUserRepository } from '../../repositories/memory/in-memory-user.repository';
-import type { CreateUserData, UpdateUserData } from '../../repositories/user.repository';
+import { InMemoryUserRepository } from '../../repository/memory/in-memory-user.repository';
+import type { CreateUserData, UpdateUserData } from '../../repository/user.repository';
 import type { t_User, t_UserStatus } from '../../server/models';
 import { createTestDatabase } from '../../database/memory/client';
 

@@ -3,7 +3,7 @@
  */
 
 import type { Implementation } from '../server/generated';
-import { InMemoryUserRepository } from '../repositories/memory/in-memory-user.repository';
+import { InMemoryUserRepository } from '../repository/memory/in-memory-user.repository';
 import { getDatabase } from '../database/memory/client';
 import { createUserHandlers } from './user';
 import * as subscriptions from './subscription';

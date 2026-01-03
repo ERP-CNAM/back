@@ -6,7 +6,7 @@ import type {
   DeleteUser,
   UpdateUserStatus
 } from '../server/generated';
-import type { UserRepository } from '../repositories/user.repository';
+import type { UserRepository } from '../repository/user.repository';
 
 export function createUserHandlers(repository: UserRepository) {
   const listUsers: ListUsers = async (params, respond) => {
