@@ -3,10 +3,13 @@ import { eq } from 'drizzle-orm';
 import type {
   UserRepository,
   UserQueryOptions,
-  CreateUserData,
-  UpdateUserData
 } from '../user.repository';
-import type { t_User, t_UserStatus } from '../../server/models';
+import type {
+  t_CreateUserRequestBodySchema,
+  t_UpdateUserRequestBodySchema,
+  t_User,
+  t_UserStatus
+} from '../../server/models';
 import { users } from '../../database/memory/schema';
 import { generateUUID } from '../../utils/uuid';
 
@@ -46,7 +49,7 @@ export class InMemoryUserRepository implements UserRepository {
     return rows.length > 0 ? this.toUser(rows[0]) : null;
   }
 
-  async create(data: CreateUserData): Promise<t_User> {
+  async create(data: t_CreateUserRequestBodySchema): Promise<t_User> {
     const newUser: t_User = {
       id: generateUUID(),
       ...data,
@@ -69,7 +72,7 @@ export class InMemoryUserRepository implements UserRepository {
     return newUser;
   }
 
-  async update(id: string, data: UpdateUserData): Promise<t_User | null> {
+  async update(id: string, data: t_UpdateUserRequestBodySchema): Promise<t_User | null> {
     const existingUser = await this.findById(id);
 
     if (!existingUser) {

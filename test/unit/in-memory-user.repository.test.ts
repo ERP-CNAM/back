@@ -1,10 +1,14 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { InMemoryUserRepository } from '../../repository/memory/in-memory-user.repository';
-import type { CreateUserData, UpdateUserData } from '../../repository/user.repository';
-import type { t_User, t_UserStatus } from '../../server/models';
+import type {
+  t_CreateUserRequestBodySchema,
+  t_UpdateUserRequestBodySchema,
+  t_User,
+  t_UserStatus
+} from '../../server/models';
 import { createTestDatabase } from '../../database/memory/client';
 
-describe('InmemoryUserRepository', () => {
+describe('InMemoryUserRepository', () => {
   let repository: InMemoryUserRepository;
   const data: t_User[] = [
     {
@@ -111,7 +115,7 @@ describe('InmemoryUserRepository', () => {
 
   describe('create', () => {
     it('should create a new user with valid data', async () => {
-      const newUserData: CreateUserData = {
+      const newUserData: t_CreateUserRequestBodySchema = {
         firstName: 'David',
         lastName: 'Wilson',
         email: 'david@example.com',
@@ -174,7 +178,7 @@ describe('InmemoryUserRepository', () => {
 
   describe('update', () => {
     it('should update an existing user', async () => {
-      const updateData: UpdateUserData = {
+      const updateData: t_UpdateUserRequestBodySchema = {
         firstName: 'Alicia',
         lastName: 'J.',
       };
