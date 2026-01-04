@@ -11,7 +11,8 @@ import type {
  */
 export const listSubscriptions: ListSubscriptions = async (params, respond) => {
   // TODO: Implement with database
-  throw new Error('Not implemented');
+  const notImplemented = { params, respond };
+  throw new Error(`Not implemented : ${notImplemented}`);
 };
 
 /**
@@ -19,7 +20,8 @@ export const listSubscriptions: ListSubscriptions = async (params, respond) => {
  */
 export const createSubscription: CreateSubscription = async (params, respond) => {
   // TODO: Implement with database
-  throw new Error('Not implemented');
+  const notImplemented = { params, respond };
+  throw new Error(`Not implemented : ${notImplemented}`);
 };
 
 /**
@@ -27,7 +29,8 @@ export const createSubscription: CreateSubscription = async (params, respond) =>
  */
 export const getSubscription: GetSubscription = async (params, respond) => {
   // TODO: Implement with database
-  throw new Error('Not implemented');
+  const notImplemented = { params, respond };
+  throw new Error(`Not implemented : ${notImplemented}`);
 };
 
 /**
@@ -35,7 +38,8 @@ export const getSubscription: GetSubscription = async (params, respond) => {
  */
 export const updateSubscription: UpdateSubscription = async (params, respond) => {
   // TODO: Implement with database
-  throw new Error('Not implemented');
+  const notImplemented = { params, respond };
+  throw new Error(`Not implemented : ${notImplemented}`);
 };
 
 /**
@@ -43,5 +47,6 @@ export const updateSubscription: UpdateSubscription = async (params, respond) =>
  */
 export const cancelSubscription: CancelSubscription = async (params, respond) => {
   // TODO: Implement with database
-  throw new Error('Not implemented');
+  const notImplemented = { params, respond };
+  throw new Error(`Not implemented : ${notImplemented}`);
 };

@@ -8,7 +8,8 @@ import type {
  */
 export const generateMonthlyBilling: GenerateMonthlyBilling = async (params, respond) => {
   // TODO: Implement billing logic
-  throw new Error('Not implemented');
+  const notImplemented = { params, respond };
+  throw new Error(`Not implemented : ${notImplemented}`);
 };
 
 /**
@@ -16,5 +17,6 @@ export const generateMonthlyBilling: GenerateMonthlyBilling = async (params, res
  */
 export const exportMonthlyInvoices: ExportMonthlyInvoices = async (params, respond) => {
   // TODO: Implement export logic
-  throw new Error('Not implemented');
+  const notImplemented = { params, respond };
+  throw new Error(`Not implemented : ${notImplemented}`);
 };

@@ -8,7 +8,8 @@ import type {
  */
 export const exportDirectDebits: ExportDirectDebits = async (params, respond) => {
   // TODO: Implement export logic
-  throw new Error('Not implemented');
+  const notImplemented = { params, respond };
+  throw new Error(`Not implemented : ${notImplemented}`);
 };
 
 /**
@@ -16,5 +17,6 @@ export const exportDirectDebits: ExportDirectDebits = async (params, respond) =>
  */
 export const getMonthlyRevenue: GetMonthlyRevenue = async (params, respond) => {
   // TODO: Implement revenue calculation
-  throw new Error('Not implemented');
+  const notImplemented = { params, respond };
+  throw new Error(`Not implemented : ${notImplemented}`);
 };
