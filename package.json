@@ -22,7 +22,7 @@
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
-    "generate": "openapi-code-generator --input api/openapi.yaml --output ./server --template typescript-express --schema-builder zod-v4",
+    "generate": "openapi-code-generator --input api/openapi.yaml --output ./server --template typescript-express",
     "clean": "rm -rf server/*"
   },
   "repository": {

@@ -10,9 +10,9 @@ import type { UserRepository } from '../repository/user.repository';
 
 export function createUserHandlers(repository: UserRepository) {
   const listUsers: ListUsers = async (params, respond) => {
-    const { status } = params.query || {};
+    const queryOptions = params.query || {};
 
-    const users = await repository.findAll({ status });
+    const users = await repository.findAll(queryOptions);
 
     return respond.with200().body(users);
   };
@@ -93,3 +93,5 @@ export function createUserHandlers(repository: UserRepository) {
     updateUserStatus,
   };
 }
+
+
