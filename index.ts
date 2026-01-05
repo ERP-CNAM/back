@@ -12,14 +12,14 @@ const swaggerDocument = YAML.load(path.join(__dirname, 'api/spec/openapi.yaml'))
 const PORT = Number(process.env.PORT) || 3000;
 
 bootstrap({
-  port: PORT,
-  router: createRouter(handlers),
-  cors: undefined, // Allow all origins by default
-  middleware: swaggerUi.serve,
+    port: PORT,
+    router: createRouter(handlers),
+    cors: undefined, // Allow all origins by default
+    middleware: swaggerUi.serve,
 }).then(({ app }) => {
-  app.use('/swagger', swaggerUi.setup(swaggerDocument));
+    app.use('/swagger', swaggerUi.setup(swaggerDocument));
 
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
-  console.log(`📚 Swagger UI: http://localhost:${PORT}/swagger`);
-  console.log(`📡 API endpoints available`);
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
+    console.log(`📚 Swagger UI: http://localhost:${PORT}/swagger`);
+    console.log(`📡 API endpoints available`);
 });

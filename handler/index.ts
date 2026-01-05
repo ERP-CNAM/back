@@ -15,26 +15,26 @@ const userRepository = new InMemoryUserRepository(db);
 const userHandlers = createUserHandlers(userRepository);
 
 export const handlers: Implementation = {
-  // Users
-  listUsers: userHandlers.listUsers,
-  createUser: userHandlers.createUser,
-  getUser: userHandlers.getUser,
-  updateUser: userHandlers.updateUser,
-  deleteUser: userHandlers.deleteUser,
-  updateUserStatus: userHandlers.updateUserStatus,
+    // Users
+    listUsers: userHandlers.listUsers,
+    createUser: userHandlers.createUser,
+    getUser: userHandlers.getUser,
+    updateUser: userHandlers.updateUser,
+    deleteUser: userHandlers.deleteUser,
+    updateUserStatus: userHandlers.updateUserStatus,
 
-  // Subscriptions
-  listSubscriptions: subscriptions.listSubscriptions,
-  createSubscription: subscriptions.createSubscription,
-  getSubscription: subscriptions.getSubscription,
-  updateSubscription: subscriptions.updateSubscription,
-  cancelSubscription: subscriptions.cancelSubscription,
+    // Subscriptions
+    listSubscriptions: subscriptions.listSubscriptions,
+    createSubscription: subscriptions.createSubscription,
+    getSubscription: subscriptions.getSubscription,
+    updateSubscription: subscriptions.updateSubscription,
+    cancelSubscription: subscriptions.cancelSubscription,
 
-  // Billing
-  generateMonthlyBilling: billing.generateMonthlyBilling,
-  exportMonthlyInvoices: billing.exportMonthlyInvoices,
+    // Billing
+    generateMonthlyBilling: billing.generateMonthlyBilling,
+    exportMonthlyInvoices: billing.exportMonthlyInvoices,
 
-  // Reports
-  exportDirectDebits: reports.exportDirectDebits,
-  getMonthlyRevenue: reports.getMonthlyRevenue,
+    // Reports
+    exportDirectDebits: reports.exportDirectDebits,
+    getMonthlyRevenue: reports.getMonthlyRevenue,
 };

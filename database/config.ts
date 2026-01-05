@@ -7,11 +7,11 @@ export type DatabaseType = 'sqlite-memory' | 'sqlite-file' | 'postgres';
 export const DB_TYPE: DatabaseType = 'sqlite-memory';
 
 export const DB_CONFIG = {
-  sqlite: {
-    filename: './data/gamers-erp.db'
-  },
+    sqlite: {
+        filename: './data/gamers-erp.db',
+    },
 
-  postgres: {
-    url: process.env.DATABASE_URL || null
-  }
+    postgres: {
+        url: process.env.DATABASE_URL || null,
+    },
 };

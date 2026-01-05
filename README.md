@@ -36,25 +36,25 @@ Modifiez `api/openapi.yaml` pour ajouter ou modifier un endpoint :
 
 ```yaml
 paths:
-  /users/{userId}:
-    get:
-      operationId: getUser
-      tags: [ Users ]
-      parameters:
-        - name: userId
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: Utilisateur trouvé
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/User"
-        "404":
-          description: Utilisateur non trouvé
+    /users/{userId}:
+        get:
+            operationId: getUser
+            tags: [Users]
+            parameters:
+                - name: userId
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                '200':
+                    description: Utilisateur trouvé
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/User'
+                '404':
+                    description: Utilisateur non trouvé
 ...
 ```
 
@@ -80,15 +80,15 @@ Créez votre handler dans `handler/user.ts` en utilisant les types générés :
 import type { GetUser } from '../api/generated';
 
 const getUser: GetUser = async (params, respond) => {
-  const { userId } = params.params;
+    const { userId } = params.params;
 
-  const user = await repository.findById(userId);
+    const user = await repository.findById(userId);
 
-  if (!user) {
-    return respond.with404().body();
-  }
+    if (!user) {
+        return respond.with404().body();
+    }
 
-  return respond.with200().body(user);
+    return respond.with200().body(user);
 };
 ```
 
@@ -96,8 +96,8 @@ Enregistrez ensuite le handler dans `handler/index.ts` :
 
 ```typescript
 export const handlers: Implementation = {
-  getUser: userHandlers.getUser,
-  // ... autres handlers
+    getUser: userHandlers.getUser,
+    // ... autres handlers
 };
 ```
 
@@ -119,7 +119,7 @@ npm run test:coverage
 ## Pourquoi cette approche ?
 
 | Avantage                       | Bénéfice                                           |
-|--------------------------------|----------------------------------------------------|
+| ------------------------------ | -------------------------------------------------- |
 | **Contrat respecté**           | L'implémentation respecte toujours la spec OpenAPI |
 | **Type Safety**                | TypeScript détecte les erreurs à la compilation    |
 | **Validation automatique**     | Zod valide les entrées/sorties automatiquement     |

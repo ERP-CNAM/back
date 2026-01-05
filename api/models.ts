@@ -3,158 +3,158 @@
 /* eslint-disable */
 
 export type t_AccountingExportLine = {
-  clientAccount?: string
-  credit?: number | null
-  customerName?: string
-  date?: string
-  debit?: number | null
-  description?: string
-  generalAccount?: string
-  invoiceRef?: string
-}
+    clientAccount?: string;
+    credit?: number | null;
+    customerName?: string;
+    date?: string;
+    debit?: number | null;
+    description?: string;
+    generalAccount?: string;
+    invoiceRef?: string;
+};
 
 export type t_DirectDebitOrder = {
-  amount?: number
-  executionDate?: string
-  id?: string
-  invoiceId?: string
-  paymentMethod?: t_PaymentMethodType
-  status?: "TO_SEND" | "SENT" | "EXECUTED" | "REJECTED"
-  userId?: string
-}
+    amount?: number;
+    executionDate?: string;
+    id?: string;
+    invoiceId?: string;
+    paymentMethod?: t_PaymentMethodType;
+    status?: 'TO_SEND' | 'SENT' | 'EXECUTED' | 'REJECTED';
+    userId?: string;
+};
 
 export type t_Invoice = {
-  amountExclVat?: number
-  amountInclVat?: number
-  billingDate?: string
-  id?: string
-  invoiceRef?: string
-  periodEnd?: string
-  periodStart?: string
-  status?: "PENDING" | "SENT" | "PAID" | "FAILED"
-  subscriptionId?: string
-  userId?: string
-  vatAmount?: number
-}
+    amountExclVat?: number;
+    amountInclVat?: number;
+    billingDate?: string;
+    id?: string;
+    invoiceRef?: string;
+    periodEnd?: string;
+    periodStart?: string;
+    status?: 'PENDING' | 'SENT' | 'PAID' | 'FAILED';
+    subscriptionId?: string;
+    userId?: string;
+    vatAmount?: number;
+};
 
 export type t_PaymentMethod = {
-  cardLast4?: string
-  iban?: string
-  type?: t_PaymentMethodType
-}
+    cardLast4?: string;
+    iban?: string;
+    type?: t_PaymentMethodType;
+};
 
-export type t_PaymentMethodType = "SEPA" | "CARD"
+export type t_PaymentMethodType = 'SEPA' | 'CARD';
 
 export type t_Subscription = {
-  contractCode?: string
-  endDate?: string | null
-  id?: string
-  monthlyAmount?: number
-  promoCode?: string | null
-  startDate?: string
-  status?: t_SubscriptionStatus
-  userId?: string
-}
+    contractCode?: string;
+    endDate?: string | null;
+    id?: string;
+    monthlyAmount?: number;
+    promoCode?: string | null;
+    startDate?: string;
+    status?: t_SubscriptionStatus;
+    userId?: string;
+};
 
-export type t_SubscriptionStatus = "ACTIVE" | "CANCELLED" | "PENDING_CANCEL"
+export type t_SubscriptionStatus = 'ACTIVE' | 'CANCELLED' | 'PENDING_CANCEL';
 
 export type t_User = {
-  createdAt?: string
-  email?: string
-  firstName?: string
-  id?: string
-  lastName?: string
-  paymentMethod?: t_PaymentMethod
-  status?: t_UserStatus
-  updatedAt?: string
-}
+    createdAt?: string;
+    email?: string;
+    firstName?: string;
+    id?: string;
+    lastName?: string;
+    paymentMethod?: t_PaymentMethod;
+    status?: t_UserStatus;
+    updatedAt?: string;
+};
 
-export type t_UserStatus = "OK" | "SUSPENDED" | "BLOQUE" | "DELETED"
+export type t_UserStatus = 'OK' | 'SUSPENDED' | 'BLOQUE' | 'DELETED';
 
 export type t_CancelSubscriptionParamSchema = {
-  subscriptionId: string
-}
+    subscriptionId: string;
+};
 
 export type t_CreateSubscriptionRequestBodySchema = {
-  contractCode: string
-  monthlyAmount: number
-  promoCode?: string | null
-  startDate: string
-  userId: string
-}
+    contractCode: string;
+    monthlyAmount: number;
+    promoCode?: string | null;
+    startDate: string;
+    userId: string;
+};
 
 export type t_CreateUserRequestBodySchema = {
-  email: string
-  firstName: string
-  lastName: string
-  paymentMethod?: t_PaymentMethod
-}
+    email: string;
+    firstName: string;
+    lastName: string;
+    paymentMethod?: t_PaymentMethod;
+};
 
 export type t_DeleteUserParamSchema = {
-  userId: string
-}
+    userId: string;
+};
 
 export type t_ExportDirectDebitsQuerySchema = {
-  executionDate: string
-}
+    executionDate: string;
+};
 
 export type t_ExportMonthlyInvoicesQuerySchema = {
-  billingMonth: string
-}
+    billingMonth: string;
+};
 
 export type t_GenerateMonthlyBillingRequestBodySchema = {
-  billingDate?: string
-}
+    billingDate?: string;
+};
 
 export type t_GetMonthlyRevenueQuerySchema = {
-  from?: string
-  to?: string
-}
+    from?: string;
+    to?: string;
+};
 
 export type t_GetSubscriptionParamSchema = {
-  subscriptionId: string
-}
+    subscriptionId: string;
+};
 
 export type t_GetUserParamSchema = {
-  userId: string
-}
+    userId: string;
+};
 
 export type t_ListSubscriptionsQuerySchema = {
-  status?: t_SubscriptionStatus
-  userId?: string
-}
+    status?: t_SubscriptionStatus;
+    userId?: string;
+};
 
 export type t_ListUsersQuerySchema = {
-  status?: t_UserStatus
-}
+    status?: t_UserStatus;
+};
 
 export type t_UpdateSubscriptionParamSchema = {
-  subscriptionId: string
-}
+    subscriptionId: string;
+};
 
 export type t_UpdateSubscriptionRequestBodySchema = {
-  endDate?: string | null
-  monthlyAmount?: number
-  promoCode?: string | null
-  status?: t_SubscriptionStatus
-}
+    endDate?: string | null;
+    monthlyAmount?: number;
+    promoCode?: string | null;
+    status?: t_SubscriptionStatus;
+};
 
 export type t_UpdateUserParamSchema = {
-  userId: string
-}
+    userId: string;
+};
 
 export type t_UpdateUserRequestBodySchema = {
-  email?: string
-  firstName?: string
-  lastName?: string
-  paymentMethod?: t_PaymentMethod
-  status?: t_UserStatus
-}
+    email?: string;
+    firstName?: string;
+    lastName?: string;
+    paymentMethod?: t_PaymentMethod;
+    status?: t_UserStatus;
+};
 
 export type t_UpdateUserStatusParamSchema = {
-  userId: string
-}
+    userId: string;
+};
 
 export type t_UpdateUserStatusRequestBodySchema = {
-  status?: t_UserStatus
-}
+    status?: t_UserStatus;
+};

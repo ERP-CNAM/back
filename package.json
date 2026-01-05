@@ -1,54 +1,56 @@
 {
-  "dependencies": {
-    "@nahkies/typescript-express-runtime": "^0.22.0",
-    "better-sqlite3": "^9.2.0",
-    "cors": "^2.8.5",
-    "dotenv": "^17.2.3",
-    "drizzle-orm": "^0.31.0",
-    "express": "^5.2.1",
-    "swagger-ui-express": "^5.0.1",
-    "ts-node": "^10.9.2",
-    "yamljs": "^0.3.0",
-    "zod": "^4.2.1"
-  },
-  "name": "erp-cnam-backend",
-  "version": "1.0.0",
-  "description": "Système de gestion intelligent de l'application ERP-CNAM",
-  "main": "index.ts",
-  "scripts": {
-    "start": "ts-node index.ts",
-    "dev": "nodemon index.ts",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:ui": "vitest --ui",
-    "test:coverage": "vitest run --coverage",
-    "generate": "openapi-code-generator --input api/spec/openapi.yaml --output api --template typescript-express",
-    "clean": "find api -type f -name '*.ts' -delete"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ERP-CNAM/back.git"
-  },
-  "keywords": [
-    "api",
-    "backend"
-  ],
-  "author": "BACK",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/ERP-CNAM/back/issues"
-  },
-  "homepage": "https://github.com/ERP-CNAM/back#readme",
-  "devDependencies": {
-    "@nahkies/openapi-code-generator": "^0.22.0",
-    "@types/better-sqlite3": "^7.6.8",
-    "@types/express": "^5.0.6",
-    "@types/node": "^25.0.3",
-    "@types/swagger-ui-express": "^4.1.8",
-    "@types/yamljs": "^0.2.34",
-    "@vitest/coverage-v8": "^4.0.16",
-    "@vitest/ui": "^4.0.16",
-    "nodemon": "^3.1.11",
-    "vitest": "^4.0.16"
-  }
+    "dependencies": {
+        "@nahkies/typescript-express-runtime": "^0.22.0",
+        "better-sqlite3": "^9.2.0",
+        "cors": "^2.8.5",
+        "dotenv": "^17.2.3",
+        "drizzle-orm": "^0.31.0",
+        "express": "^5.2.1",
+        "swagger-ui-express": "^5.0.1",
+        "ts-node": "^10.9.2",
+        "yamljs": "^0.3.0",
+        "zod": "^4.2.1"
+    },
+    "name": "erp-cnam-backend",
+    "version": "1.0.0",
+    "description": "Système de gestion intelligent de l'application ERP-CNAM",
+    "main": "index.ts",
+    "scripts": {
+        "start": "ts-node index.ts",
+        "dev": "nodemon index.ts",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "test:ui": "vitest --ui",
+        "test:coverage": "vitest run --coverage",
+        "generate": "openapi-code-generator --input api/spec/openapi.yaml --output api --template typescript-express",
+        "clean": "find api -type f -name '*.ts' -delete",
+        "format": "prettier --write \"**/*.{js,jsx,ts,mts,tsx,json,css,md}\""
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ERP-CNAM/back.git"
+    },
+    "keywords": [
+        "api",
+        "backend"
+    ],
+    "author": "BACK",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/ERP-CNAM/back/issues"
+    },
+    "homepage": "https://github.com/ERP-CNAM/back#readme",
+    "devDependencies": {
+        "@nahkies/openapi-code-generator": "^0.22.0",
+        "@types/better-sqlite3": "^7.6.8",
+        "@types/express": "^5.0.6",
+        "@types/node": "^25.0.3",
+        "@types/swagger-ui-express": "^4.1.8",
+        "@types/yamljs": "^0.2.34",
+        "@vitest/coverage-v8": "^4.0.16",
+        "@vitest/ui": "^4.0.16",
+        "nodemon": "^3.1.11",
+        "prettier": "^3.3.3",
+        "vitest": "^4.0.16"
+    }
 }
