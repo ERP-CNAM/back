@@ -743,9 +743,7 @@ export function createRouter(implementation: Implementation): Router {
         }
     });
 
-    const updateSubscriptionParamSchema = z.object({
-        subscriptionId: z.string(),
-    });
+    const updateSubscriptionParamSchema = z.object({ subscriptionId: z.string() });
 
     const updateSubscriptionRequestBodySchema = s_SubscriptionUpdate;
 
@@ -802,9 +800,7 @@ export function createRouter(implementation: Implementation): Router {
         }
     });
 
-    const cancelSubscriptionParamSchema = z.object({
-        subscriptionId: z.string(),
-    });
+    const cancelSubscriptionParamSchema = z.object({ subscriptionId: z.string() });
 
     const cancelSubscriptionResponseBodyValidator = responseValidationFactory(
         [
@@ -980,9 +976,7 @@ export function createRouter(implementation: Implementation): Router {
         }
     });
 
-    const exportDirectDebitsQuerySchema = z.object({
-        executionDate: z.string(),
-    });
+    const exportDirectDebitsQuerySchema = z.object({ executionDate: z.string() });
 
     const exportDirectDebitsResponseBodyValidator = responseValidationFactory(
         [['200', z.array(s_DirectDebitOrder)]],
