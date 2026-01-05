@@ -50,7 +50,6 @@ export class InMemoryUserRepository implements UserRepository {
         const newUser: t_User = {
             id: generateUUID(),
             ...data,
-            status: 'OK',
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
         };
@@ -109,7 +108,7 @@ export class InMemoryUserRepository implements UserRepository {
         this.db
             .update(users)
             .set({
-                status: 'BLOQUE',
+                status: 'BLOCKED',
                 updatedAt: new Date().toISOString(),
             })
             .where(eq(users.id, id))

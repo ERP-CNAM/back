@@ -406,7 +406,7 @@ components:
   schemas:
     UserStatus:
       type: string
-      enum: [ OK, SUSPENDED, BLOQUE, DELETED ]
+      enum: [ OK, SUSPENDED, BLOCKED, DELETED ]
       description: Statut d'accès du joueur. OK = accès plateforme autorisé.
 
     SubscriptionStatus:

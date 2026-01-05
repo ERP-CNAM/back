@@ -41,7 +41,7 @@ export const s_SubscriptionCreate = z.object({
 
 export const s_SubscriptionStatus = z.enum(['ACTIVE', 'CANCELLED', 'PENDING_CANCEL']);
 
-export const s_UserStatus = z.enum(['OK', 'SUSPENDED', 'BLOQUE', 'DELETED']);
+export const s_UserStatus = z.enum(['OK', 'SUSPENDED', 'BLOCKED', 'DELETED']);
 
 export const s_DirectDebitOrder = z.object({
     id: z.string().optional(),
