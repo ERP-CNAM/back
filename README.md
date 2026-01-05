@@ -32,7 +32,7 @@ généré automatiquement.
 
 ### 1. Design - Définir l'API
 
-Modifiez `api/openapi.yaml` pour ajouter ou modifier un endpoint :
+Modifiez `api/spec/openapi.yaml` pour ajouter ou modifier un endpoint :
 
 ```yaml
 paths:
@@ -64,13 +64,13 @@ paths:
 npm run generate
 ```
 
-Cette commande génère automatiquement dans `server/` :
+Cette commande génère automatiquement dans `api/` :
 
 - Types TypeScript (`GetUser`, `GetUserResponder`)
 - Schémas de validation Zod v4
 - Interface `Implementation` pour assembler les handlers
 
-> Le dossier `server/` est généré automatiquement - ne le modifiez jamais manuellement !
+> Les fichiers générés dans `api/` (generated.ts, models.ts, schemas.ts) sont créés automatiquement - ne les modifiez jamais manuellement !
 
 ### 3. Implement - Implémenter la logique métier
 
@@ -133,15 +133,15 @@ npm run test:coverage
 ```
 back/
 ├── api/
-│   └── openapi.yaml        # Source de vérité - Contrat API
+│   ├── spec/
+│   │   └── openapi.yaml    # Source de vérité - Contrat API
+│   ├── generated.ts        # Code généré (ne pas toucher)
+│   ├── models.ts           # Code généré (ne pas toucher)
+│   └── schemas.ts          # Code généré (ne pas toucher)
 ├── handler/                # Logique métier (vous codez ici)
 │   ├── user.ts
 │   ├── subscription.ts
 │   └── index.ts
-├── server/                 # Code généré (ne pas toucher)
-│   ├── generated.ts
-│   ├── models.ts
-│   └── schemas.ts
 ├── repository/             # Accès aux données
 ├── database/               # Configuration DB (SQLite/PostgreSQL)
 └── index.ts                # Point d'entrée
@@ -158,7 +158,7 @@ back/
 git checkout -b feature/nom-de-la-feature
 
 # 2. Modifier l'API
-# Éditez spec/openapi.yaml
+# Éditez api/spec/openapi.yaml
 
 # 3. Générer le code
 npm run generate
@@ -177,10 +177,11 @@ git push origin feature/nom-de-la-feature
 
 ### Règles d'or
 
-- Toujours commencer par modifier `api/openapi.yaml`
+- Toujours commencer par modifier `api/spec/openapi.yaml`
 - Toujours regénérer après modification OpenAPI
 - Écrire des tests pour chaque nouveau handler
-- Ne jamais modifier le dossier `server/` manuellement
+- Ne jamais modifier les fichiers générés dans `api/` manuellement
+- Ne jamais ajouter un fichier Typescript personnalisé dans `api/`, privilégier d'autres répertoires
 - Ne jamais commit sans avoir lancé les tests
 
 ---
