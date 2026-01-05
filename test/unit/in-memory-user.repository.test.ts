@@ -6,7 +6,7 @@ import type {
     t_User,
     t_UserStatus,
 } from '../../api/models';
-import { createTestDatabase } from '../../database/memory/client';
+import { createDatabase } from '../../database/memory/client';
 
 describe('InMemoryUserRepository', () => {
     let repository: InMemoryUserRepository;
@@ -41,7 +41,7 @@ describe('InMemoryUserRepository', () => {
     ];
 
     beforeEach(() => {
-        const db = createTestDatabase(data);
+        const db = createDatabase(data);
         repository = new InMemoryUserRepository(db);
     });
 
@@ -69,7 +69,7 @@ describe('InMemoryUserRepository', () => {
         });
 
         it('should return empty array when repository is empty', async () => {
-            const emptyDb = createTestDatabase();
+            const emptyDb = createDatabase();
             const emptyRepo = new InMemoryUserRepository(emptyDb);
             const users = await emptyRepo.findAll();
 

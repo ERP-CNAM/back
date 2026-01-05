@@ -4,7 +4,7 @@
         "better-sqlite3": "^9.2.0",
         "cors": "^2.8.5",
         "dotenv": "^17.2.3",
-        "drizzle-orm": "^0.31.0",
+        "drizzle-orm": "^0.45.1",
         "express": "^5.2.1",
         "swagger-ui-express": "^5.0.1",
         "ts-node": "^10.9.2",
@@ -22,9 +22,10 @@
         "test:watch": "vitest",
         "test:ui": "vitest --ui",
         "test:coverage": "vitest run --coverage",
+        "db:generate": "drizzle-kit generate",
         "generate": "openapi-code-generator --input api/spec/openapi.yaml --output api --template typescript-express",
-        "clean": "find api -type f -name '*.ts' -delete",
-        "format": "prettier --write \"**/*.{js,jsx,ts,mts,tsx,json,css,md}\""
+        "generate:clean": "find api -type f -name '*.ts' -delete",
+        "format": "prettier --write '**/*.{js,jsx,ts,mts,tsx,json,css,md}'"
     },
     "repository": {
         "type": "git",
@@ -49,6 +50,7 @@
         "@types/yamljs": "^0.2.34",
         "@vitest/coverage-v8": "^4.0.16",
         "@vitest/ui": "^4.0.16",
+        "drizzle-kit": "^0.31.8",
         "nodemon": "^3.1.11",
         "prettier": "^3.3.3",
         "vitest": "^4.0.16"
