@@ -1,0 +1,19 @@
+import { DB_TYPE } from './config';
+import { getPostgresDatabase } from './postgres/instance';
+import { getSqliteDatabase } from './memory/instance';
+
+let dbInstance: any;
+
+export function getDatabase(): any {
+    if (dbInstance) return dbInstance;
+
+    if (DB_TYPE === 'postgres') {
+        dbInstance = getPostgresDatabase();
+    } else if (DB_TYPE === 'sqlite-memory' || DB_TYPE === 'sqlite-file') {
+        dbInstance = getSqliteDatabase();
+    } else {
+        throw new Error(`Database type ${DB_TYPE} not yet implemented`);
+    }
+
+    return dbInstance;
+}

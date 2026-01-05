@@ -4,7 +4,7 @@ CREATE TABLE `users` (
 	`lastName` text,
 	`email` text,
 	`paymentMethod` text,
-	`status` text,
+	`status` text DEFAULT 'OK' NOT NULL,
 	`createdAt` text,
 	`updatedAt` text
 );

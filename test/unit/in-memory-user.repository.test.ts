@@ -6,7 +6,7 @@ import type {
     t_User,
     t_UserStatus,
 } from '../../api/models';
-import { createTestDatabase } from '../../database/memory/client';
+import { createTestDatabase } from '../../database/memory/test-instance';
 
 describe('InMemoryUserRepository', () => {
     let repository: InMemoryUserRepository;
@@ -211,7 +211,7 @@ describe('InMemoryUserRepository', () => {
             expect(result).toBe(true);
 
             const deletedUser = await repository.findById('user-1');
-            expect(deletedUser?.status).toBe('BLOQUE');
+            expect(deletedUser?.status).toBe('BLOCKED');
         });
 
         it('should return false when deleting non-existent user', async () => {
@@ -238,7 +238,7 @@ describe('InMemoryUserRepository', () => {
             const deletedUser = await repository.findById('user-1');
             expect(deletedUser?.email).toBe('alice@example.com');
             expect(deletedUser?.firstName).toBe('Alice');
-            expect(deletedUser?.status).toBe('BLOQUE');
+            expect(deletedUser?.status).toBe('BLOCKED');
         });
     });
 
@@ -258,12 +258,18 @@ describe('InMemoryUserRepository', () => {
         });
 
         it('should allow all valid status values', async () => {
-            const statuses: Array<t_UserStatus> = ['OK', 'SUSPENDED', 'BLOQUE', 'DELETED'];
+            const statuses: Array<t_UserStatus> = ['OK', 'SUSPENDED', 'BLOCKED', 'DELETED'];
 
             for (const status of statuses) {
                 const updated = await repository.updateStatus('user-1', status);
                 expect(updated?.status).toBe(status);
             }
+        });
+
+        it('should reject invalid status values', async () => {
+            // @ts-expect-error Testing runtime validation
+            const promise = repository.updateStatus('user-1', 'BOQUE');
+            await expect(promise).rejects.toThrow();
         });
     });
 });

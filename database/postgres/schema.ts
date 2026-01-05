@@ -1,0 +1,13 @@
+import { pgTable, text, varchar, timestamp, uuid } from 'drizzle-orm/pg-core';
+import { t_UserStatus } from '../../api/models';
+
+export const users = pgTable('users', {
+    id: uuid('id').primaryKey().notNull(),
+    firstName: varchar('firstName', { length: 255 }),
+    lastName: varchar('lastName', { length: 255 }),
+    email: varchar('email', { length: 255 }).unique(),
+    paymentMethod: text('paymentMethod'), // Storing JSON string
+    status: varchar('status', { length: 50 }).$type<t_UserStatus>().notNull().default('OK'),
+    createdAt: timestamp('createdAt').defaultNow(),
+    updatedAt: timestamp('updatedAt').defaultNow(),
+});

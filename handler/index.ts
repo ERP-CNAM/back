@@ -3,15 +3,24 @@
  */
 
 import type { Implementation } from '../api/generated';
+import { DB_TYPE } from '../database/config';
 import { InMemoryUserRepository } from '../repository/memory/in-memory-user.repository';
-import { getDatabase } from '../database/memory/client';
+import { PostgresUserRepository } from '../repository/postgres/postgres-user.repository';
+import type { UserRepository } from '../repository/user.repository';
+import { getDatabase } from '../database/client';
 import { createUserHandlers } from './user';
 import * as subscriptions from './subscription';
 import * as billing from './billing';
 import * as reports from './report';
 
 const db = getDatabase();
-const userRepository = new InMemoryUserRepository(db);
+let userRepository: UserRepository;
+
+if (DB_TYPE === 'postgres') {
+    userRepository = new PostgresUserRepository(db);
+} else {
+    userRepository = new InMemoryUserRepository(db);
+}
 const userHandlers = createUserHandlers(userRepository);
 
 export const handlers: Implementation = {

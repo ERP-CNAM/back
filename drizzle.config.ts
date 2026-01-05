@@ -1,10 +1,13 @@
 import { defineConfig } from 'drizzle-kit';
+import { config } from 'dotenv';
+
+config();
 
 export default defineConfig({
+    schema: './database/postgres/schema.ts',
+    out: './database/postgres/migrations',
+    dialect: 'postgresql',
     dbCredentials: {
-        url: './data/gamers-erp.db',
+        url: process.env.DATABASE_URL!,
     },
-    dialect: 'sqlite',
-    out: './database/memory/migrations',
-    schema: './database/memory/schema.ts',
 });

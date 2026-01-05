@@ -11,7 +11,7 @@ import { users } from '../../database/memory/schema';
 import { generateUUID } from '../../utils/uuid';
 
 export class InMemoryUserRepository implements UserRepository {
-    constructor(private db: BetterSQLite3Database) {}
+    constructor(private db: BetterSQLite3Database) { }
 
     private toUser(row: any): t_User {
         return {
@@ -49,6 +49,7 @@ export class InMemoryUserRepository implements UserRepository {
     async create(data: t_CreateUserRequestBodySchema): Promise<t_User> {
         const newUser: t_User = {
             id: generateUUID(),
+            status: 'OK',
             ...data,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
@@ -76,6 +77,11 @@ export class InMemoryUserRepository implements UserRepository {
 
         if (!existingUser) {
             return null;
+        }
+
+        const validStatuses: t_UserStatus[] = ['OK', 'SUSPENDED', 'BLOCKED', 'DELETED'];
+        if (data.status && !validStatuses.includes(data.status)) {
+            throw new Error(`Invalid user status: ${data.status}`);
         }
 
         const updatedUser: t_User = {
