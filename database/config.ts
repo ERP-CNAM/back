@@ -4,7 +4,7 @@
 
 export type DatabaseType = 'sqlite-memory' | 'sqlite-file' | 'postgres';
 
-export const DB_TYPE: DatabaseType = (process.env.DATASTORE as DatabaseType) || 'sqlite-memory';
+export const DB_TYPE: DatabaseType = (process.env.DATABASE_TYPE as DatabaseType) || 'sqlite-memory';
 
 export const DB_CONFIG = {
     sqlite: {
