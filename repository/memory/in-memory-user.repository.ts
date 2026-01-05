@@ -11,7 +11,7 @@ import { users } from '../../database/memory/schema';
 import { generateUUID } from '../../utils/uuid';
 
 export class InMemoryUserRepository implements UserRepository {
-    constructor(private db: BetterSQLite3Database) { }
+    constructor(private db: BetterSQLite3Database) {}
 
     private toUser(row: any): t_User {
         return {

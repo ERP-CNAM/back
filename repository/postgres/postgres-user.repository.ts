@@ -9,10 +9,9 @@ import type {
 } from '../../api/models';
 import { users } from '../../database/postgres/schema';
 import { generateUUID } from '../../utils/uuid';
-import * as schema from '../../database/postgres/schema';
 
 export class PostgresUserRepository implements UserRepository {
-    constructor(private db: NodePgDatabase<typeof schema>) {}
+    constructor(private db: NodePgDatabase) {}
 
     private toUser(row: typeof users.$inferSelect): t_User {
         return {
