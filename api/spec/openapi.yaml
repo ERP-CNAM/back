@@ -11,10 +11,6 @@ info:
     
     Hypothèse : abonnements mensuels complets, pas de prorata journalier.
 
-servers:
-  - url: /
-    description: API server
-
 tags:
   - name: Users
     description: Gestion des joueurs / utilisateurs abonnés

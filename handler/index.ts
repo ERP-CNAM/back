@@ -2,7 +2,7 @@
  * This file combines all handler modules with dependency injection for repositories
  */
 
-import type { Implementation } from '../server/generated';
+import type { Implementation } from '../api/generated';
 import { InMemoryUserRepository } from '../repository/memory/in-memory-user.repository';
 import { getDatabase } from '../database/memory/client';
 import { createUserHandlers } from './user';

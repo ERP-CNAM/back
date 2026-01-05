@@ -3,7 +3,7 @@ import type {
   t_UserStatus,
   t_CreateUserRequestBodySchema,
   t_UpdateUserRequestBodySchema,
-} from '../server/models';
+} from '../api/models';
 
 export interface UserQueryOptions {
   status?: t_UserStatus;

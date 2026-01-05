@@ -4,7 +4,7 @@ import type {
   GetSubscription,
   UpdateSubscription,
   CancelSubscription,
-} from '../server/generated';
+} from '../api/generated';
 
 /**
  * List subscriptions with optional filters

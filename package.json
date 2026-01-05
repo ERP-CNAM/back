@@ -22,8 +22,8 @@
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
-    "generate": "openapi-code-generator --input api/openapi.yaml --output ./server --template typescript-express",
-    "clean": "rm -rf server/*"
+    "generate": "openapi-code-generator --input api/spec/openapi.yaml --output api --template typescript-express",
+    "clean": "find api -type f -name '*.ts' -delete"
   },
   "repository": {
     "type": "git",

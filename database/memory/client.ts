@@ -4,7 +4,7 @@ import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 import { sql } from 'drizzle-orm';
 import { DB_TYPE, DB_CONFIG } from '../config';
 import { users } from './schema';
-import type { t_User } from '../../server/models';
+import type { t_User } from '../../api/models';
 import mockUsers from '../../mock/users.json';
 
 let dbInstance: BetterSQLite3Database;

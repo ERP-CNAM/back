@@ -77,7 +77,7 @@ Cette commande génère automatiquement dans `server/` :
 Créez votre handler dans `handler/user.ts` en utilisant les types générés :
 
 ```typescript
-import type { GetUser } from '../server/generated';
+import type { GetUser } from '../api/generated';
 
 const getUser: GetUser = async (params, respond) => {
   const { userId } = params.params;
@@ -158,7 +158,7 @@ back/
 git checkout -b feature/nom-de-la-feature
 
 # 2. Modifier l'API
-# Éditez api/openapi.yaml
+# Éditez spec/openapi.yaml
 
 # 3. Générer le code
 npm run generate

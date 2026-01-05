@@ -2,11 +2,11 @@ import 'dotenv/config';
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
 import path from 'path';
-import { createRouter, bootstrap } from './server/generated';
+import { createRouter, bootstrap } from './api/generated';
 import { handlers } from './handler';
 
 // Load OpenAPI spec for Swagger UI
-const swaggerDocument = YAML.load(path.join(__dirname, 'api/openapi.yaml'));
+const swaggerDocument = YAML.load(path.join(__dirname, 'api/spec/openapi.yaml'));
 
 // Start server
 const PORT = Number(process.env.PORT) || 3000;

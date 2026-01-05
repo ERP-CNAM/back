@@ -9,7 +9,7 @@ import type {
   t_UpdateUserRequestBodySchema,
   t_User,
   t_UserStatus
-} from '../../server/models';
+} from '../../api/models';
 import { users } from '../../database/memory/schema';
 import { generateUUID } from '../../utils/uuid';
 

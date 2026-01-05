@@ -9,7 +9,7 @@ export default defineConfig({
       reporter: ['text', 'json', 'html'],
       exclude: [
         'node_modules/**',
-        'server/**', // Generated code
+        'api/**', // Generated code
         '**/*.d.ts',
         '**/*.config.*',
         '**/mock/**',

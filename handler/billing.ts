@@ -1,7 +1,7 @@
 import type {
   GenerateMonthlyBilling,
   ExportMonthlyInvoices,
-} from '../server/generated';
+} from '../api/generated';
 
 /**
  * Generate monthly billing for all active subscriptions

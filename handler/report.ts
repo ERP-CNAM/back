@@ -1,7 +1,7 @@
 import type {
   ExportDirectDebits,
   GetMonthlyRevenue,
-} from '../server/generated';
+} from '../api/generated';
 
 /**
  * Export direct debits for banking

@@ -5,7 +5,7 @@ import type {
   UpdateUser,
   DeleteUser,
   UpdateUserStatus
-} from '../server/generated';
+} from '../api/generated';
 import type { UserRepository } from '../repository/user.repository';
 
 export function createUserHandlers(repository: UserRepository) {
