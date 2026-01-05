@@ -54,7 +54,7 @@ function seedUserTable(db: BetterSQLite3Database, userData: t_User[]): void {
     for (const user of userData) {
         db.insert(users)
             .values({
-                id: user.id,
+                id: user.id!,
                 firstName: user.firstName ?? null,
                 lastName: user.lastName ?? null,
                 email: user.email ?? null,
