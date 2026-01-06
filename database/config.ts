@@ -2,16 +2,6 @@
  * Change DB_TYPE to switch between different database implementations
  */
 
-export type DatabaseType = 'sqlite-memory' | 'sqlite-file' | 'postgres';
+export type RepositoryType = 'in-memory' | 'postgres';
 
-export const DB_TYPE: DatabaseType = (process.env.DATABASE_TYPE as DatabaseType) || 'postgres';
-
-export const DB_CONFIG = {
-    sqlite: {
-        filename: './data/gamers-erp.db',
-    },
-
-    postgres: {
-        url: process.env.DATABASE_URL || null,
-    },
-};
+export const DB_TYPE: RepositoryType = (process.env.REPOSITORY || 'postgres') as RepositoryType;

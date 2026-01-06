@@ -19,7 +19,7 @@
     "scripts": {
         "start": "ts-node index.ts",
         "dev": "nodemon index.ts",
-        "build": "tsc && cp -r api/spec dist/api/spec",
+        "build": "tsc && cp -r api/spec dist/api/spec && cp -r database/memory/migrations dist/database/memory/",
         "test": "vitest run",
         "test:watch": "vitest",
         "test:ui": "vitest --ui",
@@ -29,8 +29,6 @@
         "db:push": "drizzle-kit push",
         "db:studio": "drizzle-kit studio",
         "db:generate:sqlite": "drizzle-kit generate --config=drizzle.config.sqlite.ts",
-        "db:migrate:sqlite": "drizzle-kit migrate --config=drizzle.config.sqlite.ts",
-        "db:push:sqlite": "drizzle-kit push --config=drizzle.config.sqlite.ts",
         "db:studio:sqlite": "drizzle-kit studio --config=drizzle.config.sqlite.ts",
         "generate": "openapi-code-generator --input api/spec/openapi.yaml --output api --template typescript-express",
         "generate:clean": "find api -type f -name '*.ts' -delete",

@@ -13,13 +13,13 @@ import * as subscriptions from './subscription';
 import * as billing from './billing';
 import * as reports from './report';
 
-const db = getDatabase();
+const databaseInstance = getDatabase();
 let userRepository: UserRepository;
 
 if (DB_TYPE === 'postgres') {
-    userRepository = new PostgresUserRepository(db);
+    userRepository = new PostgresUserRepository(databaseInstance);
 } else {
-    userRepository = new InMemoryUserRepository(db);
+    userRepository = new InMemoryUserRepository(databaseInstance);
 }
 const userHandlers = createUserHandlers(userRepository);
 
