@@ -1,7 +1,6 @@
 {
     "dependencies": {
         "@nahkies/typescript-express-runtime": "^0.22.0",
-        "@types/pg": "^8.16.0",
         "better-sqlite3": "^9.2.0",
         "cors": "^2.8.5",
         "dotenv": "^17.2.3",
@@ -10,7 +9,6 @@
         "morgan": "^1.10.1",
         "pg": "^8.16.3",
         "swagger-ui-express": "^5.0.1",
-        "ts-node": "^10.9.2",
         "yamljs": "^0.3.0",
         "zod": "^4.2.1"
     },
@@ -53,6 +51,8 @@
     },
     "homepage": "https://github.com/ERP-CNAM/back#readme",
     "devDependencies": {
+        "@types/pg": "^8.16.0",
+        "ts-node": "^10.9.2",
         "@nahkies/openapi-code-generator": "^0.22.0",
         "@types/better-sqlite3": "^7.6.8",
         "@types/express": "^5.0.6",
