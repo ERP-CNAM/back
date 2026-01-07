@@ -18,6 +18,7 @@ import { z } from 'zod/v4';
 import type {
     EmptyObject,
     t_AccountingExportLine,
+    t_BaseAPIResponse,
     t_CancelSubscriptionParamSchema,
     t_CreateSubscriptionRequestBodySchema,
     t_CreateUserRequestBodySchema,
@@ -42,8 +43,8 @@ import type {
     t_User,
 } from './models';
 import {
-    PermissiveBoolean,
     s_AccountingExportLine,
+    s_BaseAPIResponse,
     s_DirectDebitOrder,
     s_Invoice,
     s_Subscription,
@@ -57,11 +58,11 @@ import {
 } from './schemas';
 
 export type ListUsersResponder = {
-    with200(): ExpressRuntimeResponse<{
-        message?: string;
-        payload?: t_User[];
-        success?: boolean;
-    }>;
+    with200(): ExpressRuntimeResponse<
+        t_BaseAPIResponse & {
+            payload?: t_User[];
+        }
+    >;
 } & ExpressRuntimeResponder;
 
 export type ListUsers = (
@@ -73,11 +74,11 @@ export type ListUsers = (
 ) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>;
 
 export type CreateUserResponder = {
-    with201(): ExpressRuntimeResponse<{
-        message?: string;
-        payload?: t_User;
-        success?: boolean;
-    }>;
+    with201(): ExpressRuntimeResponse<
+        t_BaseAPIResponse & {
+            payload?: t_User;
+        }
+    >;
 } & ExpressRuntimeResponder;
 
 export type CreateUser = (
@@ -89,16 +90,16 @@ export type CreateUser = (
 ) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>;
 
 export type GetUserResponder = {
-    with200(): ExpressRuntimeResponse<{
-        message?: string;
-        payload?: t_User;
-        success?: boolean;
-    }>;
-    with404(): ExpressRuntimeResponse<{
-        message?: string;
-        payload?: EmptyObject | null;
-        success?: boolean;
-    }>;
+    with200(): ExpressRuntimeResponse<
+        t_BaseAPIResponse & {
+            payload?: t_User;
+        }
+    >;
+    with404(): ExpressRuntimeResponse<
+        t_BaseAPIResponse & {
+            payload?: EmptyObject | null;
+        }
+    >;
 } & ExpressRuntimeResponder;
 
 export type GetUser = (
@@ -110,16 +111,16 @@ export type GetUser = (
 ) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>;
 
 export type UpdateUserResponder = {
-    with200(): ExpressRuntimeResponse<{
-        message?: string;
-        payload?: t_User;
-        success?: boolean;
-    }>;
-    with404(): ExpressRuntimeResponse<{
-        message?: string;
-        payload?: EmptyObject | null;
-        success?: boolean;
-    }>;
+    with200(): ExpressRuntimeResponse<
+        t_BaseAPIResponse & {
+            payload?: t_User;
+        }
+    >;
+    with404(): ExpressRuntimeResponse<
+        t_BaseAPIResponse & {
+            payload?: EmptyObject | null;
+        }
+    >;
 } & ExpressRuntimeResponder;
 
 export type UpdateUser = (
@@ -131,16 +132,16 @@ export type UpdateUser = (
 ) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>;
 
 export type DeleteUserResponder = {
-    with200(): ExpressRuntimeResponse<{
-        message?: string;
-        payload?: EmptyObject | null;
-        success?: boolean;
-    }>;
-    with404(): ExpressRuntimeResponse<{
-        message?: string;
-        payload?: EmptyObject | null;
-        success?: boolean;
-    }>;
+    with200(): ExpressRuntimeResponse<
+        t_BaseAPIResponse & {
+            payload?: EmptyObject | null;
+        }
+    >;
+    with404(): ExpressRuntimeResponse<
+        t_BaseAPIResponse & {
+            payload?: EmptyObject | null;
+        }
+    >;
 } & ExpressRuntimeResponder;
 
 export type DeleteUser = (
@@ -152,16 +153,16 @@ export type DeleteUser = (
 ) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>;
 
 export type UpdateUserStatusResponder = {
-    with200(): ExpressRuntimeResponse<{
-        message?: string;
-        payload?: t_User;
-        success?: boolean;
-    }>;
-    with404(): ExpressRuntimeResponse<{
-        message?: string;
-        payload?: EmptyObject | null;
-        success?: boolean;
-    }>;
+    with200(): ExpressRuntimeResponse<
+        t_BaseAPIResponse & {
+            payload?: t_User;
+        }
+    >;
+    with404(): ExpressRuntimeResponse<
+        t_BaseAPIResponse & {
+            payload?: EmptyObject | null;
+        }
+    >;
 } & ExpressRuntimeResponder;
 
 export type UpdateUserStatus = (
@@ -173,11 +174,11 @@ export type UpdateUserStatus = (
 ) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>;
 
 export type ListSubscriptionsResponder = {
-    with200(): ExpressRuntimeResponse<{
-        message?: string;
-        payload?: t_Subscription[];
-        success?: boolean;
-    }>;
+    with200(): ExpressRuntimeResponse<
+        t_BaseAPIResponse & {
+            payload?: t_Subscription[];
+        }
+    >;
 } & ExpressRuntimeResponder;
 
 export type ListSubscriptions = (
@@ -189,11 +190,11 @@ export type ListSubscriptions = (
 ) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>;
 
 export type CreateSubscriptionResponder = {
-    with201(): ExpressRuntimeResponse<{
-        message?: string;
-        payload?: t_Subscription;
-        success?: boolean;
-    }>;
+    with201(): ExpressRuntimeResponse<
+        t_BaseAPIResponse & {
+            payload?: t_Subscription;
+        }
+    >;
 } & ExpressRuntimeResponder;
 
 export type CreateSubscription = (
@@ -205,16 +206,16 @@ export type CreateSubscription = (
 ) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>;
 
 export type GetSubscriptionResponder = {
-    with200(): ExpressRuntimeResponse<{
-        message?: string;
-        payload?: t_Subscription;
-        success?: boolean;
-    }>;
-    with404(): ExpressRuntimeResponse<{
-        message?: string;
-        payload?: EmptyObject | null;
-        success?: boolean;
-    }>;
+    with200(): ExpressRuntimeResponse<
+        t_BaseAPIResponse & {
+            payload?: t_Subscription;
+        }
+    >;
+    with404(): ExpressRuntimeResponse<
+        t_BaseAPIResponse & {
+            payload?: EmptyObject | null;
+        }
+    >;
 } & ExpressRuntimeResponder;
 
 export type GetSubscription = (
@@ -226,16 +227,16 @@ export type GetSubscription = (
 ) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>;
 
 export type UpdateSubscriptionResponder = {
-    with200(): ExpressRuntimeResponse<{
-        message?: string;
-        payload?: t_Subscription;
-        success?: boolean;
-    }>;
-    with404(): ExpressRuntimeResponse<{
-        message?: string;
-        payload?: EmptyObject | null;
-        success?: boolean;
-    }>;
+    with200(): ExpressRuntimeResponse<
+        t_BaseAPIResponse & {
+            payload?: t_Subscription;
+        }
+    >;
+    with404(): ExpressRuntimeResponse<
+        t_BaseAPIResponse & {
+            payload?: EmptyObject | null;
+        }
+    >;
 } & ExpressRuntimeResponder;
 
 export type UpdateSubscription = (
@@ -247,16 +248,16 @@ export type UpdateSubscription = (
 ) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>;
 
 export type CancelSubscriptionResponder = {
-    with200(): ExpressRuntimeResponse<{
-        message?: string;
-        payload?: t_Subscription;
-        success?: boolean;
-    }>;
-    with404(): ExpressRuntimeResponse<{
-        message?: string;
-        payload?: EmptyObject | null;
-        success?: boolean;
-    }>;
+    with200(): ExpressRuntimeResponse<
+        t_BaseAPIResponse & {
+            payload?: t_Subscription;
+        }
+    >;
+    with404(): ExpressRuntimeResponse<
+        t_BaseAPIResponse & {
+            payload?: EmptyObject | null;
+        }
+    >;
 } & ExpressRuntimeResponder;
 
 export type CancelSubscription = (
@@ -268,14 +269,14 @@ export type CancelSubscription = (
 ) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>;
 
 export type GenerateMonthlyBillingResponder = {
-    with200(): ExpressRuntimeResponse<{
-        message?: string;
-        payload?: {
-            billingDate?: string;
-            invoices?: t_Invoice[];
-        };
-        success?: boolean;
-    }>;
+    with200(): ExpressRuntimeResponse<
+        t_BaseAPIResponse & {
+            payload?: {
+                billingDate?: string;
+                invoices?: t_Invoice[];
+            };
+        }
+    >;
 } & ExpressRuntimeResponder;
 
 export type GenerateMonthlyBilling = (
@@ -287,11 +288,11 @@ export type GenerateMonthlyBilling = (
 ) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>;
 
 export type ExportMonthlyInvoicesResponder = {
-    with200(): ExpressRuntimeResponse<{
-        message?: string;
-        payload?: t_AccountingExportLine[];
-        success?: boolean;
-    }>;
+    with200(): ExpressRuntimeResponse<
+        t_BaseAPIResponse & {
+            payload?: t_AccountingExportLine[];
+        }
+    >;
 } & ExpressRuntimeResponder;
 
 export type ExportMonthlyInvoices = (
@@ -303,11 +304,11 @@ export type ExportMonthlyInvoices = (
 ) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>;
 
 export type ExportDirectDebitsResponder = {
-    with200(): ExpressRuntimeResponse<{
-        message?: string;
-        payload?: t_DirectDebitOrder[];
-        success?: boolean;
-    }>;
+    with200(): ExpressRuntimeResponse<
+        t_BaseAPIResponse & {
+            payload?: t_DirectDebitOrder[];
+        }
+    >;
 } & ExpressRuntimeResponder;
 
 export type ExportDirectDebits = (
@@ -319,16 +320,16 @@ export type ExportDirectDebits = (
 ) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>;
 
 export type GetMonthlyRevenueResponder = {
-    with200(): ExpressRuntimeResponse<{
-        message?: string;
-        payload?: {
-            month?: string;
-            revenueExclVat?: number;
-            revenueInclVat?: number;
-            vatAmount?: number;
-        }[];
-        success?: boolean;
-    }>;
+    with200(): ExpressRuntimeResponse<
+        t_BaseAPIResponse & {
+            payload?: {
+                month?: string;
+                revenueExclVat?: number;
+                revenueInclVat?: number;
+                vatAmount?: number;
+            }[];
+        }
+    >;
 } & ExpressRuntimeResponder;
 
 export type GetMonthlyRevenue = (
@@ -363,16 +364,7 @@ export function createRouter(implementation: Implementation): Router {
     const listUsersQuerySchema = z.object({ status: s_UserStatus.optional() });
 
     const listUsersResponseBodyValidator = responseValidationFactory(
-        [
-            [
-                '200',
-                z.object({
-                    success: PermissiveBoolean.optional(),
-                    message: z.string().optional(),
-                    payload: z.array(s_User).optional(),
-                }),
-            ],
-        ],
+        [['200', s_BaseAPIResponse.merge(z.object({ payload: z.array(s_User).optional() }))]],
         undefined,
     );
 
@@ -388,11 +380,11 @@ export function createRouter(implementation: Implementation): Router {
 
             const responder = {
                 with200() {
-                    return new ExpressRuntimeResponse<{
-                        message?: string;
-                        payload?: t_User[];
-                        success?: boolean;
-                    }>(200);
+                    return new ExpressRuntimeResponse<
+                        t_BaseAPIResponse & {
+                            payload?: t_User[];
+                        }
+                    >(200);
                 },
                 withStatus(status: StatusCode) {
                     return new ExpressRuntimeResponse(status);
@@ -425,16 +417,7 @@ export function createRouter(implementation: Implementation): Router {
     const createUserRequestBodySchema = s_UserCreate;
 
     const createUserResponseBodyValidator = responseValidationFactory(
-        [
-            [
-                '201',
-                z.object({
-                    success: PermissiveBoolean.optional(),
-                    message: z.string().optional(),
-                    payload: s_User.optional(),
-                }),
-            ],
-        ],
+        [['201', s_BaseAPIResponse.merge(z.object({ payload: s_User.optional() }))]],
         undefined,
     );
 
@@ -450,11 +433,11 @@ export function createRouter(implementation: Implementation): Router {
 
             const responder = {
                 with201() {
-                    return new ExpressRuntimeResponse<{
-                        message?: string;
-                        payload?: t_User;
-                        success?: boolean;
-                    }>(201);
+                    return new ExpressRuntimeResponse<
+                        t_BaseAPIResponse & {
+                            payload?: t_User;
+                        }
+                    >(201);
                 },
                 withStatus(status: StatusCode) {
                     return new ExpressRuntimeResponse(status);
@@ -488,22 +471,8 @@ export function createRouter(implementation: Implementation): Router {
 
     const getUserResponseBodyValidator = responseValidationFactory(
         [
-            [
-                '200',
-                z.object({
-                    success: PermissiveBoolean.optional(),
-                    message: z.string().optional(),
-                    payload: s_User.optional(),
-                }),
-            ],
-            [
-                '404',
-                z.object({
-                    success: PermissiveBoolean.optional(),
-                    message: z.string().optional(),
-                    payload: z.object({}).nullable().optional(),
-                }),
-            ],
+            ['200', s_BaseAPIResponse.merge(z.object({ payload: s_User.optional() }))],
+            ['404', s_BaseAPIResponse.merge(z.object({ payload: z.object({}).nullable().optional() }))],
         ],
         undefined,
     );
@@ -520,18 +489,18 @@ export function createRouter(implementation: Implementation): Router {
 
             const responder = {
                 with200() {
-                    return new ExpressRuntimeResponse<{
-                        message?: string;
-                        payload?: t_User;
-                        success?: boolean;
-                    }>(200);
+                    return new ExpressRuntimeResponse<
+                        t_BaseAPIResponse & {
+                            payload?: t_User;
+                        }
+                    >(200);
                 },
                 with404() {
-                    return new ExpressRuntimeResponse<{
-                        message?: string;
-                        payload?: EmptyObject | null;
-                        success?: boolean;
-                    }>(404);
+                    return new ExpressRuntimeResponse<
+                        t_BaseAPIResponse & {
+                            payload?: EmptyObject | null;
+                        }
+                    >(404);
                 },
                 withStatus(status: StatusCode) {
                     return new ExpressRuntimeResponse(status);
@@ -567,22 +536,8 @@ export function createRouter(implementation: Implementation): Router {
 
     const updateUserResponseBodyValidator = responseValidationFactory(
         [
-            [
-                '200',
-                z.object({
-                    success: PermissiveBoolean.optional(),
-                    message: z.string().optional(),
-                    payload: s_User.optional(),
-                }),
-            ],
-            [
-                '404',
-                z.object({
-                    success: PermissiveBoolean.optional(),
-                    message: z.string().optional(),
-                    payload: z.object({}).nullable().optional(),
-                }),
-            ],
+            ['200', s_BaseAPIResponse.merge(z.object({ payload: s_User.optional() }))],
+            ['404', s_BaseAPIResponse.merge(z.object({ payload: z.object({}).nullable().optional() }))],
         ],
         undefined,
     );
@@ -599,18 +554,18 @@ export function createRouter(implementation: Implementation): Router {
 
             const responder = {
                 with200() {
-                    return new ExpressRuntimeResponse<{
-                        message?: string;
-                        payload?: t_User;
-                        success?: boolean;
-                    }>(200);
+                    return new ExpressRuntimeResponse<
+                        t_BaseAPIResponse & {
+                            payload?: t_User;
+                        }
+                    >(200);
                 },
                 with404() {
-                    return new ExpressRuntimeResponse<{
-                        message?: string;
-                        payload?: EmptyObject | null;
-                        success?: boolean;
-                    }>(404);
+                    return new ExpressRuntimeResponse<
+                        t_BaseAPIResponse & {
+                            payload?: EmptyObject | null;
+                        }
+                    >(404);
                 },
                 withStatus(status: StatusCode) {
                     return new ExpressRuntimeResponse(status);
@@ -644,22 +599,8 @@ export function createRouter(implementation: Implementation): Router {
 
     const deleteUserResponseBodyValidator = responseValidationFactory(
         [
-            [
-                '200',
-                z.object({
-                    success: PermissiveBoolean.optional(),
-                    message: z.string().optional(),
-                    payload: z.object({}).nullable().optional(),
-                }),
-            ],
-            [
-                '404',
-                z.object({
-                    success: PermissiveBoolean.optional(),
-                    message: z.string().optional(),
-                    payload: z.object({}).nullable().optional(),
-                }),
-            ],
+            ['200', s_BaseAPIResponse.merge(z.object({ payload: z.object({}).nullable().optional() }))],
+            ['404', s_BaseAPIResponse.merge(z.object({ payload: z.object({}).nullable().optional() }))],
         ],
         undefined,
     );
@@ -676,18 +617,18 @@ export function createRouter(implementation: Implementation): Router {
 
             const responder = {
                 with200() {
-                    return new ExpressRuntimeResponse<{
-                        message?: string;
-                        payload?: EmptyObject | null;
-                        success?: boolean;
-                    }>(200);
+                    return new ExpressRuntimeResponse<
+                        t_BaseAPIResponse & {
+                            payload?: EmptyObject | null;
+                        }
+                    >(200);
                 },
                 with404() {
-                    return new ExpressRuntimeResponse<{
-                        message?: string;
-                        payload?: EmptyObject | null;
-                        success?: boolean;
-                    }>(404);
+                    return new ExpressRuntimeResponse<
+                        t_BaseAPIResponse & {
+                            payload?: EmptyObject | null;
+                        }
+                    >(404);
                 },
                 withStatus(status: StatusCode) {
                     return new ExpressRuntimeResponse(status);
@@ -725,22 +666,8 @@ export function createRouter(implementation: Implementation): Router {
 
     const updateUserStatusResponseBodyValidator = responseValidationFactory(
         [
-            [
-                '200',
-                z.object({
-                    success: PermissiveBoolean.optional(),
-                    message: z.string().optional(),
-                    payload: s_User.optional(),
-                }),
-            ],
-            [
-                '404',
-                z.object({
-                    success: PermissiveBoolean.optional(),
-                    message: z.string().optional(),
-                    payload: z.object({}).nullable().optional(),
-                }),
-            ],
+            ['200', s_BaseAPIResponse.merge(z.object({ payload: s_User.optional() }))],
+            ['404', s_BaseAPIResponse.merge(z.object({ payload: z.object({}).nullable().optional() }))],
         ],
         undefined,
     );
@@ -757,18 +684,18 @@ export function createRouter(implementation: Implementation): Router {
 
             const responder = {
                 with200() {
-                    return new ExpressRuntimeResponse<{
-                        message?: string;
-                        payload?: t_User;
-                        success?: boolean;
-                    }>(200);
+                    return new ExpressRuntimeResponse<
+                        t_BaseAPIResponse & {
+                            payload?: t_User;
+                        }
+                    >(200);
                 },
                 with404() {
-                    return new ExpressRuntimeResponse<{
-                        message?: string;
-                        payload?: EmptyObject | null;
-                        success?: boolean;
-                    }>(404);
+                    return new ExpressRuntimeResponse<
+                        t_BaseAPIResponse & {
+                            payload?: EmptyObject | null;
+                        }
+                    >(404);
                 },
                 withStatus(status: StatusCode) {
                     return new ExpressRuntimeResponse(status);
@@ -804,16 +731,7 @@ export function createRouter(implementation: Implementation): Router {
     });
 
     const listSubscriptionsResponseBodyValidator = responseValidationFactory(
-        [
-            [
-                '200',
-                z.object({
-                    success: PermissiveBoolean.optional(),
-                    message: z.string().optional(),
-                    payload: z.array(s_Subscription).optional(),
-                }),
-            ],
-        ],
+        [['200', s_BaseAPIResponse.merge(z.object({ payload: z.array(s_Subscription).optional() }))]],
         undefined,
     );
 
@@ -829,11 +747,11 @@ export function createRouter(implementation: Implementation): Router {
 
             const responder = {
                 with200() {
-                    return new ExpressRuntimeResponse<{
-                        message?: string;
-                        payload?: t_Subscription[];
-                        success?: boolean;
-                    }>(200);
+                    return new ExpressRuntimeResponse<
+                        t_BaseAPIResponse & {
+                            payload?: t_Subscription[];
+                        }
+                    >(200);
                 },
                 withStatus(status: StatusCode) {
                     return new ExpressRuntimeResponse(status);
@@ -866,16 +784,7 @@ export function createRouter(implementation: Implementation): Router {
     const createSubscriptionRequestBodySchema = s_SubscriptionCreate;
 
     const createSubscriptionResponseBodyValidator = responseValidationFactory(
-        [
-            [
-                '201',
-                z.object({
-                    success: PermissiveBoolean.optional(),
-                    message: z.string().optional(),
-                    payload: s_Subscription.optional(),
-                }),
-            ],
-        ],
+        [['201', s_BaseAPIResponse.merge(z.object({ payload: s_Subscription.optional() }))]],
         undefined,
     );
 
@@ -891,11 +800,11 @@ export function createRouter(implementation: Implementation): Router {
 
             const responder = {
                 with201() {
-                    return new ExpressRuntimeResponse<{
-                        message?: string;
-                        payload?: t_Subscription;
-                        success?: boolean;
-                    }>(201);
+                    return new ExpressRuntimeResponse<
+                        t_BaseAPIResponse & {
+                            payload?: t_Subscription;
+                        }
+                    >(201);
                 },
                 withStatus(status: StatusCode) {
                     return new ExpressRuntimeResponse(status);
@@ -929,22 +838,8 @@ export function createRouter(implementation: Implementation): Router {
 
     const getSubscriptionResponseBodyValidator = responseValidationFactory(
         [
-            [
-                '200',
-                z.object({
-                    success: PermissiveBoolean.optional(),
-                    message: z.string().optional(),
-                    payload: s_Subscription.optional(),
-                }),
-            ],
-            [
-                '404',
-                z.object({
-                    success: PermissiveBoolean.optional(),
-                    message: z.string().optional(),
-                    payload: z.object({}).nullable().optional(),
-                }),
-            ],
+            ['200', s_BaseAPIResponse.merge(z.object({ payload: s_Subscription.optional() }))],
+            ['404', s_BaseAPIResponse.merge(z.object({ payload: z.object({}).nullable().optional() }))],
         ],
         undefined,
     );
@@ -961,18 +856,18 @@ export function createRouter(implementation: Implementation): Router {
 
             const responder = {
                 with200() {
-                    return new ExpressRuntimeResponse<{
-                        message?: string;
-                        payload?: t_Subscription;
-                        success?: boolean;
-                    }>(200);
+                    return new ExpressRuntimeResponse<
+                        t_BaseAPIResponse & {
+                            payload?: t_Subscription;
+                        }
+                    >(200);
                 },
                 with404() {
-                    return new ExpressRuntimeResponse<{
-                        message?: string;
-                        payload?: EmptyObject | null;
-                        success?: boolean;
-                    }>(404);
+                    return new ExpressRuntimeResponse<
+                        t_BaseAPIResponse & {
+                            payload?: EmptyObject | null;
+                        }
+                    >(404);
                 },
                 withStatus(status: StatusCode) {
                     return new ExpressRuntimeResponse(status);
@@ -1008,22 +903,8 @@ export function createRouter(implementation: Implementation): Router {
 
     const updateSubscriptionResponseBodyValidator = responseValidationFactory(
         [
-            [
-                '200',
-                z.object({
-                    success: PermissiveBoolean.optional(),
-                    message: z.string().optional(),
-                    payload: s_Subscription.optional(),
-                }),
-            ],
-            [
-                '404',
-                z.object({
-                    success: PermissiveBoolean.optional(),
-                    message: z.string().optional(),
-                    payload: z.object({}).nullable().optional(),
-                }),
-            ],
+            ['200', s_BaseAPIResponse.merge(z.object({ payload: s_Subscription.optional() }))],
+            ['404', s_BaseAPIResponse.merge(z.object({ payload: z.object({}).nullable().optional() }))],
         ],
         undefined,
     );
@@ -1040,18 +921,18 @@ export function createRouter(implementation: Implementation): Router {
 
             const responder = {
                 with200() {
-                    return new ExpressRuntimeResponse<{
-                        message?: string;
-                        payload?: t_Subscription;
-                        success?: boolean;
-                    }>(200);
+                    return new ExpressRuntimeResponse<
+                        t_BaseAPIResponse & {
+                            payload?: t_Subscription;
+                        }
+                    >(200);
                 },
                 with404() {
-                    return new ExpressRuntimeResponse<{
-                        message?: string;
-                        payload?: EmptyObject | null;
-                        success?: boolean;
-                    }>(404);
+                    return new ExpressRuntimeResponse<
+                        t_BaseAPIResponse & {
+                            payload?: EmptyObject | null;
+                        }
+                    >(404);
                 },
                 withStatus(status: StatusCode) {
                     return new ExpressRuntimeResponse(status);
@@ -1085,22 +966,8 @@ export function createRouter(implementation: Implementation): Router {
 
     const cancelSubscriptionResponseBodyValidator = responseValidationFactory(
         [
-            [
-                '200',
-                z.object({
-                    success: PermissiveBoolean.optional(),
-                    message: z.string().optional(),
-                    payload: s_Subscription.optional(),
-                }),
-            ],
-            [
-                '404',
-                z.object({
-                    success: PermissiveBoolean.optional(),
-                    message: z.string().optional(),
-                    payload: z.object({}).nullable().optional(),
-                }),
-            ],
+            ['200', s_BaseAPIResponse.merge(z.object({ payload: s_Subscription.optional() }))],
+            ['404', s_BaseAPIResponse.merge(z.object({ payload: z.object({}).nullable().optional() }))],
         ],
         undefined,
     );
@@ -1117,18 +984,18 @@ export function createRouter(implementation: Implementation): Router {
 
             const responder = {
                 with200() {
-                    return new ExpressRuntimeResponse<{
-                        message?: string;
-                        payload?: t_Subscription;
-                        success?: boolean;
-                    }>(200);
+                    return new ExpressRuntimeResponse<
+                        t_BaseAPIResponse & {
+                            payload?: t_Subscription;
+                        }
+                    >(200);
                 },
                 with404() {
-                    return new ExpressRuntimeResponse<{
-                        message?: string;
-                        payload?: EmptyObject | null;
-                        success?: boolean;
-                    }>(404);
+                    return new ExpressRuntimeResponse<
+                        t_BaseAPIResponse & {
+                            payload?: EmptyObject | null;
+                        }
+                    >(404);
                 },
                 withStatus(status: StatusCode) {
                     return new ExpressRuntimeResponse(status);
@@ -1166,16 +1033,16 @@ export function createRouter(implementation: Implementation): Router {
         [
             [
                 '200',
-                z.object({
-                    success: PermissiveBoolean.optional(),
-                    message: z.string().optional(),
-                    payload: z
-                        .object({
-                            billingDate: z.string().optional(),
-                            invoices: z.array(s_Invoice).optional(),
-                        })
-                        .optional(),
-                }),
+                s_BaseAPIResponse.merge(
+                    z.object({
+                        payload: z
+                            .object({
+                                billingDate: z.string().optional(),
+                                invoices: z.array(s_Invoice).optional(),
+                            })
+                            .optional(),
+                    }),
+                ),
             ],
         ],
         undefined,
@@ -1197,14 +1064,14 @@ export function createRouter(implementation: Implementation): Router {
 
             const responder = {
                 with200() {
-                    return new ExpressRuntimeResponse<{
-                        message?: string;
-                        payload?: {
-                            billingDate?: string;
-                            invoices?: t_Invoice[];
-                        };
-                        success?: boolean;
-                    }>(200);
+                    return new ExpressRuntimeResponse<
+                        t_BaseAPIResponse & {
+                            payload?: {
+                                billingDate?: string;
+                                invoices?: t_Invoice[];
+                            };
+                        }
+                    >(200);
                 },
                 withStatus(status: StatusCode) {
                     return new ExpressRuntimeResponse(status);
@@ -1241,16 +1108,7 @@ export function createRouter(implementation: Implementation): Router {
     });
 
     const exportMonthlyInvoicesResponseBodyValidator = responseValidationFactory(
-        [
-            [
-                '200',
-                z.object({
-                    success: PermissiveBoolean.optional(),
-                    message: z.string().optional(),
-                    payload: z.array(s_AccountingExportLine).optional(),
-                }),
-            ],
-        ],
+        [['200', s_BaseAPIResponse.merge(z.object({ payload: z.array(s_AccountingExportLine).optional() }))]],
         undefined,
     );
 
@@ -1266,11 +1124,11 @@ export function createRouter(implementation: Implementation): Router {
 
             const responder = {
                 with200() {
-                    return new ExpressRuntimeResponse<{
-                        message?: string;
-                        payload?: t_AccountingExportLine[];
-                        success?: boolean;
-                    }>(200);
+                    return new ExpressRuntimeResponse<
+                        t_BaseAPIResponse & {
+                            payload?: t_AccountingExportLine[];
+                        }
+                    >(200);
                 },
                 withStatus(status: StatusCode) {
                     return new ExpressRuntimeResponse(status);
@@ -1305,16 +1163,7 @@ export function createRouter(implementation: Implementation): Router {
     const exportDirectDebitsQuerySchema = z.object({ executionDate: z.string() });
 
     const exportDirectDebitsResponseBodyValidator = responseValidationFactory(
-        [
-            [
-                '200',
-                z.object({
-                    success: PermissiveBoolean.optional(),
-                    message: z.string().optional(),
-                    payload: z.array(s_DirectDebitOrder).optional(),
-                }),
-            ],
-        ],
+        [['200', s_BaseAPIResponse.merge(z.object({ payload: z.array(s_DirectDebitOrder).optional() }))]],
         undefined,
     );
 
@@ -1330,11 +1179,11 @@ export function createRouter(implementation: Implementation): Router {
 
             const responder = {
                 with200() {
-                    return new ExpressRuntimeResponse<{
-                        message?: string;
-                        payload?: t_DirectDebitOrder[];
-                        success?: boolean;
-                    }>(200);
+                    return new ExpressRuntimeResponse<
+                        t_BaseAPIResponse & {
+                            payload?: t_DirectDebitOrder[];
+                        }
+                    >(200);
                 },
                 withStatus(status: StatusCode) {
                     return new ExpressRuntimeResponse(status);
@@ -1373,20 +1222,20 @@ export function createRouter(implementation: Implementation): Router {
         [
             [
                 '200',
-                z.object({
-                    success: PermissiveBoolean.optional(),
-                    message: z.string().optional(),
-                    payload: z
-                        .array(
-                            z.object({
-                                month: z.string().optional(),
-                                revenueExclVat: z.coerce.number().optional(),
-                                vatAmount: z.coerce.number().optional(),
-                                revenueInclVat: z.coerce.number().optional(),
-                            }),
-                        )
-                        .optional(),
-                }),
+                s_BaseAPIResponse.merge(
+                    z.object({
+                        payload: z
+                            .array(
+                                z.object({
+                                    month: z.string().optional(),
+                                    revenueExclVat: z.coerce.number().optional(),
+                                    vatAmount: z.coerce.number().optional(),
+                                    revenueInclVat: z.coerce.number().optional(),
+                                }),
+                            )
+                            .optional(),
+                    }),
+                ),
             ],
         ],
         undefined,
@@ -1404,16 +1253,16 @@ export function createRouter(implementation: Implementation): Router {
 
             const responder = {
                 with200() {
-                    return new ExpressRuntimeResponse<{
-                        message?: string;
-                        payload?: {
-                            month?: string;
-                            revenueExclVat?: number;
-                            revenueInclVat?: number;
-                            vatAmount?: number;
-                        }[];
-                        success?: boolean;
-                    }>(200);
+                    return new ExpressRuntimeResponse<
+                        t_BaseAPIResponse & {
+                            payload?: {
+                                month?: string;
+                                revenueExclVat?: number;
+                                revenueInclVat?: number;
+                                vatAmount?: number;
+                            }[];
+                        }
+                    >(200);
                 },
                 withStatus(status: StatusCode) {
                     return new ExpressRuntimeResponse(status);

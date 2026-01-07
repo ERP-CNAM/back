@@ -15,6 +15,11 @@ export type t_AccountingExportLine = {
     invoiceRef?: string;
 };
 
+export type t_BaseAPIResponse = {
+    message?: string;
+    success?: boolean;
+};
+
 export type t_DirectDebitOrder = {
     amount?: number;
     executionDate?: string;

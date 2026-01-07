@@ -24,6 +24,11 @@ export const s_AccountingExportLine = z.object({
     customerName: z.string().optional(),
 });
 
+export const s_BaseAPIResponse = z.object({
+    success: PermissiveBoolean.optional(),
+    message: z.string().optional(),
+});
+
 export const s_Invoice = z.object({
     id: z.string().optional(),
     userId: z.string().optional(),
