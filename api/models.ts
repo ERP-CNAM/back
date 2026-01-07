@@ -2,6 +2,8 @@
 /* tslint:disable */
 /* eslint-disable */
 
+export type EmptyObject = { [key: string]: never };
+
 export type t_AccountingExportLine = {
     clientAccount?: string;
     credit?: number | null;

@@ -4,6 +4,15 @@
 
 import { z } from 'zod/v4';
 
+export const PermissiveBoolean = z.preprocess((value) => {
+    if (typeof value === 'string' && (value === 'true' || value === 'false')) {
+        return value === 'true';
+    } else if (typeof value === 'number' && (value === 1 || value === 0)) {
+        return value === 1;
+    }
+    return value;
+}, z.boolean());
+
 export const s_AccountingExportLine = z.object({
     date: z.string().optional(),
     generalAccount: z.string().optional(),

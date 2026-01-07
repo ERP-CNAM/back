@@ -55,7 +55,6 @@ paths:
                                 $ref: '#/components/schemas/User'
                 '404':
                     description: Utilisateur non trouvé
-...
 ```
 
 ### 2. Generate - Générer les interfaces, routes, et types

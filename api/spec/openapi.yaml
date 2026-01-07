@@ -42,9 +42,16 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/User"
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  payload:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/User"
     post:
       operationId: createUser
       tags: [ Users ]
@@ -62,7 +69,14 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  payload:
+                    $ref: "#/components/schemas/User"
 
   /users/{userId}:
     get:
@@ -82,9 +96,29 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  payload:
+                    $ref: "#/components/schemas/User"
         "404":
           description: Utilisateur non trouvé
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                  payload:
+                    type: object
+                    nullable: true
     put:
       operationId: updateUser
       tags: [ Users ]
@@ -108,9 +142,29 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  payload:
+                    $ref: "#/components/schemas/User"
         "404":
           description: Utilisateur non trouvé
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                  payload:
+                    type: object
+                    nullable: true
     delete:
       operationId: deleteUser
       tags: [ Users ]
@@ -124,10 +178,35 @@ paths:
             type: string
             format: uuid
       responses:
-        "204":
+        "200":
           description: Utilisateur désactivé ou supprimé
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  payload:
+                    type: object
+                    nullable: true
         "404":
           description: Utilisateur non trouvé
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                  payload:
+                    type: object
+                    nullable: true
 
   /users/{userId}/status:
     patch:
@@ -157,9 +236,29 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  payload:
+                    $ref: "#/components/schemas/User"
         "404":
           description: Utilisateur non trouvé
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                  payload:
+                    type: object
+                    nullable: true
 
   /subscriptions:
     get:
@@ -183,9 +282,16 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Subscription"
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  payload:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Subscription"
     post:
       operationId: createSubscription
       tags: [ Subscriptions ]
@@ -203,7 +309,14 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Subscription"
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  payload:
+                    $ref: "#/components/schemas/Subscription"
 
   /subscriptions/{subscriptionId}:
     get:
@@ -223,9 +336,29 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Subscription"
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  payload:
+                    $ref: "#/components/schemas/Subscription"
         "404":
           description: Abonnement non trouvé
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                  payload:
+                    type: object
+                    nullable: true
     put:
       operationId: updateSubscription
       tags: [ Subscriptions ]
@@ -249,9 +382,29 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Subscription"
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  payload:
+                    $ref: "#/components/schemas/Subscription"
         "404":
           description: Abonnement non trouvé
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                  payload:
+                    type: object
+                    nullable: true
     delete:
       operationId: cancelSubscription
       tags: [ Subscriptions ]
@@ -270,9 +423,29 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Subscription"
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  payload:
+                    $ref: "#/components/schemas/Subscription"
         "404":
           description: Abonnement non trouvé
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                  payload:
+                    type: object
+                    nullable: true
 
   /billing/monthly:
     post:
@@ -303,13 +476,20 @@ paths:
               schema:
                 type: object
                 properties:
-                  billingDate:
+                  success:
+                    type: boolean
+                  message:
                     type: string
-                    format: date
-                  invoices:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/Invoice"
+                  payload:
+                    type: object
+                    properties:
+                      billingDate:
+                        type: string
+                        format: date
+                      invoices:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/Invoice"
 
   /exports/accounting/monthly-invoices:
     get:
@@ -331,9 +511,16 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/AccountingExportLine"
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  payload:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/AccountingExportLine"
 
   /exports/banking/direct-debits:
     get:
@@ -356,9 +543,16 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/DirectDebitOrder"
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  payload:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/DirectDebitOrder"
 
   /reports/revenue/monthly:
     get:
@@ -385,22 +579,29 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    month:
-                      type: string
-                      example: "2026-06"
-                    revenueExclVat:
-                      type: number
-                      format: float
-                    vatAmount:
-                      type: number
-                      format: float
-                    revenueInclVat:
-                      type: number
-                      format: float
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  payload:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        month:
+                          type: string
+                          example: "2026-06"
+                        revenueExclVat:
+                          type: number
+                          format: float
+                        vatAmount:
+                          type: number
+                          format: float
+                        revenueInclVat:
+                          type: number
+                          format: float
 
 components:
   schemas:
