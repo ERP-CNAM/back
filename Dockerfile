@@ -4,7 +4,7 @@ FROM node:22 AS builder
 WORKDIR /erp-cnam-backend
 
 COPY package*.json ./
-RUN npm install --legacy-peer-deps
+RUN npm install
 
 COPY . .
 RUN npm run build
