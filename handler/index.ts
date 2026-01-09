@@ -9,6 +9,7 @@ import { PostgresUserRepository } from '../repository/postgres/postgres-user.rep
 import type { UserRepository } from '../repository/user.repository';
 import { getDatabase } from '../database/client';
 import { createUserHandlers } from './user';
+import { createAuthHandlers } from './auth';
 import * as subscriptions from './subscription';
 import * as billing from './billing';
 import * as reports from './report';
@@ -22,8 +23,12 @@ if (DB_TYPE === 'postgres') {
     userRepository = new InMemoryUserRepository(databaseInstance);
 }
 const userHandlers = createUserHandlers(userRepository);
+const authHandlers = createAuthHandlers(userRepository);
 
 export const handlers: Implementation = {
+    // Auth
+    login: authHandlers.login,
+
     // Users
     listUsers: userHandlers.listUsers,
     createUser: userHandlers.createUser,

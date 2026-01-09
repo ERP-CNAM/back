@@ -1,6 +1,6 @@
 import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 import { eq } from 'drizzle-orm';
-import type { UserRepository, UserQueryOptions } from '../user.repository';
+import type { UserRepository, UserQueryOptions, UserWithPassword } from '../user.repository';
 import type {
     t_CreateUserRequestBodySchema,
     t_UpdateUserRequestBodySchema,
@@ -9,6 +9,7 @@ import type {
 } from '../../api/models';
 import { users } from '../../database/memory/schema';
 import { generateUUID } from '../../utils/uuid';
+import { security } from '../../utils/security';
 
 export class InMemoryUserRepository implements UserRepository {
     constructor(private db: BetterSQLite3Database) {}
@@ -46,11 +47,24 @@ export class InMemoryUserRepository implements UserRepository {
         return rows.length > 0 ? this.toUser(rows[0]) : null;
     }
 
+    async findWithPasswordByEmail(email: string): Promise<UserWithPassword | null> {
+        const rows = this.db.select().from(users).where(eq(users.email, email)).limit(1).all();
+        const row = rows[0];
+        if (!row) return null;
+        const user = this.toUser(row);
+        return {
+            ...user,
+            password: row.password ?? undefined,
+        };
+    }
+
     async create(data: t_CreateUserRequestBodySchema): Promise<t_User> {
+        const hashedPassword = await security.hashPassword(data.password);
+        const { password, ...userData } = data;
         const newUser: t_User = {
             id: generateUUID(),
             status: 'OK',
-            ...data,
+            ...userData,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
         };
@@ -62,6 +76,7 @@ export class InMemoryUserRepository implements UserRepository {
                 firstName: newUser.firstName,
                 lastName: newUser.lastName,
                 email: newUser.email,
+                password: hashedPassword,
                 paymentMethod: newUser.paymentMethod ? JSON.stringify(newUser.paymentMethod) : null,
                 status: newUser.status,
                 createdAt: newUser.createdAt,

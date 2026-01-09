@@ -6,6 +6,7 @@ export const users = sqliteTable('users', {
     firstName: text('firstName'),
     lastName: text('lastName'),
     email: text('email').unique(),
+    password: text('password').notNull(),
     paymentMethod: text('paymentMethod'),
     status: text('status').$type<t_UserStatus>().notNull().default('OK'),
     createdAt: text('createdAt'),

@@ -1,0 +1,98 @@
+{
+    "version": "6",
+    "dialect": "sqlite",
+    "id": "da17a8bb-33a7-4885-a8a4-cfe6f28c24e6",
+    "prevId": "42555591-6d03-4677-8a99-e092c4b73b5e",
+    "tables": {
+        "users": {
+            "name": "users",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "text",
+                    "primaryKey": true,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "firstName": {
+                    "name": "firstName",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false,
+                    "autoincrement": false
+                },
+                "lastName": {
+                    "name": "lastName",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false,
+                    "autoincrement": false
+                },
+                "email": {
+                    "name": "email",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false,
+                    "autoincrement": false
+                },
+                "password": {
+                    "name": "password",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "paymentMethod": {
+                    "name": "paymentMethod",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false,
+                    "autoincrement": false
+                },
+                "status": {
+                    "name": "status",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false,
+                    "default": "'OK'"
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false,
+                    "autoincrement": false
+                },
+                "updatedAt": {
+                    "name": "updatedAt",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false,
+                    "autoincrement": false
+                }
+            },
+            "indexes": {
+                "users_email_unique": {
+                    "name": "users_email_unique",
+                    "columns": ["email"],
+                    "isUnique": true
+                }
+            },
+            "foreignKeys": {},
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {},
+            "checkConstraints": {}
+        }
+    },
+    "views": {},
+    "enums": {},
+    "_meta": {
+        "schemas": {},
+        "tables": {},
+        "columns": {}
+    },
+    "internal": {
+        "indexes": {}
+    }
+}

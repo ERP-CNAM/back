@@ -43,6 +43,11 @@ export const s_Invoice = z.object({
     status: z.enum(['PENDING', 'SENT', 'PAID', 'FAILED']).optional(),
 });
 
+export const s_LoginRequest = z.object({
+    email: z.email(),
+    password: z.string(),
+});
+
 export const s_PaymentMethodType = z.enum(['SEPA', 'CARD']);
 
 export const s_SubscriptionCreate = z.object({
@@ -106,6 +111,7 @@ export const s_UserCreate = z.object({
     firstName: z.string(),
     lastName: z.string(),
     email: z.email(),
+    password: z.string(),
     paymentMethod: s_PaymentMethod.optional(),
 });
 
@@ -115,4 +121,9 @@ export const s_UserUpdate = z.object({
     email: z.email().optional(),
     status: s_UserStatus.optional(),
     paymentMethod: s_PaymentMethod.optional(),
+});
+
+export const s_LoginResponse = z.object({
+    token: z.string().optional(),
+    user: s_User.optional(),
 });

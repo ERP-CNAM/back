@@ -10,7 +10,7 @@ import { createTestDatabase } from '../../database/memory/test-instance';
 
 describe('InMemoryUserRepository', () => {
     let repository: InMemoryUserRepository;
-    const data: t_User[] = [
+    const data: (t_User & { password: string })[] = [
         {
             id: 'user-1',
             firstName: 'Alice',
@@ -19,6 +19,7 @@ describe('InMemoryUserRepository', () => {
             status: 'OK',
             createdAt: '2026-01-01T00:00:00Z',
             updatedAt: '2026-01-01T00:00:00Z',
+            password: 'secret12345',
         },
         {
             id: 'user-2',
@@ -28,6 +29,7 @@ describe('InMemoryUserRepository', () => {
             status: 'SUSPENDED',
             createdAt: '2026-01-02T00:00:00Z',
             updatedAt: '2026-01-02T00:00:00Z',
+            password: 'secret12345',
         },
         {
             id: 'user-3',
@@ -37,6 +39,7 @@ describe('InMemoryUserRepository', () => {
             status: 'OK',
             createdAt: '2026-01-03T00:00:00Z',
             updatedAt: '2026-01-03T00:00:00Z',
+            password: 'secret12345',
         },
     ];
 
@@ -48,9 +51,10 @@ describe('InMemoryUserRepository', () => {
     describe('findAll', () => {
         it('should return all users when no filter is provided', async () => {
             const users = await repository.findAll();
+            const expectedData = data.map(({ password, ...user }) => user);
 
             expect(users).toHaveLength(3);
-            expect(users).toEqual(expect.arrayContaining(data));
+            expect(users).toEqual(expect.arrayContaining(expectedData));
         });
 
         it('should filter users by status', async () => {
@@ -121,6 +125,7 @@ describe('InMemoryUserRepository', () => {
                 firstName: 'David',
                 lastName: 'Wilson',
                 email: 'david@example.com',
+                password: 'secret123',
             };
 
             const createdUser = await repository.create(newUserData);
@@ -139,12 +144,14 @@ describe('InMemoryUserRepository', () => {
                 firstName: 'User',
                 lastName: 'One',
                 email: 'user1@example.com',
+                password: 'secret123',
             });
 
             const user2 = await repository.create({
                 firstName: 'User',
                 lastName: 'Two',
                 email: 'user2@example.com',
+                password: 'secret123',
             });
 
             expect(user1.id).not.toBe(user2.id);
@@ -155,6 +162,7 @@ describe('InMemoryUserRepository', () => {
                 firstName: 'Eve',
                 lastName: 'Davis',
                 email: 'eve@example.com',
+                password: 'secret123',
             });
 
             const found = await repository.findById(newUser.id!);
@@ -167,6 +175,7 @@ describe('InMemoryUserRepository', () => {
                 firstName: 'Frank',
                 lastName: 'Miller',
                 email: 'frank@example.com',
+                password: 'secret123',
                 paymentMethod: {
                     type: 'SEPA',
                     iban: 'FR76****************1234',

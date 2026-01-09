@@ -33,6 +33,8 @@ import type {
     t_Invoice,
     t_ListSubscriptionsQuerySchema,
     t_ListUsersQuerySchema,
+    t_LoginRequestBodySchema,
+    t_LoginResponse,
     t_Subscription,
     t_UpdateSubscriptionParamSchema,
     t_UpdateSubscriptionRequestBodySchema,
@@ -47,6 +49,8 @@ import {
     s_BaseAPIResponse,
     s_DirectDebitOrder,
     s_Invoice,
+    s_LoginRequest,
+    s_LoginResponse,
     s_Subscription,
     s_SubscriptionCreate,
     s_SubscriptionStatus,
@@ -57,17 +61,18 @@ import {
     s_UserUpdate,
 } from './schemas';
 
-export type ListUsersResponder = {
+export type LoginResponder = {
     with200(): ExpressRuntimeResponse<
         t_BaseAPIResponse & {
-            payload?: t_User[];
+            payload?: t_LoginResponse;
         }
     >;
+    with401(): ExpressRuntimeResponse<t_BaseAPIResponse>;
 } & ExpressRuntimeResponder;
 
-export type ListUsers = (
-    params: Params<void, t_ListUsersQuerySchema, void, void>,
-    respond: ListUsersResponder,
+export type Login = (
+    params: Params<void, void, t_LoginRequestBodySchema, void>,
+    respond: LoginResponder,
     req: Request,
     res: Response,
     next: NextFunction,
@@ -84,6 +89,22 @@ export type CreateUserResponder = {
 export type CreateUser = (
     params: Params<void, void, t_CreateUserRequestBodySchema, void>,
     respond: CreateUserResponder,
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>;
+
+export type ListUsersResponder = {
+    with200(): ExpressRuntimeResponse<
+        t_BaseAPIResponse & {
+            payload?: t_User[];
+        }
+    >;
+} & ExpressRuntimeResponder;
+
+export type ListUsers = (
+    params: Params<void, t_ListUsersQuerySchema, void, void>,
+    respond: ListUsersResponder,
     req: Request,
     res: Response,
     next: NextFunction,
@@ -341,8 +362,9 @@ export type GetMonthlyRevenue = (
 ) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>;
 
 export type Implementation = {
-    listUsers: ListUsers;
+    login: Login;
     createUser: CreateUser;
+    listUsers: ListUsers;
     getUser: GetUser;
     updateUser: UpdateUser;
     deleteUser: DeleteUser;
@@ -361,20 +383,23 @@ export type Implementation = {
 export function createRouter(implementation: Implementation): Router {
     const router = Router();
 
-    const listUsersQuerySchema = z.object({ status: s_UserStatus.optional() });
+    const loginRequestBodySchema = s_LoginRequest;
 
-    const listUsersResponseBodyValidator = responseValidationFactory(
-        [['200', s_BaseAPIResponse.merge(z.object({ payload: z.array(s_User).optional() }))]],
+    const loginResponseBodyValidator = responseValidationFactory(
+        [
+            ['200', s_BaseAPIResponse.merge(z.object({ payload: s_LoginResponse.optional() }))],
+            ['401', s_BaseAPIResponse],
+        ],
         undefined,
     );
 
-    // listUsers
-    router.get(`/users`, async (req: Request, res: Response, next: NextFunction) => {
+    // login
+    router.post(`/auth/login`, async (req: Request, res: Response, next: NextFunction) => {
         try {
             const input = {
                 params: undefined,
-                query: parseRequestInput(listUsersQuerySchema, req.query, RequestInputType.QueryString),
-                body: undefined,
+                query: undefined,
+                body: parseRequestInput(loginRequestBodySchema, req.body, RequestInputType.RequestBody),
                 headers: undefined,
             };
 
@@ -382,16 +407,19 @@ export function createRouter(implementation: Implementation): Router {
                 with200() {
                     return new ExpressRuntimeResponse<
                         t_BaseAPIResponse & {
-                            payload?: t_User[];
+                            payload?: t_LoginResponse;
                         }
                     >(200);
+                },
+                with401() {
+                    return new ExpressRuntimeResponse<t_BaseAPIResponse>(401);
                 },
                 withStatus(status: StatusCode) {
                     return new ExpressRuntimeResponse(status);
                 },
             };
 
-            const response = await implementation.listUsers(input, responder, req, res, next).catch((err) => {
+            const response = await implementation.login(input, responder, req, res, next).catch((err) => {
                 throw ExpressRuntimeError.HandlerError(err);
             });
 
@@ -405,7 +433,7 @@ export function createRouter(implementation: Implementation): Router {
             res.status(status);
 
             if (body !== undefined) {
-                res.json(listUsersResponseBodyValidator(status, body));
+                res.json(loginResponseBodyValidator(status, body));
             } else {
                 res.end();
             }
@@ -459,6 +487,59 @@ export function createRouter(implementation: Implementation): Router {
 
             if (body !== undefined) {
                 res.json(createUserResponseBodyValidator(status, body));
+            } else {
+                res.end();
+            }
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    const listUsersQuerySchema = z.object({ status: s_UserStatus.optional() });
+
+    const listUsersResponseBodyValidator = responseValidationFactory(
+        [['200', s_BaseAPIResponse.merge(z.object({ payload: z.array(s_User).optional() }))]],
+        undefined,
+    );
+
+    // listUsers
+    router.get(`/users`, async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const input = {
+                params: undefined,
+                query: parseRequestInput(listUsersQuerySchema, req.query, RequestInputType.QueryString),
+                body: undefined,
+                headers: undefined,
+            };
+
+            const responder = {
+                with200() {
+                    return new ExpressRuntimeResponse<
+                        t_BaseAPIResponse & {
+                            payload?: t_User[];
+                        }
+                    >(200);
+                },
+                withStatus(status: StatusCode) {
+                    return new ExpressRuntimeResponse(status);
+                },
+            };
+
+            const response = await implementation.listUsers(input, responder, req, res, next).catch((err) => {
+                throw ExpressRuntimeError.HandlerError(err);
+            });
+
+            // escape hatch to allow responses to be sent by the implementation handler
+            if (response === SkipResponse) {
+                return;
+            }
+
+            const { status, body } = response instanceof ExpressRuntimeResponse ? response.unpack() : response;
+
+            res.status(status);
+
+            if (body !== undefined) {
+                res.json(listUsersResponseBodyValidator(status, body));
             } else {
                 res.end();
             }

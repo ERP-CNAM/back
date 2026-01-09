@@ -8,6 +8,20 @@
             "when": 1767651063342,
             "tag": "0000_mature_peter_parker",
             "breakpoints": true
+        },
+        {
+            "idx": 1,
+            "version": "7",
+            "when": 1767978387863,
+            "tag": "0001_mysterious_the_santerians",
+            "breakpoints": true
+        },
+        {
+            "idx": 2,
+            "version": "7",
+            "when": 1767978776654,
+            "tag": "0002_big_angel",
+            "breakpoints": true
         }
     ]
 }

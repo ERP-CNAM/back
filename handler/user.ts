@@ -9,7 +9,7 @@ export function createUserHandlers(repository: UserRepository) {
 
         return respond.with200().body({
             success: true,
-            message: 'Users retrieved successfully',
+            message: 'Utilisateurs récupérés avec succès',
             payload: users,
         });
     };
@@ -21,7 +21,7 @@ export function createUserHandlers(repository: UserRepository) {
 
         return respond.with201().body({
             success: true,
-            message: 'User created successfully',
+            message: 'Utilisateur créé avec succès',
             payload: newUser,
         });
     };
@@ -34,14 +34,14 @@ export function createUserHandlers(repository: UserRepository) {
         if (!user) {
             return respond.with404().body({
                 success: false,
-                message: 'User not found',
+                message: 'Utilisateur non trouvé',
                 payload: null,
             });
         }
 
         return respond.with200().body({
             success: true,
-            message: 'User details retrieved successfully',
+            message: 'Détails utilisateur récupérés avec succès',
             payload: user,
         });
     };
@@ -55,14 +55,14 @@ export function createUserHandlers(repository: UserRepository) {
         if (!updatedUser) {
             return respond.with404().body({
                 success: false,
-                message: 'User not found',
+                message: 'Utilisateur non trouvé',
                 payload: null,
             });
         }
 
         return respond.with200().body({
             success: true,
-            message: 'User updated successfully',
+            message: 'Utilisateur mis à jour avec succès',
             payload: updatedUser,
         });
     };
@@ -75,14 +75,14 @@ export function createUserHandlers(repository: UserRepository) {
         if (!deleted) {
             return respond.with404().body({
                 success: false,
-                message: 'User not found',
+                message: 'Utilisateur non trouvé',
                 payload: null,
             });
         }
 
         return respond.with200().body({
             success: true,
-            message: 'User deleted successfully',
+            message: 'Utilisateur supprimé avec succès',
             payload: null,
         });
     };
@@ -97,13 +97,13 @@ export function createUserHandlers(repository: UserRepository) {
             if (!user) {
                 return respond.with404().body({
                     success: false,
-                    message: 'User not found',
+                    message: 'Utilisateur non trouvé',
                     payload: null,
                 });
             }
             return respond.with200().body({
                 success: true,
-                message: 'User status unchanged',
+                message: 'Statut utilisateur inchangé',
                 payload: user,
             });
         }
@@ -113,14 +113,14 @@ export function createUserHandlers(repository: UserRepository) {
         if (!updatedUser) {
             return respond.with404().body({
                 success: false,
-                message: 'User not found',
+                message: 'Utilisateur non trouvé',
                 payload: null,
             });
         }
 
         return respond.with200().body({
             success: true,
-            message: 'User status updated successfully',
+            message: 'Statut utilisateur mis à jour avec succès',
             payload: updatedUser,
         });
     };

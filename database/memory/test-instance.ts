@@ -6,7 +6,7 @@ import path from 'path';
 import { users } from './schema';
 import { t_User, t_UserStatus } from '../../api/models';
 
-export function createTestDatabase(seedData?: t_User[]): BetterSQLite3Database {
+export function createTestDatabase(seedData?: (t_User & { password: string })[]): BetterSQLite3Database {
     const sqlite = new Database(':memory:');
     const db = drizzle(sqlite);
 
@@ -20,7 +20,7 @@ export function createTestDatabase(seedData?: t_User[]): BetterSQLite3Database {
     return db;
 }
 
-function seedUserTable(db: BetterSQLite3Database, userData: t_User[]): void {
+function seedUserTable(db: BetterSQLite3Database, userData: (t_User & { password: string })[]): void {
     const counted = db.select({ value: count() }).from(users).get();
     if (counted && counted.value > 0) return;
 
@@ -31,6 +31,7 @@ function seedUserTable(db: BetterSQLite3Database, userData: t_User[]): void {
                 firstName: user.firstName ?? null,
                 lastName: user.lastName ?? null,
                 email: user.email ?? null,
+                password: user.password!,
                 paymentMethod: user.paymentMethod ? JSON.stringify(user.paymentMethod) : null,
                 status: (user.status as t_UserStatus) ?? null,
                 createdAt: user.createdAt ?? null,

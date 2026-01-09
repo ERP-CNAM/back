@@ -12,6 +12,8 @@ info:
     Hypothèse : abonnements mensuels complets, pas de prorata journalier.
 
 tags:
+  - name: Authentification
+    description: Gestion de l'authentification
   - name: Users
     description: Gestion des joueurs / utilisateurs abonnés
   - name: Subscriptions
@@ -23,8 +25,66 @@ tags:
   - name: Reports
     description: Statuts, chiffre d’affaires et règlements
 
+security:
+  - bearerAuth: []
+
 paths:
+  /auth/login:
+    post:
+      operationId: login
+      tags: [ Authentification ]
+      summary: Connexion utilisateur
+      description: Authentification par email/mot de passe pour obtenir un token JWT.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Connexion réussie
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/BaseAPIResponse"
+                  - type: object
+                    properties:
+                      payload:
+                        $ref: "#/components/schemas/LoginResponse"
+        "401":
+          description: Identifiants invalides
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BaseAPIResponse"
   /users:
+    post:
+      operationId: createUser
+      tags: [ Users ]
+      summary: Créer un utilisateur
+      description: Création d'un joueur / client (généralement issu de la plateforme Gamers).
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserCreate"
+      responses:
+        "201":
+          description: Utilisateur créé
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/BaseAPIResponse"
+                  - type: object
+                    properties:
+                      payload:
+                        $ref: "#/components/schemas/User"
     get:
       operationId: listUsers
       tags: [ Users ]
@@ -50,29 +110,6 @@ paths:
                         type: array
                         items:
                           $ref: "#/components/schemas/User"
-    post:
-      operationId: createUser
-      tags: [ Users ]
-      summary: Créer un utilisateur
-      description: Création d'un joueur / client (généralement issu de la plateforme Gamers).
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/UserCreate"
-      responses:
-        "201":
-          description: Utilisateur créé
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: "#/components/schemas/BaseAPIResponse"
-                  - type: object
-                    properties:
-                      payload:
-                        $ref: "#/components/schemas/User"
 
   /users/{userId}:
     get:
@@ -605,7 +642,7 @@ components:
 
     UserCreate:
       type: object
-      required: [ firstName, lastName, email ]
+      required: [ firstName, lastName, email, password ]
       properties:
         firstName:
           type: string
@@ -614,6 +651,10 @@ components:
         email:
           type: string
           format: email
+        password:
+          type: string
+          format: password
+          example: "secret123"
         paymentMethod:
           $ref: "#/components/schemas/PaymentMethod"
 
@@ -809,3 +850,31 @@ components:
           enum: [ TO_SEND, SENT, EXECUTED, REJECTED ]
         paymentMethod:
           $ref: "#/components/schemas/PaymentMethodType"
+
+    LoginRequest:
+      type: object
+      required: [ email, password ]
+      properties:
+        email:
+          type: string
+          format: email
+          example: "tintin@example.com"
+        password:
+          type: string
+          format: password
+          example: "secret123"
+
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          description: "JWT Token"
+        user:
+          $ref: "#/components/schemas/User"
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

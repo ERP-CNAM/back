@@ -44,6 +44,11 @@ export type t_Invoice = {
     vatAmount?: number;
 };
 
+export type t_LoginResponse = {
+    token?: string;
+    user?: t_User;
+};
+
 export type t_PaymentMethod = {
     cardLast4?: string;
     iban?: string;
@@ -94,6 +99,7 @@ export type t_CreateUserRequestBodySchema = {
     email: string;
     firstName: string;
     lastName: string;
+    password: string;
     paymentMethod?: t_PaymentMethod;
 };
 
@@ -133,6 +139,11 @@ export type t_ListSubscriptionsQuerySchema = {
 
 export type t_ListUsersQuerySchema = {
     status?: t_UserStatus;
+};
+
+export type t_LoginRequestBodySchema = {
+    email: string;
+    password: string;
 };
 
 export type t_UpdateSubscriptionParamSchema = {

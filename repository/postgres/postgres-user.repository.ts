@@ -1,6 +1,6 @@
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { eq } from 'drizzle-orm';
-import type { UserRepository, UserQueryOptions } from '../user.repository';
+import type { UserRepository, UserQueryOptions, UserWithPassword } from '../user.repository';
 import type {
     t_CreateUserRequestBodySchema,
     t_UpdateUserRequestBodySchema,
@@ -9,6 +9,7 @@ import type {
 } from '../../api/models';
 import { users } from '../../database/postgres/schema';
 import { generateUUID } from '../../utils/uuid';
+import { security } from '../../utils/security';
 
 export class PostgresUserRepository implements UserRepository {
     constructor(private db: NodePgDatabase) {}
@@ -47,8 +48,19 @@ export class PostgresUserRepository implements UserRepository {
         return rows[0] ? this.toUser(rows[0]) : null;
     }
 
+    async findWithPasswordByEmail(email: string): Promise<UserWithPassword | null> {
+        const rows = await this.db.select().from(users).where(eq(users.email, email)).limit(1).execute();
+        if (!rows[0]) return null;
+        const user = this.toUser(rows[0]);
+        return {
+            ...user,
+            password: rows[0].password ?? undefined,
+        };
+    }
+
     async create(data: t_CreateUserRequestBodySchema): Promise<t_User> {
         const id = generateUUID();
+        const hashedPassword = await security.hashPassword(data.password);
 
         const [inserted] = await this.db
             .insert(users)
@@ -57,6 +69,7 @@ export class PostgresUserRepository implements UserRepository {
                 firstName: data.firstName,
                 lastName: data.lastName,
                 email: data.email,
+                password: hashedPassword,
                 paymentMethod: data.paymentMethod ? JSON.stringify(data.paymentMethod) : null,
                 status: 'OK',
             })
