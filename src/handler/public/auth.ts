@@ -1,6 +1,6 @@
-import type { Login } from '../../api/generated';
-import type { UserRepository } from '../repository/user.repository';
-import { security } from '../utils/security';
+import type { Login } from '../../../api/generated';
+import type { UserRepository } from '../../repository/user.repository';
+import { security } from '../../utils/security';
 
 export const createAuthHandlers = (userRepository: UserRepository) => {
     const login: Login = async (params, respond) => {

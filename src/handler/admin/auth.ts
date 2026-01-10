@@ -1,6 +1,6 @@
-import type { AdminLogin } from '../../api/generated';
-import type { AdminRepository } from '../repository/admin.repository';
-import { security } from '../utils/security';
+import type { AdminLogin } from '../../../api/generated';
+import type { AdminRepository } from '../../repository/admin.repository';
+import { security } from '../../utils/security';
 
 export const createAdminAuthHandlers = (adminRepository: AdminRepository) => {
     const adminLogin: AdminLogin = async (params, respond) => {

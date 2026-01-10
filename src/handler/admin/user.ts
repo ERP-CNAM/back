@@ -1,6 +1,6 @@
-import type { ListUsers, CreateUser, GetUser, UpdateUser, DeleteUser, UpdateUserStatus } from '../../api/generated';
-import type { UserRepository } from '../repository/user.repository';
-import { isAdmin } from '../middleware/admin-guard';
+import type { ListUsers, CreateUser, GetUser, UpdateUser, DeleteUser, UpdateUserStatus } from '../../../api/generated';
+import type { UserRepository } from '../../repository/user.repository';
+import { isAdmin } from '../../middleware/admin-guard';
 
 export function createUserHandlers(repository: UserRepository) {
     const listUsers: ListUsers = async (params, respond, req) => {

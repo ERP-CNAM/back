@@ -1,7 +1,3 @@
-/**
- * This file combines all handler modules with dependency injection for repositories
- */
-
 import type { Implementation } from '../../api/generated';
 import { DB_TYPE } from '../database/config';
 import { InMemoryUserRepository } from '../repository/memory/in-memory-user.repository';
@@ -11,12 +7,12 @@ import { PostgresAdminRepository } from '../repository/postgres/postgres-admin.r
 import type { UserRepository } from '../repository/user.repository';
 import type { AdminRepository } from '../repository/admin.repository';
 import { getDatabase } from '../database/client';
-import { createUserHandlers } from './user';
-import { createAuthHandlers } from './auth';
-import { createAdminAuthHandlers } from './admin-auth';
-import * as subscriptions from './subscription';
-import * as billing from './billing';
-import * as reports from './report';
+import { createUserHandlers } from './admin/user';
+import { createAuthHandlers } from './public/auth';
+import { createAdminAuthHandlers } from './admin/auth';
+import * as subscriptions from './public/subscription';
+import * as billing from './admin/billing';
+import * as reports from './admin/report';
 
 const databaseInstance = getDatabase();
 let userRepository: UserRepository;
