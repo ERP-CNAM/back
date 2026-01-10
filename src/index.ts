@@ -6,7 +6,7 @@ import { bootstrap, createRouter } from '../api/generated';
 import { handlers } from './handler';
 import { loggerMiddleware } from './middleware/logger-middleware';
 import { authMiddleware } from './middleware/auth-middleware';
-import { addAdmin } from './scripts/generate-admin';
+import { createDefaultAdmin } from './utils/default-admin';
 
 // Load OpenAPI spec for Swagger UI
 const swaggerDocument = YAML.load(path.join(__dirname, '../api/spec/openapi.yaml'));
@@ -14,7 +14,7 @@ const swaggerDocument = YAML.load(path.join(__dirname, '../api/spec/openapi.yaml
 // Start server
 const PORT = Number(process.env.PORT) || 3000;
 
-addAdmin();
+createDefaultAdmin();
 
 bootstrap({
     port: PORT,

@@ -7,7 +7,7 @@ import { InMemoryAdminRepository } from '../repository/memory/in-memory-admin.re
 /**
  * Script to create an initial admin user (dev only)
  */
-async function generateAdmin() {
+async function seedAdmin() {
     try {
         const db = getDatabase();
         const adminRepo = DB_TYPE === 'postgres' ? new PostgresAdminRepository(db) : new InMemoryAdminRepository(db);
@@ -41,8 +41,8 @@ async function generateAdmin() {
     }
 }
 
-export function addAdmin() {
+export function createDefaultAdmin() {
     if (process.env.NODE_ENV !== 'production') {
-        generateAdmin().then(() => console.log('Admin created!'));
+        seedAdmin().then(() => console.log('Admin created!'));
     }
 }
