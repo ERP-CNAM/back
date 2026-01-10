@@ -1,4 +1,9 @@
-import type { t_User, t_UserStatus, t_CreateUserRequestBodySchema, t_UpdateUserRequestBodySchema } from '../api/models';
+import type {
+    t_User,
+    t_UserStatus,
+    t_CreateUserRequestBodySchema,
+    t_UpdateUserRequestBodySchema,
+} from '../../api/models';
 
 export interface UserQueryOptions {
     status?: t_UserStatus;

@@ -1,12 +1,12 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { InMemoryUserRepository } from '../../repository/memory/in-memory-user.repository';
+import { InMemoryUserRepository } from '../../src/repository/memory/in-memory-user.repository';
 import type {
     t_CreateUserRequestBodySchema,
     t_UpdateUserRequestBodySchema,
     t_User,
     t_UserStatus,
 } from '../../api/models';
-import { createTestDatabase } from '../../database/memory/test-instance';
+import { createTestDatabase } from '../../src/database/memory/test-instance';
 
 describe('InMemoryUserRepository', () => {
     let repository: InMemoryUserRepository;

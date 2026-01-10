@@ -2,7 +2,11 @@ import { security } from '../utils/security';
 
 export const authMiddleware = (req: any, res: any, next: any) => {
     // Exclude swagger, login, and registration
-    if (req.path.startsWith('/swagger') || req.path === '/auth/login' || (req.path === '/users' && req.method === 'POST')) {
+    if (
+        req.path.startsWith('/swagger') ||
+        req.path === '/auth/login' ||
+        (req.path === '/users' && req.method === 'POST')
+    ) {
         return next();
     }
 

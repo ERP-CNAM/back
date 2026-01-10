@@ -1,4 +1,4 @@
-import type { ExportDirectDebits, GetMonthlyRevenue } from '../api/generated';
+import type { ExportDirectDebits, GetMonthlyRevenue } from '../../api/generated';
 
 /**
  * Export direct debits for banking

@@ -2,7 +2,7 @@
  * This file combines all handler modules with dependency injection for repositories
  */
 
-import type { Implementation } from '../api/generated';
+import type { Implementation } from '../../api/generated';
 import { DB_TYPE } from '../database/config';
 import { InMemoryUserRepository } from '../repository/memory/in-memory-user.repository';
 import { PostgresUserRepository } from '../repository/postgres/postgres-user.repository';

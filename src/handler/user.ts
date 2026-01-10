@@ -1,4 +1,4 @@
-import type { ListUsers, CreateUser, GetUser, UpdateUser, DeleteUser, UpdateUserStatus } from '../api/generated';
+import type { ListUsers, CreateUser, GetUser, UpdateUser, DeleteUser, UpdateUserStatus } from '../../api/generated';
 import type { UserRepository } from '../repository/user.repository';
 
 export function createUserHandlers(repository: UserRepository) {

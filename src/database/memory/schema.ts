@@ -1,5 +1,5 @@
 import { sqliteTable, text } from 'drizzle-orm/sqlite-core';
-import { t_UserStatus } from '../../api/models';
+import { t_UserStatus } from '../../../api/models';
 
 export const users = sqliteTable('users', {
     id: text('id').primaryKey().notNull(),

@@ -4,7 +4,7 @@ import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 import { count } from 'drizzle-orm';
 import path from 'path';
 import { users } from './schema';
-import { t_User, t_UserStatus } from '../../api/models';
+import { t_User, t_UserStatus } from '../../../api/models';
 
 export function createTestDatabase(seedData?: (t_User & { password: string })[]): BetterSQLite3Database {
     const sqlite = new Database(':memory:');

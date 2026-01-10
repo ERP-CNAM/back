@@ -1,4 +1,4 @@
-import type { GenerateMonthlyBilling, ExportMonthlyInvoices } from '../api/generated';
+import type { GenerateMonthlyBilling, ExportMonthlyInvoices } from '../../api/generated';
 
 /**
  * Generate monthly billing for all active subscriptions

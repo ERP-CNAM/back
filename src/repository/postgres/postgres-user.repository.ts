@@ -6,7 +6,7 @@ import type {
     t_UpdateUserRequestBodySchema,
     t_User,
     t_UserStatus,
-} from '../../api/models';
+} from '../../../api/models';
 import { users } from '../../database/postgres/schema';
 import { generateUUID } from '../../utils/uuid';
 import { security } from '../../utils/security';

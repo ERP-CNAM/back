@@ -1,4 +1,4 @@
-import type { Login } from '../api/generated';
+import type { Login } from '../../api/generated';
 import type { UserRepository } from '../repository/user.repository';
 import { security } from '../utils/security';
 

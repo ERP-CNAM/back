@@ -23,7 +23,7 @@ tags:
   - name: BankingExports
     description: Prélèvements pour la banque (Bank)
   - name: Reports
-    description: Statuts, chiffre d’affaires et règlements
+    description: Statuts, chiffre d'affaires et règlements
 
 security:
   - bearerAuth: []
@@ -621,14 +621,14 @@ components:
           format: uuid
         firstName:
           type: string
-          example: "Tintin"
+          example: "John"
         lastName:
           type: string
-          example: "Reporter"
+          example: "Doe"
         email:
           type: string
           format: email
-          example: "tintin@example.com"
+          example: "john.doe@example.com"
         status:
           $ref: "#/components/schemas/UserStatus"
         paymentMethod:
@@ -646,15 +646,18 @@ components:
       properties:
         firstName:
           type: string
+          example: "John"
         lastName:
           type: string
+          example: "Doe"
         email:
           type: string
           format: email
+          example: "john.doe@example.com"
         password:
           type: string
           format: password
-          example: "secret123"
+          example: "Password123!"
         paymentMethod:
           $ref: "#/components/schemas/PaymentMethod"
 
@@ -663,11 +666,14 @@ components:
       properties:
         firstName:
           type: string
+          example: "John"
         lastName:
           type: string
+          example: "Doe"
         email:
           type: string
           format: email
+          example: "john.doe@example.com"
         status:
           $ref: "#/components/schemas/UserStatus"
         paymentMethod:
@@ -824,7 +830,7 @@ components:
           nullable: true
         customerName:
           type: string
-          example: "Tintin"
+          example: "John Doe"
 
     DirectDebitOrder:
       type: object
@@ -858,11 +864,11 @@ components:
         email:
           type: string
           format: email
-          example: "tintin@example.com"
+          example: "john.doe@example.com"
         password:
           type: string
           format: password
-          example: "secret123"
+          example: "Password123!"
 
     LoginResponse:
       type: object
