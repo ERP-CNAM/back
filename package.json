@@ -22,8 +22,8 @@
     "main": "src/index.ts",
     "scripts": {
         "start": "ts-node src/index.ts",
-        "start:prod": "node dist/src/index.js",
         "dev": "nodemon src/index.ts",
+        "prod": "node dist/src/index.js",
         "build": "tsc && cp -r api/spec dist/api/spec && cp -r src/database/memory/migrations dist/src/database/memory/",
         "test": "vitest run",
         "test:watch": "vitest",

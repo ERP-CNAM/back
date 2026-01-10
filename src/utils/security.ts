@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { t_User } from '../../api/models';
+import { t_User, t_Admin } from '../../api/models';
 
 const SALT_ROUNDS = 10;
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-it';
@@ -9,6 +9,7 @@ const JWT_EXPIRES_IN = '24h';
 export interface UserPayload {
     userId: string;
     email: string;
+    userType: 'user' | 'admin';
 }
 
 export const security = {
@@ -24,6 +25,16 @@ export const security = {
         const payload: UserPayload = {
             userId: user.id || '',
             email: user.email || '',
+            userType: 'user',
+        };
+        return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+    },
+
+    generateAdminToken(admin: t_Admin): string {
+        const payload: UserPayload = {
+            userId: admin.id || '',
+            email: admin.email || '',
+            userType: 'admin',
         };
         return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
     },

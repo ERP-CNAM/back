@@ -12,3 +12,15 @@ export const users = pgTable('users', {
     createdAt: timestamp('createdAt').defaultNow(),
     updatedAt: timestamp('updatedAt').defaultNow(),
 });
+
+export const admins = pgTable('admins', {
+    id: uuid('id').primaryKey().notNull(),
+    firstName: varchar('firstName', { length: 255 }).notNull(),
+    lastName: varchar('lastName', { length: 255 }).notNull(),
+    email: varchar('email', { length: 255 }).unique().notNull(),
+    password: varchar('password', { length: 255 }).notNull(), // Hashed password
+    isActive: varchar('isActive', { length: 10 }).notNull().default('true'),
+    lastLogin: timestamp('lastLogin'),
+    createdAt: timestamp('createdAt').defaultNow(),
+    updatedAt: timestamp('updatedAt').defaultNow(),
+});

@@ -1,8 +1,17 @@
 import type { ListUsers, CreateUser, GetUser, UpdateUser, DeleteUser, UpdateUserStatus } from '../../api/generated';
 import type { UserRepository } from '../repository/user.repository';
+import { isAdmin } from '../middleware/admin-guard';
 
 export function createUserHandlers(repository: UserRepository) {
-    const listUsers: ListUsers = async (params, respond) => {
+    const listUsers: ListUsers = async (params, respond, req) => {
+        // Check if user is admin
+        if (!isAdmin(req)) {
+            return respond.with403().body({
+                success: false,
+                message: 'Accès refusé - token administrateur requis',
+            });
+        }
+
         const queryOptions = params.query || {};
 
         const users = await repository.findAll(queryOptions);

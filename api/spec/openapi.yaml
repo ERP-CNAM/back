@@ -60,6 +60,37 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/BaseAPIResponse"
+  /auth/admin/login:
+    post:
+      operationId: adminLogin
+      tags: [ Authentification ]
+      summary: Connexion administrateur
+      description: Authentification par email/mot de passe pour obtenir un token JWT administrateur.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Connexion réussie
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/BaseAPIResponse"
+                  - type: object
+                    properties:
+                      payload:
+                        $ref: "#/components/schemas/AdminLoginResponse"
+        "401":
+          description: Identifiants invalides
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BaseAPIResponse"
   /users:
     post:
       operationId: createUser
@@ -89,7 +120,10 @@ paths:
       operationId: listUsers
       tags: [ Users ]
       summary: Lister les utilisateurs
-      description: Retourne la liste des joueurs/abonnés.
+      description: |
+        **ADMIN UNIQUEMENT**
+
+        Retourne la liste des joueurs/abonnés.
       parameters:
         - in: query
           name: status
@@ -110,6 +144,12 @@ paths:
                         type: array
                         items:
                           $ref: "#/components/schemas/User"
+        "403":
+          description: Accès refusé - token administrateur requis
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BaseAPIResponse"
 
   /users/{userId}:
     get:
@@ -878,6 +918,45 @@ components:
           description: "JWT Token"
         user:
           $ref: "#/components/schemas/User"
+
+    Admin:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        firstName:
+          type: string
+          example: "Admin"
+        lastName:
+          type: string
+          example: "User"
+        email:
+          type: string
+          format: email
+          example: "admin@gamers-erp.com"
+        isActive:
+          type: string
+          example: "true"
+        lastLogin:
+          type: string
+          format: date-time
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    AdminLoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          description: "JWT Token"
+        admin:
+          $ref: "#/components/schemas/Admin"
 
   securitySchemes:
     bearerAuth:

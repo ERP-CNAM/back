@@ -1,171 +1,178 @@
 {
-    "id": "6cf16980-0c7b-4f36-afb0-8c40f6d229a4",
-    "prevId": "00000000-0000-0000-0000-000000000000",
-    "version": "7",
-    "dialect": "postgresql",
+    "version": "6",
+    "dialect": "sqlite",
+    "id": "4fa1500e-de0c-427e-b259-31d46db01c20",
+    "prevId": "da17a8bb-33a7-4885-a8a4-cfe6f28c24e6",
     "tables": {
-        "public.admins": {
+        "admins": {
             "name": "admins",
-            "schema": "",
             "columns": {
                 "id": {
                     "name": "id",
-                    "type": "uuid",
+                    "type": "text",
                     "primaryKey": true,
-                    "notNull": true
+                    "notNull": true,
+                    "autoincrement": false
                 },
                 "firstName": {
                     "name": "firstName",
-                    "type": "varchar(255)",
+                    "type": "text",
                     "primaryKey": false,
-                    "notNull": true
+                    "notNull": true,
+                    "autoincrement": false
                 },
                 "lastName": {
                     "name": "lastName",
-                    "type": "varchar(255)",
+                    "type": "text",
                     "primaryKey": false,
-                    "notNull": true
+                    "notNull": true,
+                    "autoincrement": false
                 },
                 "email": {
                     "name": "email",
-                    "type": "varchar(255)",
+                    "type": "text",
                     "primaryKey": false,
-                    "notNull": true
+                    "notNull": true,
+                    "autoincrement": false
                 },
                 "password": {
                     "name": "password",
-                    "type": "varchar(255)",
+                    "type": "text",
                     "primaryKey": false,
-                    "notNull": true
+                    "notNull": true,
+                    "autoincrement": false
                 },
                 "isActive": {
                     "name": "isActive",
-                    "type": "varchar(10)",
+                    "type": "text",
                     "primaryKey": false,
                     "notNull": true,
+                    "autoincrement": false,
                     "default": "'true'"
                 },
                 "lastLogin": {
                     "name": "lastLogin",
-                    "type": "timestamp",
+                    "type": "text",
                     "primaryKey": false,
-                    "notNull": false
+                    "notNull": false,
+                    "autoincrement": false
                 },
                 "createdAt": {
                     "name": "createdAt",
-                    "type": "timestamp",
+                    "type": "text",
                     "primaryKey": false,
                     "notNull": false,
-                    "default": "now()"
+                    "autoincrement": false
                 },
                 "updatedAt": {
                     "name": "updatedAt",
-                    "type": "timestamp",
+                    "type": "text",
                     "primaryKey": false,
                     "notNull": false,
-                    "default": "now()"
+                    "autoincrement": false
                 }
             },
-            "indexes": {},
-            "foreignKeys": {},
-            "compositePrimaryKeys": {},
-            "uniqueConstraints": {
+            "indexes": {
                 "admins_email_unique": {
                     "name": "admins_email_unique",
-                    "nullsNotDistinct": false,
-                    "columns": ["email"]
+                    "columns": ["email"],
+                    "isUnique": true
                 }
             },
-            "policies": {},
-            "checkConstraints": {},
-            "isRLSEnabled": false
+            "foreignKeys": {},
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {},
+            "checkConstraints": {}
         },
-        "public.users": {
+        "users": {
             "name": "users",
-            "schema": "",
             "columns": {
                 "id": {
                     "name": "id",
-                    "type": "uuid",
+                    "type": "text",
                     "primaryKey": true,
-                    "notNull": true
+                    "notNull": true,
+                    "autoincrement": false
                 },
                 "firstName": {
                     "name": "firstName",
-                    "type": "varchar(255)",
+                    "type": "text",
                     "primaryKey": false,
-                    "notNull": false
+                    "notNull": false,
+                    "autoincrement": false
                 },
                 "lastName": {
                     "name": "lastName",
-                    "type": "varchar(255)",
+                    "type": "text",
                     "primaryKey": false,
-                    "notNull": false
+                    "notNull": false,
+                    "autoincrement": false
                 },
                 "email": {
                     "name": "email",
-                    "type": "varchar(255)",
+                    "type": "text",
                     "primaryKey": false,
-                    "notNull": false
+                    "notNull": false,
+                    "autoincrement": false
                 },
                 "password": {
                     "name": "password",
-                    "type": "varchar(255)",
+                    "type": "text",
                     "primaryKey": false,
-                    "notNull": true
+                    "notNull": true,
+                    "autoincrement": false
                 },
                 "paymentMethod": {
                     "name": "paymentMethod",
                     "type": "text",
                     "primaryKey": false,
-                    "notNull": false
+                    "notNull": false,
+                    "autoincrement": false
                 },
                 "status": {
                     "name": "status",
-                    "type": "varchar(50)",
+                    "type": "text",
                     "primaryKey": false,
                     "notNull": true,
+                    "autoincrement": false,
                     "default": "'OK'"
                 },
                 "createdAt": {
                     "name": "createdAt",
-                    "type": "timestamp",
+                    "type": "text",
                     "primaryKey": false,
                     "notNull": false,
-                    "default": "now()"
+                    "autoincrement": false
                 },
                 "updatedAt": {
                     "name": "updatedAt",
-                    "type": "timestamp",
+                    "type": "text",
                     "primaryKey": false,
                     "notNull": false,
-                    "default": "now()"
+                    "autoincrement": false
                 }
             },
-            "indexes": {},
-            "foreignKeys": {},
-            "compositePrimaryKeys": {},
-            "uniqueConstraints": {
+            "indexes": {
                 "users_email_unique": {
                     "name": "users_email_unique",
-                    "nullsNotDistinct": false,
-                    "columns": ["email"]
+                    "columns": ["email"],
+                    "isUnique": true
                 }
             },
-            "policies": {},
-            "checkConstraints": {},
-            "isRLSEnabled": false
+            "foreignKeys": {},
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {},
+            "checkConstraints": {}
         }
     },
-    "enums": {},
-    "schemas": {},
-    "sequences": {},
-    "roles": {},
-    "policies": {},
     "views": {},
+    "enums": {},
     "_meta": {
-        "columns": {},
         "schemas": {},
-        "tables": {}
+        "tables": {},
+        "columns": {}
+    },
+    "internal": {
+        "indexes": {}
     }
 }

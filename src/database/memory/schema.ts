@@ -12,3 +12,15 @@ export const users = sqliteTable('users', {
     createdAt: text('createdAt'),
     updatedAt: text('updatedAt'),
 });
+
+export const admins = sqliteTable('admins', {
+    id: text('id').primaryKey().notNull(),
+    firstName: text('firstName').notNull(),
+    lastName: text('lastName').notNull(),
+    email: text('email').unique().notNull(),
+    password: text('password').notNull(),
+    isActive: text('isActive').notNull().default('true'),
+    lastLogin: text('lastLogin'),
+    createdAt: text('createdAt'),
+    updatedAt: text('updatedAt'),
+});
