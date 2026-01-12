@@ -7,10 +7,11 @@ import { PostgresAdminRepository } from '../repository/postgres/postgres-admin.r
 import type { UserRepository } from '../repository/user.repository';
 import type { AdminRepository } from '../repository/admin.repository';
 import { getDatabase } from '../database/client';
-import { createUserHandlers } from './admin/user';
 import { createAuthHandlers } from './public/auth';
+import { createRegistrationHandlers } from './public/registration';
+import * as subscriptions from './authenticated/subscription';
+import { createUserHandlers } from './admin/user';
 import { createAdminAuthHandlers } from './admin/auth';
-import * as subscriptions from './public/subscription';
 import * as billing from './admin/billing';
 import * as reports from './admin/report';
 
@@ -25,35 +26,33 @@ if (DB_TYPE === 'postgres') {
     userRepository = new InMemoryUserRepository(databaseInstance);
     adminRepository = new InMemoryAdminRepository(databaseInstance);
 }
-const userHandlers = createUserHandlers(userRepository);
+
 const authHandlers = createAuthHandlers(userRepository);
+const registrationHandlers = createRegistrationHandlers(userRepository);
+const userHandlers = createUserHandlers(userRepository);
 const adminAuthHandlers = createAdminAuthHandlers(adminRepository);
 
 export const handlers: Implementation = {
-    // Auth
+    // PUBLIC
     login: authHandlers.login,
     adminLogin: adminAuthHandlers.adminLogin,
+    createUser: registrationHandlers.createUser,
 
-    // Users
-    listUsers: userHandlers.listUsers,
-    createUser: userHandlers.createUser,
-    getUser: userHandlers.getUser,
-    updateUser: userHandlers.updateUser,
-    deleteUser: userHandlers.deleteUser,
-    updateUserStatus: userHandlers.updateUserStatus,
-
-    // Subscriptions
+    // AUTHENTICATED USER
     listSubscriptions: subscriptions.listSubscriptions,
     createSubscription: subscriptions.createSubscription,
     getSubscription: subscriptions.getSubscription,
     updateSubscription: subscriptions.updateSubscription,
     cancelSubscription: subscriptions.cancelSubscription,
 
-    // Billing
+    // ADMIN
+    listUsers: userHandlers.listUsers,
+    getUser: userHandlers.getUser,
+    updateUser: userHandlers.updateUser,
+    deleteUser: userHandlers.deleteUser,
+    updateUserStatus: userHandlers.updateUserStatus,
     generateMonthlyBilling: billing.generateMonthlyBilling,
     exportMonthlyInvoices: billing.exportMonthlyInvoices,
-
-    // Reports
     exportDirectDebits: reports.exportDirectDebits,
     getMonthlyRevenue: reports.getMonthlyRevenue,
 };

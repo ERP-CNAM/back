@@ -7,16 +7,16 @@ import type {
 } from '../../../api/generated';
 
 /**
- * List subscriptions with optional filters
+ * List user's own subscriptions
  */
 export const listSubscriptions: ListSubscriptions = async (params, respond) => {
-    // TODO: Implement with database
+    // TODO: Implement with database - filter by authenticated user
     const notImplemented = { params, respond };
     throw new Error(`Not implemented : ${notImplemented}`);
 };
 
 /**
- * Create a new subscription
+ * Create a new subscription for the authenticated user
  */
 export const createSubscription: CreateSubscription = async (params, respond) => {
     // TODO: Implement with database
@@ -25,7 +25,7 @@ export const createSubscription: CreateSubscription = async (params, respond) =>
 };
 
 /**
- * Get a subscription by ID
+ * Get a subscription by ID (only if owned by authenticated user)
  */
 export const getSubscription: GetSubscription = async (params, respond) => {
     // TODO: Implement with database
@@ -34,7 +34,7 @@ export const getSubscription: GetSubscription = async (params, respond) => {
 };
 
 /**
- * Update a subscription
+ * Update a subscription (only if owned by authenticated user)
  */
 export const updateSubscription: UpdateSubscription = async (params, respond) => {
     // TODO: Implement with database
@@ -43,7 +43,7 @@ export const updateSubscription: UpdateSubscription = async (params, respond) =>
 };
 
 /**
- * Cancel a subscription
+ * Cancel a subscription (only if owned by authenticated user)
  */
 export const cancelSubscription: CancelSubscription = async (params, respond) => {
     // TODO: Implement with database

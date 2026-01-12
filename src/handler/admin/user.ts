@@ -1,10 +1,9 @@
-import type { ListUsers, CreateUser, GetUser, UpdateUser, DeleteUser, UpdateUserStatus } from '../../../api/generated';
+import type { ListUsers, GetUser, UpdateUser, DeleteUser, UpdateUserStatus } from '../../../api/generated';
 import type { UserRepository } from '../../repository/user.repository';
 import { isAdmin } from '../../middleware/admin-guard';
 
 export function createUserHandlers(repository: UserRepository) {
     const listUsers: ListUsers = async (params, respond, req) => {
-        // Check if user is admin
         if (!isAdmin(req)) {
             return respond.with403().body({
                 success: false,
@@ -20,18 +19,6 @@ export function createUserHandlers(repository: UserRepository) {
             success: true,
             message: 'Users retrieved successfully',
             payload: users,
-        });
-    };
-
-    const createUser: CreateUser = async (params, respond) => {
-        const userData = params.body;
-
-        const newUser = await repository.create(userData);
-
-        return respond.with201().body({
-            success: true,
-            message: 'User created successfully',
-            payload: newUser,
         });
     };
 
@@ -100,7 +87,6 @@ export function createUserHandlers(repository: UserRepository) {
         const { userId } = params.params;
         const { status } = params.body;
 
-        // If no status provided, just return the current user
         if (!status) {
             const user = await repository.findById(userId);
             if (!user) {
@@ -136,7 +122,6 @@ export function createUserHandlers(repository: UserRepository) {
 
     return {
         listUsers,
-        createUser,
         getUser,
         updateUser,
         deleteUser,
