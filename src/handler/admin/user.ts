@@ -3,11 +3,12 @@ import type { UserRepository } from '../../repository/user.repository';
 import { isAdmin } from '../../middleware/admin-guard';
 
 export function createUserHandlers(repository: UserRepository) {
+    // GET /users
     const listUsers: ListUsers = async (params, respond, req) => {
         if (!isAdmin(req)) {
             return respond.with403().body({
                 success: false,
-                message: 'Access denied',
+                message: 'Access denied - admin token required',
             });
         }
 
@@ -22,6 +23,7 @@ export function createUserHandlers(repository: UserRepository) {
         });
     };
 
+    // GET /users/{userId}
     const getUser: GetUser = async (params, respond) => {
         const { userId } = params.params;
 
@@ -42,6 +44,7 @@ export function createUserHandlers(repository: UserRepository) {
         });
     };
 
+    // PUT /users/{userId}
     const updateUser: UpdateUser = async (params, respond) => {
         const { userId } = params.params;
         const updates = params.body;
@@ -63,6 +66,7 @@ export function createUserHandlers(repository: UserRepository) {
         });
     };
 
+    // DELETE /users/{userId}
     const deleteUser: DeleteUser = async (params, respond) => {
         const { userId } = params.params;
 
@@ -83,6 +87,7 @@ export function createUserHandlers(repository: UserRepository) {
         });
     };
 
+    // PATCH /users/{userId}/status
     const updateUserStatus: UpdateUserStatus = async (params, respond) => {
         const { userId } = params.params;
         const { status } = params.body;

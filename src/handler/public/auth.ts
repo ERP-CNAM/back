@@ -3,6 +3,7 @@ import type { UserRepository } from '../../repository/user.repository';
 import { security } from '../../utils/security';
 
 export const createAuthHandlers = (userRepository: UserRepository) => {
+    // POST /auth/login
     const login: Login = async (params, respond) => {
         const { email, password } = params.body;
 

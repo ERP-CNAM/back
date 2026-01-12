@@ -6,45 +6,35 @@ import type {
     CancelSubscription,
 } from '../../../api/generated';
 
-/**
- * List user's own subscriptions
- */
+// GET /subscriptions
 export const listSubscriptions: ListSubscriptions = async (params, respond) => {
     // TODO: Implement with database - filter by authenticated user
     const notImplemented = { params, respond };
     throw new Error(`Not implemented : ${notImplemented}`);
 };
 
-/**
- * Create a new subscription for the authenticated user
- */
+// POST /subscriptions
 export const createSubscription: CreateSubscription = async (params, respond) => {
     // TODO: Implement with database
     const notImplemented = { params, respond };
     throw new Error(`Not implemented : ${notImplemented}`);
 };
 
-/**
- * Get a subscription by ID (only if owned by authenticated user)
- */
+// GET /subscriptions/{subscriptionId}
 export const getSubscription: GetSubscription = async (params, respond) => {
     // TODO: Implement with database
     const notImplemented = { params, respond };
     throw new Error(`Not implemented : ${notImplemented}`);
 };
 
-/**
- * Update a subscription (only if owned by authenticated user)
- */
+// PUT /subscriptions/{subscriptionId}
 export const updateSubscription: UpdateSubscription = async (params, respond) => {
     // TODO: Implement with database
     const notImplemented = { params, respond };
     throw new Error(`Not implemented : ${notImplemented}`);
 };
 
-/**
- * Cancel a subscription (only if owned by authenticated user)
- */
+// DELETE /subscriptions/{subscriptionId}
 export const cancelSubscription: CancelSubscription = async (params, respond) => {
     // TODO: Implement with database
     const notImplemented = { params, respond };

@@ -3,6 +3,7 @@ import type { AdminRepository } from '../../repository/admin.repository';
 import { security } from '../../utils/security';
 
 export const createAdminAuthHandlers = (adminRepository: AdminRepository) => {
+    // POST /auth/admin/login
     const adminLogin: AdminLogin = async (params, respond) => {
         const { email, password } = params.body;
 

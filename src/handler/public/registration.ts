@@ -2,6 +2,7 @@ import type { CreateUser } from '../../../api/generated';
 import type { UserRepository } from '../../repository/user.repository';
 
 export function createRegistrationHandlers(repository: UserRepository) {
+    // POST /users
     const createUser: CreateUser = async (params, respond) => {
         const userData = params.body;
 
