@@ -12,19 +12,17 @@ async function seedAdmin() {
         const db = getDatabase();
         const adminRepo = DB_TYPE === 'postgres' ? new PostgresAdminRepository(db) : new InMemoryAdminRepository(db);
 
-        const adminEmail = process.env.ADMIN_EMAIL || 'admin@gamers-erp.com';
-        const adminPassword = process.env.ADMIN_PASSWORD || 'Admin123!';
-        const firstName = process.env.ADMIN_FIRSTNAME || 'Super';
-        const lastName = process.env.ADMIN_LASTNAME || 'Admin';
+        const adminEmail = String(process.env.ADMIN_EMAIL);
+        const adminPassword = String(process.env.ADMIN_PASSWORD);
+        const firstName = String(process.env.ADMIN_FIRSTNAME);
+        const lastName = String(process.env.ADMIN_LASTNAME);
 
-        // Check if admin already exists
         const existingAdmin = await adminRepo.findByEmail(adminEmail);
         if (existingAdmin) {
             console.error(`Admin with email ${adminEmail} already exists`);
             return;
         }
 
-        // Create admin
         const admin = await adminRepo.create({
             email: adminEmail,
             password: adminPassword,
