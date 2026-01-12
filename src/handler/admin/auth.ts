@@ -29,7 +29,7 @@ export const createAdminAuthHandlers = (adminRepository: AdminRepository) => {
 
         return respond.with200().body({
             success: true,
-            message: 'Connexion administrateur réussie',
+            message: 'Admin login successful',
             payload: {
                 token,
                 admin: adminWithoutPassword,

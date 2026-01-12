@@ -1,7 +1,7 @@
 # Architecture Decision Records
 
 Date: 09/01/2026
-Statut: Accepté
+Statut: En attente
 
 ## Contexte
 

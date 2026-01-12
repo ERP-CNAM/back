@@ -7,6 +7,7 @@ import { handlers } from './handler';
 import { loggerMiddleware } from './middleware/logger.middleware';
 import { authMiddleware } from './middleware/auth.middleware';
 import { debugRequestMiddleware } from './middleware/debug.middleware';
+import { connectMiddleware } from './middleware/connect.middleware';
 import { createDefaultAdmin } from './utils/default-admin';
 
 // Load OpenAPI spec for Swagger UI
@@ -20,16 +21,12 @@ createDefaultAdmin();
 bootstrap({
     port: PORT,
     router: createRouter(handlers),
-    cors: undefined, // Allow all origins by default
-    middleware: [...swaggerUi.serve, debugRequestMiddleware, loggerMiddleware, authMiddleware],
+    cors: undefined,
+    middleware: [...swaggerUi.serve, connectMiddleware, debugRequestMiddleware, loggerMiddleware, authMiddleware],
 }).then(({ app }) => {
     app.use('/swagger', swaggerUi.setup(swaggerDocument));
 
     console.log(`Server running on http://localhost:${PORT}`);
     console.log(`Swagger UI: http://localhost:${PORT}/swagger`);
     console.log(`API endpoints available`);
-
-    if (process.env.DEBUG_REQUESTS === 'true') {
-        console.log('Debug mode enabled - logging all raw requests');
-    }
 });

@@ -23,7 +23,7 @@ export const createAuthHandlers = (userRepository: UserRepository) => {
 
         return respond.with200().body({
             success: true,
-            message: 'Connexion réussie',
+            message: 'Login successful',
             payload: {
                 token,
                 user: userWithoutPassword,

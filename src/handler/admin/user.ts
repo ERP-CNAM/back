@@ -8,7 +8,7 @@ export function createUserHandlers(repository: UserRepository) {
         if (!isAdmin(req)) {
             return respond.with403().body({
                 success: false,
-                message: 'Accès refusé - token administrateur requis',
+                message: 'Access denied',
             });
         }
 
@@ -18,7 +18,7 @@ export function createUserHandlers(repository: UserRepository) {
 
         return respond.with200().body({
             success: true,
-            message: 'Utilisateurs récupérés avec succès',
+            message: 'Users retrieved successfully',
             payload: users,
         });
     };
@@ -30,7 +30,7 @@ export function createUserHandlers(repository: UserRepository) {
 
         return respond.with201().body({
             success: true,
-            message: 'Utilisateur créé avec succès',
+            message: 'User created successfully',
             payload: newUser,
         });
     };
@@ -43,14 +43,14 @@ export function createUserHandlers(repository: UserRepository) {
         if (!user) {
             return respond.with404().body({
                 success: false,
-                message: 'Utilisateur non trouvé',
+                message: 'User not found',
                 payload: null,
             });
         }
 
         return respond.with200().body({
             success: true,
-            message: 'Détails utilisateur récupérés avec succès',
+            message: 'User details retrieved successfully',
             payload: user,
         });
     };
@@ -64,14 +64,14 @@ export function createUserHandlers(repository: UserRepository) {
         if (!updatedUser) {
             return respond.with404().body({
                 success: false,
-                message: 'Utilisateur non trouvé',
+                message: 'User not found',
                 payload: null,
             });
         }
 
         return respond.with200().body({
             success: true,
-            message: 'Utilisateur mis à jour avec succès',
+            message: 'User updated successfully',
             payload: updatedUser,
         });
     };
@@ -84,14 +84,14 @@ export function createUserHandlers(repository: UserRepository) {
         if (!deleted) {
             return respond.with404().body({
                 success: false,
-                message: 'Utilisateur non trouvé',
+                message: 'User not found',
                 payload: null,
             });
         }
 
         return respond.with200().body({
             success: true,
-            message: 'Utilisateur supprimé avec succès',
+            message: 'User deleted successfully',
             payload: null,
         });
     };
@@ -106,13 +106,13 @@ export function createUserHandlers(repository: UserRepository) {
             if (!user) {
                 return respond.with404().body({
                     success: false,
-                    message: 'Utilisateur non trouvé',
+                    message: 'User not found',
                     payload: null,
                 });
             }
             return respond.with200().body({
                 success: true,
-                message: 'Statut utilisateur inchangé',
+                message: 'User status unchanged',
                 payload: user,
             });
         }
@@ -122,14 +122,14 @@ export function createUserHandlers(repository: UserRepository) {
         if (!updatedUser) {
             return respond.with404().body({
                 success: false,
-                message: 'Utilisateur non trouvé',
+                message: 'User not found',
                 payload: null,
             });
         }
 
         return respond.with200().body({
             success: true,
-            message: 'Statut utilisateur mis à jour avec succès',
+            message: 'User status updated successfully',
             payload: updatedUser,
         });
     };
