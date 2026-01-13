@@ -29,6 +29,13 @@
             "when": 1768065200685,
             "tag": "0003_blushing_nextwave",
             "breakpoints": true
+        },
+        {
+            "idx": 4,
+            "version": "6",
+            "when": 1768294761307,
+            "tag": "0004_add_subscriptions",
+            "breakpoints": true
         }
     ]
 }

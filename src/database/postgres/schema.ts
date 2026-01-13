@@ -1,5 +1,5 @@
-import { pgTable, text, varchar, timestamp, uuid } from 'drizzle-orm/pg-core';
-import { t_UserStatus } from '../../../api/models';
+import { pgTable, real, text, varchar, timestamp, uuid } from 'drizzle-orm/pg-core';
+import { t_SubscriptionStatus, t_UserStatus } from '../../../api/models';
 
 export const users = pgTable('users', {
     id: uuid('id').primaryKey().notNull(),
@@ -23,4 +23,15 @@ export const admins = pgTable('admins', {
     lastLogin: timestamp('lastLogin'),
     createdAt: timestamp('createdAt').defaultNow(),
     updatedAt: timestamp('updatedAt').defaultNow(),
+});
+
+export const subscriptions = pgTable('subscriptions', {
+    id: uuid('id').primaryKey().notNull(),
+    userId: uuid('userId').notNull(),
+    contractCode: varchar('contractCode', { length: 255 }).notNull(),
+    startDate: varchar('startDate', { length: 50 }).notNull(),
+    endDate: varchar('endDate', { length: 50 }),
+    monthlyAmount: real('monthlyAmount').notNull(),
+    promoCode: varchar('promoCode', { length: 255 }),
+    status: varchar('status', { length: 50 }).$type<t_SubscriptionStatus>().notNull().default('ACTIVE'),
 });
