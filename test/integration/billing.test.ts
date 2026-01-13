@@ -55,7 +55,7 @@ describe('Billing Integration', () => {
                 contractCode: 'C002',
                 startDate: '2025-02-01',
                 monthlyAmount: 200,
-                promoCode: 'DISCOUNT'
+                promoCode: 'B1M20'
             });
 
             const cancelledSub = await subscriptionRepo.create({
@@ -108,7 +108,7 @@ describe('Billing Integration', () => {
                 contractCode: 'PROMO1',
                 startDate: '2026-01-01',
                 monthlyAmount: 100,
-                promoCode: 'WELCOME50'
+                promoCode: 'B1M20'
             });
 
             const billingDate = '2026-01-31';

@@ -24,8 +24,8 @@ export function createBillingHandlers(
         for (const sub of activeSubscriptions) {
             let amountExclVat = sub.monthlyAmount || 0;
 
-            // Apply 50% discount on first payment if promo code exists
-            if (sub.promoCode) {
+            // Apply 50% discount on first payment if promo code is 'B1M20'
+            if (sub.promoCode === 'B1M20') {
                 const previousInvoicesCount = await invoiceRepository.countBySubscriptionId(sub.id!);
                 if (previousInvoicesCount === 0) {
                     amountExclVat = amountExclVat * 0.5;
