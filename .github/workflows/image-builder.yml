@@ -1,0 +1,10 @@
+name: Image Builder
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-push:
+    uses: ERP-CNAM/workflows-templates/.github/workflows/image-builder.yml@main
