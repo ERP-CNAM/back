@@ -62,7 +62,12 @@ export function SubscriptionsComponent() {
             <td class="p-2" x-text="s.endDate ?? '-'"></td>
             <td class="p-2" x-text="formatMoney(s.monthlyAmount)"></td>
             <td class="p-2">
-              <span class="px-2 py-1 rounded bg-slate-100" x-text="s.status"></span>
+              <span
+                class="px-2 py-1 rounded text-xs font-medium transition-colors"
+                :class="statusClass(s.status)"
+                x-text="s.status"
+              ></span>
+
             </td>
             <td class="p-2 text-center">
                <button
@@ -188,6 +193,18 @@ export function registerSubscriptionsAlpine(Alpine) {
         async confirmCancel(subscriptionId) {
             if (!confirm('Confirmer la résiliation de cet abonnement ?')) return;
             await this.cancel(subscriptionId);
+        },
+        statusClass(status) {
+            switch (status) {
+                case 'ACTIVE':
+                    return 'bg-emerald-100 text-emerald-800';
+                case 'PENDING_CANCEL':
+                    return 'bg-amber-100 text-amber-800';
+                case 'CANCELLED':
+                    return 'bg-red-100 text-red-800';
+                default:
+                    return 'bg-slate-100 text-slate-700';
+            }
         },
 
         async cancel(subscriptionId) {

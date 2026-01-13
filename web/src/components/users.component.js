@@ -52,7 +52,11 @@ export function UsersComponent() {
             <td class="p-2" x-text="u.firstName + ' ' + u.lastName"></td>
             <td class="p-2" x-text="u.email"></td>
             <td class="p-2">
-              <span class="px-2 py-1 rounded bg-slate-100" x-text="u.status"></span>
+                <span
+                class="px-2 py-1 rounded text-xs font-medium"
+                :class="statusClass(u.status)"
+                x-text="u.status"
+                ></span>
             </td>
             <td class="p-2" x-text="formatPayment(u.paymentMethod)"></td>
             <td class="p-2" >
@@ -65,53 +69,48 @@ export function UsersComponent() {
             </td>
 
             <td class="p-2 text-right">
-  <div class="flex justify-end items-center gap-2">
+                <div class="flex justify-end items-center gap-2">
+                    <div class="relative" x-data="{ open: false }">
+                    <button
+                        class="px-2 py-1.5 rounded-lg border text-slate-600 hover:bg-slate-100"
+                        @click="open = !open"
+                        @click.outside="open = false"
+                    >
+                        ⋯
+                    </button>
 
-    <!-- Action principale -->
+                    <div
+                        x-show="open"
+                        x-transition
+                        class="absolute right-0 mt-2 w-44 bg-white border rounded-lg shadow-lg z-20"
+                    >
+                        <button
+                        class="w-full text-left px-3 py-2 hover:bg-emerald-50 text-emerald-700"
+                        :disabled="u.status === 'OK'"
+                        @click="open=false; setStatus(u.id,'OK')"
+                        >
+                        ✔ Mettre OK
+                        </button>
 
+                        <button
+                        class="w-full text-left px-3 py-2 hover:bg-amber-50 text-amber-700"
+                        :disabled="u.status === 'SUSPENDED'"
+                        @click="open=false; setStatus(u.id,'SUSPENDED')"
+                        >
+                        ⏸ Suspendre
+                        </button>
 
-    <!-- Menu secondaire -->
-    <div class="relative" x-data="{ open: false }">
-      <button
-        class="px-2 py-1.5 rounded-lg border text-slate-600 hover:bg-slate-100"
-        @click="open = !open"
-        @click.outside="open = false"
-      >
-        ⋯
-      </button>
-
-      <div
-        x-show="open"
-        x-transition
-        class="absolute right-0 mt-2 w-44 bg-white border rounded-lg shadow-lg z-20"
-      >
-        <button
-          class="w-full text-left px-3 py-2 hover:bg-emerald-50 text-emerald-700"
-          :disabled="u.status === 'OK'"
-          @click="open=false; setStatus(u.id,'OK')"
-        >
-          ✔ Mettre OK
-        </button>
-
-        <button
-          class="w-full text-left px-3 py-2 hover:bg-amber-50 text-amber-700"
-          :disabled="u.status === 'SUSPENDED'"
-          @click="open=false; setStatus(u.id,'SUSPENDED')"
-        >
-          ⏸ Suspendre
-        </button>
-
-        <button
-          class="w-full text-left px-3 py-2 hover:bg-red-50 text-red-700"
-          :disabled="u.status === 'BLOCKED'"
-          @click="open=false; setStatus(u.id,'BLOCKED')"
-        >
-          ⛔ Bloquer
-        </button>
-      </div>
-    </div>
-  </div>
-</td>
+                        <button
+                        class="w-full text-left px-3 py-2 hover:bg-red-50 text-red-700"
+                        :disabled="u.status === 'BLOCKED'"
+                        @click="open=false; setStatus(u.id,'BLOCKED')"
+                        >
+                        ⛔ Bloquer
+                        </button>
+                    </div>
+                    </div>
+                </div>
+            </td>
           </tr>
         </template>
 
@@ -167,6 +166,21 @@ export function registerUsersAlpine() {
 
         goSubs(userId) {
             location.hash = `#/subscriptions?userId=${encodeURIComponent(userId)}`;
+        },
+
+        statusClass(status) {
+            switch (status) {
+                case 'OK':
+                    return 'bg-emerald-100 text-emerald-800';
+                case 'SUSPENDED':
+                    return 'bg-amber-100 text-amber-800';
+                case 'BLOCKED':
+                    return 'bg-red-100 text-red-800';
+                case 'DELETED':
+                    return 'bg-slate-200 text-slate-600';
+                default:
+                    return 'bg-slate-100 text-slate-700';
+            }
         },
 
         formatPayment(pm) {
