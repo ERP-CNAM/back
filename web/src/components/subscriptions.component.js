@@ -7,15 +7,13 @@ export function SubscriptionsComponent() {
   <section class="bg-white rounded-xl border shadow-sm p-4"
     x-data="subscriptionsPage()" x-init="init()">
 
-    <div class="flex items-end justify-between gap-4 mb-4">
+    <div class="flex items-center justify-between gap-4 mb-4">
       <div>
         <h2 class="text-lg font-semibold">Abonnements</h2>
-        <p class="text-sm text-slate-600">Liste + filtre + résiliation.</p>
       </div>
 
       <div class="flex gap-2 items-end flex-wrap">
         <div>
-          <label class="block text-xs text-slate-600 mb-1">userId</label>
           <input
             class="border rounded-lg px-3 py-2 w-72"
             placeholder="UUID userId (optionnel)"
@@ -24,7 +22,6 @@ export function SubscriptionsComponent() {
         </div>
 
         <div>
-          <label class="block text-xs text-slate-600 mb-1">status</label>
           <select class="border rounded-lg px-3 py-2" x-model="filterStatus">
             <option value="">Tous</option>
             <option value="ACTIVE">ACTIVE</option>
@@ -48,7 +45,7 @@ export function SubscriptionsComponent() {
         <thead class="bg-slate-100">
           <tr>
             <th class="text-left p-2">Contract</th>
-            <th class="text-left p-2">UserId</th>
+            <th class="text-left p-2">Utilisateur</th>
             <th class="text-left p-2">Début</th>
             <th class="text-left p-2">Fin</th>
             <th class="text-left p-2">Montant</th>
@@ -61,7 +58,7 @@ export function SubscriptionsComponent() {
           <template x-for="s in subscriptions" :key="s.id">
             <tr class="border-t">
               <td class="p-2" x-text="s.contractCode"></td>
-              <td class="p-2 font-mono text-xs" x-text="s.userId"></td>
+              <td class="p-2" x-text="formatUser(s)"></td>
               <td class="p-2" x-text="s.startDate"></td>
               <td class="p-2" x-text="s.endDate ?? '-'"></td>
               <td class="p-2" x-text="formatMoney(s.monthlyAmount)"></td>
@@ -111,6 +108,12 @@ export function registerSubscriptionsAlpine(Alpine) {
         init() {
             this.applyHashParams();
             this.load();
+        },
+
+        formatUser(s) {
+            const u = s?.user;
+            if (u?.firstName || u?.lastName) return `${u.firstName ?? ''} ${u.lastName ?? ''}`.trim();
+            return s?.userId ?? '-';
         },
 
         applyHashParams() {

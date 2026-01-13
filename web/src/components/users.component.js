@@ -5,15 +5,13 @@ import { toastStore } from '../stores/toast.store.js';
 export function UsersComponent() {
     return `
   <section class="bg-white rounded-xl border shadow-sm p-4" x-data="usersPage()" x-init="init()">
-    <div class="flex items-end justify-between gap-4 mb-4">
+    <div class="flex items-center justify-between gap-4 mb-4">
       <div>
         <h2 class="text-lg font-semibold">Utilisateurs</h2>
-        <p class="text-sm text-slate-600">Liste + filtre + changement de statut.</p>
       </div>
 
       <div class="flex gap-2 items-end">
         <div>
-          <label class="block text-xs text-slate-600 mb-1">Filtre status</label>
           <select class="border rounded-lg px-3 py-2" x-model="filterStatus">
             <option value="">Tous</option>
             <option value="OK">OK</option>

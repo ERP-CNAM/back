@@ -1,4 +1,3 @@
-// src/pages/login.page.js
 import { apiRequest } from '../api/client.js';
 import { authStore } from '../stores/auth.store.js';
 import { toastStore } from '../stores/toast.store.js';
@@ -15,13 +14,6 @@ export function LoginPage() {
       <p class="text-sm text-slate-600 mb-4">Accès au backoffice abonnés.</p>
 
       <div class="space-y-3">
-        <div>
-          <label class="block text-xs text-slate-600 mb-1">API Base URL</label>
-          <input class="w-full border rounded-lg px-3 py-2"
-            placeholder="http://localhost:3000"
-            x-model.trim="apiUrl" />
-        </div>
-
         <div>
           <label class="block text-xs text-slate-600 mb-1">Email</label>
           <input class="w-full border rounded-lg px-3 py-2"
@@ -59,8 +51,8 @@ export function registerLoginAlpine() {
             loading: false,
             error: '',
             apiUrl: config.API || 'http://localhost:3000',
-            email: '',
-            password: '',
+            email: 'admin@gamers-erp.com',
+            password: 'Password123!',
 
             async submit() {
                 if (this.loading) return;
