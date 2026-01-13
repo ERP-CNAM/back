@@ -10,25 +10,33 @@ import { debugRequestMiddleware } from './middleware/debug.middleware';
 import { connectMiddleware } from './middleware/connect.middleware';
 import { createDefaultAdmin } from './utils/default-admin';
 import { createDefaultUsers } from './utils/default-users';
+import { createDefaultSubscriptions } from './utils/default-subscription';
 
-// Load OpenAPI spec for Swagger UI
 const swaggerDocument = YAML.load(path.join(__dirname, '../api/spec/openapi.yaml'));
-
-// Start server
 const PORT = Number(process.env.PORT) || 3000;
 
-createDefaultAdmin();
-createDefaultUsers();
+async function main() {
+    // ✅ on attend VRAIMENT la création
+    await createDefaultAdmin();
+    await createDefaultUsers();
 
-bootstrap({
-    port: PORT,
-    router: createRouter(handlers),
-    cors: undefined,
-    middleware: [...swaggerUi.serve, connectMiddleware, debugRequestMiddleware, loggerMiddleware, authMiddleware],
-}).then(({ app }) => {
+    const { app } = await bootstrap({
+        port: PORT,
+        router: createRouter(handlers),
+        cors: undefined,
+        middleware: [...swaggerUi.serve, connectMiddleware, debugRequestMiddleware, loggerMiddleware, authMiddleware],
+    });
+
     app.use('/swagger', swaggerUi.setup(swaggerDocument));
+
+    // ✅ subscriptions après users
+    await createDefaultSubscriptions();
 
     console.log(`Server running on http://localhost:${PORT}`);
     console.log(`Swagger UI: http://localhost:${PORT}/swagger`);
-    console.log(`API endpoints available`);
+}
+
+main().catch((e) => {
+    console.error(e);
+    process.exit(1);
 });

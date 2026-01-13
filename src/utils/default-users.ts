@@ -45,8 +45,8 @@ export async function seedUsers() {
     }
 }
 
-export function createDefaultUsers() {
-    if (process.env.NODE_ENV !== 'production') {
-        seedUsers().then(() => console.log('Default users created!'));
-    }
+export async function createDefaultUsers() {
+    if (process.env.NODE_ENV === 'production') return;
+    await seedUsers();
+    console.log('Default users created!');
 }
