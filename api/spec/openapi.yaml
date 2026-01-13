@@ -691,6 +691,32 @@ components:
                     type: string
                     format: email
                     example: 'john.doe@example.com'
+                phone:
+                    type: string
+                    example: '+33612345678'
+                    description: 'Numéro de téléphone du client'
+                address:
+                    type: string
+                    example: '123 Rue de la Paix'
+                    description: 'Adresse postale (rue et numéro)'
+                city:
+                    type: string
+                    example: 'Paris'
+                    description: 'Ville'
+                postalCode:
+                    type: string
+                    example: '75001'
+                    description: 'Code postal'
+                country:
+                    type: string
+                    example: 'FR'
+                    description: 'Code pays ISO 3166-1 alpha-2'
+                dateOfBirth:
+                    type: string
+                    format: date
+                    nullable: true
+                    example: '1990-05-15'
+                    description: 'Date de naissance (optionnel)'
                 status:
                     $ref: '#/components/schemas/UserStatus'
                 paymentMethod:
@@ -704,7 +730,7 @@ components:
 
         UserCreate:
             type: object
-            required: [firstName, lastName, email, password]
+            required: [firstName, lastName, email, password, phone, address, city, postalCode, country]
             properties:
                 firstName:
                     type: string
@@ -720,6 +746,33 @@ components:
                     type: string
                     format: password
                     example: 'Password123!'
+                phone:
+                    type: string
+                    example: '+33612345678'
+                    description: 'Numéro de téléphone (requis pour contact)'
+                address:
+                    type: string
+                    example: '123 Rue de la Paix'
+                    description: 'Adresse postale (requis pour SEPA/FacturX)'
+                city:
+                    type: string
+                    example: 'Paris'
+                    description: 'Ville (requis)'
+                postalCode:
+                    type: string
+                    example: '75001'
+                    description: 'Code postal (requis)'
+                country:
+                    type: string
+                    example: 'FR'
+                    default: 'FR'
+                    description: 'Code pays ISO 3166-1 alpha-2 (requis)'
+                dateOfBirth:
+                    type: string
+                    format: date
+                    nullable: true
+                    example: '1990-05-15'
+                    description: 'Date de naissance (optionnel)'
                 paymentMethod:
                     $ref: '#/components/schemas/PaymentMethod'
 
@@ -736,6 +789,26 @@ components:
                     type: string
                     format: email
                     example: 'john.doe@example.com'
+                phone:
+                    type: string
+                    example: '+33612345678'
+                address:
+                    type: string
+                    example: '123 Rue de la Paix'
+                city:
+                    type: string
+                    example: 'Paris'
+                postalCode:
+                    type: string
+                    example: '75001'
+                country:
+                    type: string
+                    example: 'FR'
+                dateOfBirth:
+                    type: string
+                    format: date
+                    nullable: true
+                    example: '1990-05-15'
                 status:
                     $ref: '#/components/schemas/UserStatus'
                 paymentMethod:
