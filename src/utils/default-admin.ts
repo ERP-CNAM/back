@@ -44,3 +44,4 @@ export function createDefaultAdmin() {
         seedAdmin().then(() => console.log('Admin created!'));
     }
 }
+
