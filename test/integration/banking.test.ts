@@ -121,4 +121,72 @@ describe('Banking Integration', () => {
             expect(order.paymentMethod).toBe('SEPA');
         });
     });
+
+    describe('updatePaymentStatus', () => {
+        it('should mark invoice as PAID when payment is executed', async () => {
+            // Setup
+            const user = await userRepo.create({
+                firstName: 'Good', lastName: 'Payer', email: 'good@example.com', password: 'pass'
+            });
+            const invoice = await invoiceRepo.create({
+                invoiceRef: 'INV-GOOD',
+                subscriptionId: 'sub-1',
+                userId: user.id!,
+                billingDate: '2026-06-30',
+                periodStart: '2026-06-01',
+                periodEnd: '2026-06-30',
+                amountExclVat: 10,
+                vatAmount: 2,
+                amountInclVat: 12,
+                status: 'SENT'
+            });
+
+            // Execute Webhook
+            const body = [{ invoiceId: invoice.id!, status: 'EXECUTED' }];
+            const params = { body } as any;
+            const respond = createMockResponse();
+
+            await reportHandlers.updatePaymentStatus(params, respond, {} as any, {} as any, {} as any);
+
+            // Verify
+            const updatedInvoice = (await invoiceRepo.findAllByDate('2026-06-30')).find(i => i.id === invoice.id);
+            expect(updatedInvoice?.status).toBe('PAID');
+            
+            const updatedUser = await userRepo.findById(user.id!);
+            expect(updatedUser?.status).toBe('OK'); // Should remain OK
+        });
+
+        it('should mark invoice as FAILED and suspend user when payment is rejected', async () => {
+            // Setup
+            const user = await userRepo.create({
+                firstName: 'Bad', lastName: 'Payer', email: 'bad@example.com', password: 'pass', status: 'OK'
+            });
+            const invoice = await invoiceRepo.create({
+                invoiceRef: 'INV-BAD',
+                subscriptionId: 'sub-2',
+                userId: user.id!,
+                billingDate: '2026-06-30',
+                periodStart: '2026-06-01',
+                periodEnd: '2026-06-30',
+                amountExclVat: 10,
+                vatAmount: 2,
+                amountInclVat: 12,
+                status: 'SENT'
+            });
+
+            // Execute Webhook
+            const body = [{ invoiceId: invoice.id!, status: 'REJECTED', rejectionReason: 'Insufficient funds' }];
+            const params = { body } as any;
+            const respond = createMockResponse();
+
+            await reportHandlers.updatePaymentStatus(params, respond, {} as any, {} as any, {} as any);
+
+            // Verify
+            const updatedInvoice = (await invoiceRepo.findAllByDate('2026-06-30')).find(i => i.id === invoice.id);
+            expect(updatedInvoice?.status).toBe('FAILED');
+            
+            const updatedUser = await userRepo.findById(user.id!);
+            expect(updatedUser?.status).toBe('SUSPENDED');
+        });
+    });
 });

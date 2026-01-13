@@ -72,4 +72,13 @@ export class InMemoryInvoiceRepository implements InvoiceRepository {
         const rows = this.db.select().from(invoices).where(eq(invoices.subscriptionId, subscriptionId)).all();
         return rows.length;
     }
+
+    async updateStatus(id: string, status: 'PAID' | 'FAILED'): Promise<t_Invoice | null> {
+        const existing = this.db.select().from(invoices).where(eq(invoices.id, id)).get();
+        if (!existing) return null;
+
+        this.db.update(invoices).set({ status }).where(eq(invoices.id, id)).run();
+        
+        return this.toInvoice({ ...existing, status });
+    }
 }

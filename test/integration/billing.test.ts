@@ -244,7 +244,7 @@ describe('Billing Integration', () => {
             expect(clientLine.customerName).toBe('John Doe');
 
             // Verify Product Line
-            const productLine = lines.find((l: any) => l.generalAccount === '706');
+            const productLine = lines.find((l: any) => l.generalAccount === '700');
             expect(productLine.credit).toBe(100);
 
             // Verify VAT Line
