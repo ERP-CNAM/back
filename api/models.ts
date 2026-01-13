@@ -60,6 +60,10 @@ export type t_Invoice = {
     vatAmount?: number;
 };
 
+export type t_InvoiceDetailed = t_Invoice & {
+    subscription?: t_SubscriptionDetailed;
+};
+
 export type t_LoginResponse = {
     token?: string;
     user?: t_User;
@@ -82,6 +86,10 @@ export type t_Subscription = {
     startDate?: string;
     status?: t_SubscriptionStatus;
     userId?: string;
+};
+
+export type t_SubscriptionDetailed = t_Subscription & {
+    user?: t_User;
 };
 
 export type t_SubscriptionStatus = 'ACTIVE' | 'CANCELLED' | 'PENDING_CANCEL';

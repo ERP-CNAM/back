@@ -34,8 +34,5 @@ export const subscriptions = pgTable('subscriptions', {
     endDate: timestamp('endDate'),
     monthlyAmount: numeric('monthlyAmount', { precision: 10, scale: 2 }).notNull(),
     promoCode: varchar('promoCode', { length: 50 }),
-    status: varchar('status', { length: 50 })
-        .$type<t_SubscriptionStatus>()
-        .notNull()
-        .default('ACTIVE'),
+    status: varchar('status', { length: 50 }).$type<t_SubscriptionStatus>().notNull().default('ACTIVE'),
 });

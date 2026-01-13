@@ -33,8 +33,5 @@ export const subscriptions = sqliteTable('subscriptions', {
     endDate: text('endDate'),
     monthlyAmount: real('monthlyAmount').notNull(),
     promoCode: text('promoCode'),
-    status: text('status')
-        .$type<t_SubscriptionStatus>()
-        .notNull()
-        .default('ACTIVE'),
+    status: text('status').$type<t_SubscriptionStatus>().notNull().default('ACTIVE'),
 });

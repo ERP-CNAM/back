@@ -44,4 +44,3 @@ export async function createDefaultAdmin() {
     await seedAdmin();
     console.log('Default admin created!');
 }
-

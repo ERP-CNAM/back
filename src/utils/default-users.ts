@@ -6,8 +6,7 @@ import { InMemoryUserRepository } from '../repository/memory/in-memory-user.repo
 
 export async function seedUsers() {
     const db = getDatabase();
-    const userRepo =
-        DB_TYPE === 'postgres' ? new PostgresUserRepository(db) : new InMemoryUserRepository(db);
+    const userRepo = DB_TYPE === 'postgres' ? new PostgresUserRepository(db) : new InMemoryUserRepository(db);
 
     const demoUsers = [
         {

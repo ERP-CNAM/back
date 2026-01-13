@@ -4,16 +4,18 @@ import type { SubscriptionQueryOptions, SubscriptionRepository } from '../subscr
 import type {
     t_CreateSubscriptionRequestBodySchema,
     t_Subscription,
+    t_SubscriptionDetailed,
     t_SubscriptionStatus,
+    t_UserStatus,
     t_UpdateSubscriptionRequestBodySchema,
 } from '../../../api/models';
-import { subscriptions } from '../../database/postgres/schema';
+import { subscriptions, users } from '../../database/postgres/schema';
 import { generateUUID } from '../../utils/uuid';
 
 const VALID_SUBSCRIPTION_STATUSES: t_SubscriptionStatus[] = ['ACTIVE', 'CANCELLED', 'PENDING_CANCEL'];
 
 export class PostgresSubscriptionRepository implements SubscriptionRepository {
-    constructor(private db: NodePgDatabase) {}
+    constructor(private db: NodePgDatabase) { }
 
     private toSubscription(row: typeof subscriptions.$inferSelect): t_Subscription {
         const startDate = row.startDate ? row.startDate.toISOString().slice(0, 10) : undefined;
@@ -30,8 +32,29 @@ export class PostgresSubscriptionRepository implements SubscriptionRepository {
         };
     }
 
-    async findAll(options?: SubscriptionQueryOptions): Promise<t_Subscription[]> {
-        let query = this.db.select().from(subscriptions);
+    private toSubscriptionDetailed(row: { subscriptions: typeof subscriptions.$inferSelect; users: typeof users.$inferSelect }): t_SubscriptionDetailed {
+        const startDate = row.subscriptions.startDate ? row.subscriptions.startDate.toISOString().slice(0, 10) : undefined;
+        const endDate = row.subscriptions.endDate ? row.subscriptions.endDate.toISOString().slice(0, 10) : null;
+        return {
+            id: row.subscriptions.id,
+            userId: row.subscriptions.userId,
+            contractCode: row.subscriptions.contractCode,
+            startDate,
+            endDate,
+            monthlyAmount: row.subscriptions.monthlyAmount !== null ? Number(row.subscriptions.monthlyAmount) : undefined,
+            promoCode: row.subscriptions.promoCode ?? null,
+            status: row.subscriptions.status as t_SubscriptionStatus,
+            user: {
+                id: row.users.id,
+                firstName: row.users.firstName ?? undefined,
+                lastName: row.users.lastName ?? undefined,
+                email: row.users.email ?? undefined,
+                status: row.users.status as t_UserStatus,
+            }
+        };
+    }
+
+    async findAll(options?: SubscriptionQueryOptions): Promise<t_SubscriptionDetailed[]> {
         const conditions = [];
 
         if (options?.userId) {
@@ -42,17 +65,28 @@ export class PostgresSubscriptionRepository implements SubscriptionRepository {
             conditions.push(eq(subscriptions.status, options.status));
         }
 
+        let query = this.db
+            .select()
+            .from(subscriptions)
+            .innerJoin(users, eq(subscriptions.userId, users.id));
+
         if (conditions.length > 0) {
             query = query.where(and(...conditions)) as any;
         }
 
         const rows = await query.execute();
-        return rows.map((row) => this.toSubscription(row));
+        return rows.map((row) => this.toSubscriptionDetailed(row));
     }
 
-    async findById(id: string): Promise<t_Subscription | null> {
-        const rows = await this.db.select().from(subscriptions).where(eq(subscriptions.id, id)).limit(1).execute();
-        return rows[0] ? this.toSubscription(rows[0]) : null;
+    async findById(id: string): Promise<t_SubscriptionDetailed | null> {
+        const rows = await this.db
+            .select()
+            .from(subscriptions)
+            .innerJoin(users, eq(subscriptions.userId, users.id))
+            .where(eq(subscriptions.id, id))
+            .limit(1)
+            .execute();
+        return rows[0] ? this.toSubscriptionDetailed(rows[0]) : null;
     }
 
     async create(data: t_CreateSubscriptionRequestBodySchema): Promise<t_Subscription> {
@@ -68,10 +102,7 @@ export class PostgresSubscriptionRepository implements SubscriptionRepository {
             status: 'ACTIVE',
         };
 
-        const [inserted] = await this.db
-            .insert(subscriptions)
-            .values(values)
-            .returning();
+        const [inserted] = await this.db.insert(subscriptions).values(values).returning();
 
         if (!inserted) {
             throw new Error('Failed to create subscription');

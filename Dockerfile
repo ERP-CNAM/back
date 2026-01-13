@@ -24,4 +24,4 @@ USER nonroot
 
 EXPOSE 3000
 
-CMD ["dist/index.js"]
+CMD ["dist/src/index.js"]
