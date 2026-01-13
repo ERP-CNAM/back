@@ -2,6 +2,7 @@
 import { UsersComponent, registerUsersAlpine } from '../components/users.component.js';
 import { SubscriptionsComponent, registerSubscriptionsAlpine } from '../components/subscriptions.component.js';
 import { InvoicesComponent, registerInvoicesAlpine } from '../components/invoices.component.js';
+import { RevenueComponent, registerRevenueAlpine } from '../components/revenue.component.js';
 
 export function DashboardPage(route) {
     const content =
@@ -9,7 +10,9 @@ export function DashboardPage(route) {
             ? SubscriptionsComponent()
             : route === '/invoices'
               ? InvoicesComponent()
-              : UsersComponent();
+              : route === '/revenue'
+                ? RevenueComponent()
+                : UsersComponent();
 
     return content;
 }
@@ -17,4 +20,5 @@ export function registerDashboardAlpine(Alpine) {
     registerUsersAlpine(Alpine);
     registerSubscriptionsAlpine(Alpine);
     registerInvoicesAlpine(Alpine);
+    registerRevenueAlpine(Alpine);
 }
