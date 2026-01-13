@@ -522,6 +522,44 @@ paths:
                                                       type: array
                                                       items:
                                                           $ref: '#/components/schemas/InvoiceDetailed'
+    /invoices:
+        get:
+            operationId: listInvoices
+            tags: [Billing]
+            summary: Lister les factures
+            parameters:
+                - in: query
+                  name: userId
+                  schema:
+                      type: string
+                      format: uuid
+                  description: Filtrer par utilisateur.
+                - in: query
+                  name: subscriptionId
+                  schema:
+                      type: string
+                      format: uuid
+                  description: Filtrer par abonnement.
+                - in: query
+                  name: status
+                  schema:
+                      type: string
+                      enum: [PENDING, SENT, PAID, FAILED]
+                  description: Filtrer par statut de la facture.
+            responses:
+                '200':
+                    description: Liste des factures
+                    content:
+                        application/json:
+                            schema:
+                                allOf:
+                                    - $ref: '#/components/schemas/BaseAPIResponse'
+                                    - type: object
+                                      properties:
+                                          payload:
+                                              type: array
+                                              items:
+                                                  $ref: '#/components/schemas/InvoiceDetailed'
 
     /exports/accounting/monthly-invoices:
         get:
