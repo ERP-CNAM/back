@@ -98,7 +98,7 @@ export function createBillingHandlers(
             // Line 2: Credit Product (Excl VAT)
             exportLines.push({
                 date: invoice.billingDate,
-                generalAccount: '706',
+                generalAccount: '700',
                 clientAccount: undefined,
                 invoiceRef: invoice.invoiceRef,
                 description: 'Prestation de service HT',
