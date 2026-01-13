@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Test API</title>
+    </head>
+
+    <body>
+        <h1>Test API</h1>
+
+        <div x-data="testApp()">
+            <button @click="ping()">Ping /users</button>
+
+            <pre x-text="result" style="white-space: pre-wrap"></pre>
+        </div>
+
+        <!-- Alpine -->
+        <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+        <!-- IMPORTANT: PAS module, pour que testApp soit global -->
+        <script src="./app.js"></script>
+    </body>
+</html>
