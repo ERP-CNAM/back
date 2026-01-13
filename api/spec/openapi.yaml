@@ -1,965 +1,1017 @@
 openapi: 3.1.0
 info:
-  title: Gamers ERP - Backoffice Abonnés
-  version: 1.0.0
-  description: |
-    API BACK de gestion des joueurs abonnés.
-    - Gestion des utilisateurs et abonnements
-    - Transmission des facturations au Groupe Money
-    - Transmission des prélèvements au Groupe Bank
-    - Mise à jour des statuts joueurs, chiffre d’affaires et règlements
-    
-    Hypothèse : abonnements mensuels complets, pas de prorata journalier.
+    title: Gamers ERP - Backoffice Abonnés
+    version: 1.0.0
+    description: |
+        API BACK de gestion des joueurs abonnés.
+        - Gestion des utilisateurs et abonnements
+        - Transmission des facturations au Groupe Money
+        - Transmission des prélèvements au Groupe Bank
+        - Mise à jour des statuts joueurs, chiffre d’affaires et règlements
+
+        Hypothèse : abonnements mensuels complets, pas de prorata journalier.
 
 tags:
-  - name: Authentification
-    description: Gestion de l'authentification
-  - name: Users
-    description: Gestion des joueurs / utilisateurs abonnés
-  - name: Subscriptions
-    description: Gestion des abonnements
-  - name: Billing
-    description: Facturations mensuelles pour la comptabilité (Money)
-  - name: BankingExports
-    description: Prélèvements pour la banque (Bank)
-  - name: Reports
-    description: Statuts, chiffre d'affaires et règlements
+    - name: Authentification
+      description: Gestion de l'authentification
+    - name: Users
+      description: Gestion des joueurs / utilisateurs abonnés
+    - name: Subscriptions
+      description: Gestion des abonnements
+    - name: Billing
+      description: Facturations mensuelles pour la comptabilité (Money)
+    - name: BankingExports
+      description: Prélèvements pour la banque (Bank)
+    - name: Reports
+      description: Statuts, chiffre d'affaires et règlements
 
 security:
-  - bearerAuth: []
+    - bearerAuth: []
 
 paths:
-  /auth/login:
-    post:
-      operationId: login
-      tags: [ Authentification ]
-      summary: Connexion utilisateur
-      description: Authentification par email/mot de passe pour obtenir un token JWT.
-      security: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/LoginRequest"
-      responses:
-        "200":
-          description: Connexion réussie
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: "#/components/schemas/BaseAPIResponse"
-                  - type: object
-                    properties:
-                      payload:
-                        $ref: "#/components/schemas/LoginResponse"
-        "401":
-          description: Identifiants invalides
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/BaseAPIResponse"
-  /auth/admin/login:
-    post:
-      operationId: adminLogin
-      tags: [ Authentification ]
-      summary: Connexion administrateur
-      description: Authentification par email/mot de passe pour obtenir un token JWT administrateur.
-      security: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/LoginRequest"
-      responses:
-        "200":
-          description: Connexion réussie
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: "#/components/schemas/BaseAPIResponse"
-                  - type: object
-                    properties:
-                      payload:
-                        $ref: "#/components/schemas/AdminLoginResponse"
-        "401":
-          description: Identifiants invalides
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/BaseAPIResponse"
-  /users:
-    post:
-      operationId: createUser
-      tags: [ Users ]
-      summary: Créer un utilisateur
-      description: Création d'un joueur / client (généralement issu de la plateforme Gamers).
-      security: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/UserCreate"
-      responses:
-        "201":
-          description: Utilisateur créé
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: "#/components/schemas/BaseAPIResponse"
-                  - type: object
-                    properties:
-                      payload:
-                        $ref: "#/components/schemas/User"
-    get:
-      operationId: listUsers
-      tags: [ Users ]
-      summary: Lister les utilisateurs
-      description: |
-        **ADMIN UNIQUEMENT**
+    /auth/login:
+        post:
+            operationId: login
+            tags: [Authentification]
+            summary: Connexion utilisateur
+            description: Authentification par email/mot de passe pour obtenir un token JWT.
+            security: []
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/LoginRequest'
+            responses:
+                '200':
+                    description: Connexion réussie
+                    content:
+                        application/json:
+                            schema:
+                                allOf:
+                                    - $ref: '#/components/schemas/BaseAPIResponse'
+                                    - type: object
+                                      properties:
+                                          payload:
+                                              $ref: '#/components/schemas/LoginResponse'
+                '401':
+                    description: Identifiants invalides
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BaseAPIResponse'
+    /auth/admin/login:
+        post:
+            operationId: adminLogin
+            tags: [Authentification]
+            summary: Connexion administrateur
+            description: Authentification par email/mot de passe pour obtenir un token JWT administrateur.
+            security: []
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/LoginRequest'
+            responses:
+                '200':
+                    description: Connexion réussie
+                    content:
+                        application/json:
+                            schema:
+                                allOf:
+                                    - $ref: '#/components/schemas/BaseAPIResponse'
+                                    - type: object
+                                      properties:
+                                          payload:
+                                              $ref: '#/components/schemas/AdminLoginResponse'
+                '401':
+                    description: Identifiants invalides
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BaseAPIResponse'
+    /users:
+        post:
+            operationId: createUser
+            tags: [Users]
+            summary: Créer un utilisateur
+            description: Création d'un joueur / client (généralement issu de la plateforme Gamers).
+            security: []
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UserCreate'
+            responses:
+                '201':
+                    description: Utilisateur créé
+                    content:
+                        application/json:
+                            schema:
+                                allOf:
+                                    - $ref: '#/components/schemas/BaseAPIResponse'
+                                    - type: object
+                                      properties:
+                                          payload:
+                                              $ref: '#/components/schemas/User'
+        get:
+            operationId: listUsers
+            tags: [Users]
+            summary: Lister les utilisateurs
+            description: |
+                **ADMIN UNIQUEMENT**
 
-        Retourne la liste des joueurs/abonnés.
-      parameters:
-        - in: query
-          name: status
-          schema:
-            $ref: "#/components/schemas/UserStatus"
-          description: Filtrer par statut de l'utilisateur.
-      responses:
-        "200":
-          description: Liste des utilisateurs.
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: "#/components/schemas/BaseAPIResponse"
-                  - type: object
-                    properties:
-                      payload:
-                        type: array
-                        items:
-                          $ref: "#/components/schemas/User"
-        "403":
-          description: Accès refusé - token administrateur requis
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/BaseAPIResponse"
+                Retourne la liste des joueurs/abonnés.
+            parameters:
+                - in: query
+                  name: status
+                  schema:
+                      $ref: '#/components/schemas/UserStatus'
+                  description: Filtrer par statut de l'utilisateur.
+            responses:
+                '200':
+                    description: Liste des utilisateurs.
+                    content:
+                        application/json:
+                            schema:
+                                allOf:
+                                    - $ref: '#/components/schemas/BaseAPIResponse'
+                                    - type: object
+                                      properties:
+                                          payload:
+                                              type: array
+                                              items:
+                                                  $ref: '#/components/schemas/User'
+                '403':
+                    description: Accès refusé - token administrateur requis
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BaseAPIResponse'
 
-  /users/{userId}:
-    get:
-      operationId: getUser
-      tags: [ Users ]
-      summary: Récupérer un utilisateur
-      parameters:
-        - in: path
-          name: userId
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        "200":
-          description: Détails de l'utilisateur
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: "#/components/schemas/BaseAPIResponse"
-                  - type: object
-                    properties:
-                      payload:
-                        $ref: "#/components/schemas/User"
-        "404":
-          description: Utilisateur non trouvé
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: "#/components/schemas/BaseAPIResponse"
-                  - type: object
-                    properties:
-                      payload:
-                        type: object
-                        nullable: true
-    put:
-      operationId: updateUser
-      tags: [ Users ]
-      summary: Mettre à jour un utilisateur
-      parameters:
-        - in: path
-          name: userId
-          required: true
-          schema:
-            type: string
-            format: uuid
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/UserUpdate"
-      responses:
-        "200":
-          description: Utilisateur mis à jour
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: "#/components/schemas/BaseAPIResponse"
-                  - type: object
-                    properties:
-                      payload:
-                        $ref: "#/components/schemas/User"
-        "404":
-          description: Utilisateur non trouvé
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: "#/components/schemas/BaseAPIResponse"
-                  - type: object
-                    properties:
-                      payload:
-                        type: object
-                        nullable: true
-    delete:
-      operationId: deleteUser
-      tags: [ Users ]
-      summary: Supprimer (logiquement) un utilisateur
-      description: Marque l'utilisateur comme supprimé/inactif.
-      parameters:
-        - in: path
-          name: userId
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        "200":
-          description: Utilisateur désactivé ou supprimé
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: "#/components/schemas/BaseAPIResponse"
-                  - type: object
-                    properties:
-                      payload:
-                        type: object
-                        nullable: true
-        "404":
-          description: Utilisateur non trouvé
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: "#/components/schemas/BaseAPIResponse"
-                  - type: object
-                    properties:
-                      payload:
-                        type: object
-                        nullable: true
+    /users/{userId}:
+        get:
+            operationId: getUser
+            tags: [Users]
+            summary: Récupérer un utilisateur
+            parameters:
+                - in: path
+                  name: userId
+                  required: true
+                  schema:
+                      type: string
+                      format: uuid
+            responses:
+                '200':
+                    description: Détails de l'utilisateur
+                    content:
+                        application/json:
+                            schema:
+                                allOf:
+                                    - $ref: '#/components/schemas/BaseAPIResponse'
+                                    - type: object
+                                      properties:
+                                          payload:
+                                              $ref: '#/components/schemas/User'
+                '404':
+                    description: Utilisateur non trouvé
+                    content:
+                        application/json:
+                            schema:
+                                allOf:
+                                    - $ref: '#/components/schemas/BaseAPIResponse'
+                                    - type: object
+                                      properties:
+                                          payload:
+                                              type: object
+                                              nullable: true
+        put:
+            operationId: updateUser
+            tags: [Users]
+            summary: Mettre à jour un utilisateur
+            parameters:
+                - in: path
+                  name: userId
+                  required: true
+                  schema:
+                      type: string
+                      format: uuid
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UserUpdate'
+            responses:
+                '200':
+                    description: Utilisateur mis à jour
+                    content:
+                        application/json:
+                            schema:
+                                allOf:
+                                    - $ref: '#/components/schemas/BaseAPIResponse'
+                                    - type: object
+                                      properties:
+                                          payload:
+                                              $ref: '#/components/schemas/User'
+                '404':
+                    description: Utilisateur non trouvé
+                    content:
+                        application/json:
+                            schema:
+                                allOf:
+                                    - $ref: '#/components/schemas/BaseAPIResponse'
+                                    - type: object
+                                      properties:
+                                          payload:
+                                              type: object
+                                              nullable: true
+        delete:
+            operationId: deleteUser
+            tags: [Users]
+            summary: Supprimer (logiquement) un utilisateur
+            description: Marque l'utilisateur comme supprimé/inactif.
+            parameters:
+                - in: path
+                  name: userId
+                  required: true
+                  schema:
+                      type: string
+                      format: uuid
+            responses:
+                '200':
+                    description: Utilisateur désactivé ou supprimé
+                    content:
+                        application/json:
+                            schema:
+                                allOf:
+                                    - $ref: '#/components/schemas/BaseAPIResponse'
+                                    - type: object
+                                      properties:
+                                          payload:
+                                              type: object
+                                              nullable: true
+                '404':
+                    description: Utilisateur non trouvé
+                    content:
+                        application/json:
+                            schema:
+                                allOf:
+                                    - $ref: '#/components/schemas/BaseAPIResponse'
+                                    - type: object
+                                      properties:
+                                          payload:
+                                              type: object
+                                              nullable: true
 
-  /users/{userId}/status:
-    patch:
-      operationId: updateUserStatus
-      tags: [ Users ]
-      summary: Mettre à jour le statut financier / d'accès du joueur
-      description: Permet la mise à jour du statut (OK, SUSPENDED, BLOQUE) en fonction de la situation de paiement, pour conditionner l'accès à la plateforme de jeux.
-      parameters:
-        - in: path
-          name: userId
-          required: true
-          schema:
-            type: string
-            format: uuid
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                status:
-                  $ref: "#/components/schemas/UserStatus"
-      responses:
-        "200":
-          description: Statut mis à jour
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: "#/components/schemas/BaseAPIResponse"
-                  - type: object
-                    properties:
-                      payload:
-                        $ref: "#/components/schemas/User"
-        "404":
-          description: Utilisateur non trouvé
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: "#/components/schemas/BaseAPIResponse"
-                  - type: object
-                    properties:
-                      payload:
-                        type: object
-                        nullable: true
+    /users/{userId}/status:
+        patch:
+            operationId: updateUserStatus
+            tags: [Users]
+            summary: Mettre à jour le statut financier / d'accès du joueur
+            description: Permet la mise à jour du statut (OK, SUSPENDED, BLOQUE) en fonction de la situation de paiement, pour conditionner l'accès à la plateforme de jeux.
+            parameters:
+                - in: path
+                  name: userId
+                  required: true
+                  schema:
+                      type: string
+                      format: uuid
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                status:
+                                    $ref: '#/components/schemas/UserStatus'
+            responses:
+                '200':
+                    description: Statut mis à jour
+                    content:
+                        application/json:
+                            schema:
+                                allOf:
+                                    - $ref: '#/components/schemas/BaseAPIResponse'
+                                    - type: object
+                                      properties:
+                                          payload:
+                                              $ref: '#/components/schemas/User'
+                '404':
+                    description: Utilisateur non trouvé
+                    content:
+                        application/json:
+                            schema:
+                                allOf:
+                                    - $ref: '#/components/schemas/BaseAPIResponse'
+                                    - type: object
+                                      properties:
+                                          payload:
+                                              type: object
+                                              nullable: true
 
-  /subscriptions:
-    get:
-      operationId: listSubscriptions
-      tags: [ Subscriptions ]
-      summary: Lister les abonnements
-      parameters:
-        - in: query
-          name: userId
-          schema:
-            type: string
-            format: uuid
-          description: Filtrer par utilisateur.
-        - in: query
-          name: status
-          schema:
-            $ref: "#/components/schemas/SubscriptionStatus"
-      responses:
-        "200":
-          description: Liste des abonnements
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: "#/components/schemas/BaseAPIResponse"
-                  - type: object
-                    properties:
-                      payload:
-                        type: array
-                        items:
-                          $ref: "#/components/schemas/Subscription"
-    post:
-      operationId: createSubscription
-      tags: [ Subscriptions ]
-      summary: Créer un abonnement
-      description: Création d'un abonnement mensuel complet (non proratisé) pour un utilisateur.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/SubscriptionCreate"
-      responses:
-        "201":
-          description: Abonnement créé
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: "#/components/schemas/BaseAPIResponse"
-                  - type: object
-                    properties:
-                      payload:
-                        $ref: "#/components/schemas/Subscription"
+    /subscriptions:
+        get:
+            operationId: listSubscriptions
+            tags: [Subscriptions]
+            summary: Lister les abonnements
+            parameters:
+                - in: query
+                  name: userId
+                  schema:
+                      type: string
+                      format: uuid
+                  description: Filtrer par utilisateur.
+                - in: query
+                  name: status
+                  schema:
+                      $ref: '#/components/schemas/SubscriptionStatus'
+            responses:
+                '200':
+                    description: Liste des abonnements
+                    content:
+                        application/json:
+                            schema:
+                                allOf:
+                                    - $ref: '#/components/schemas/BaseAPIResponse'
+                                    - type: object
+                                      properties:
+                                          payload:
+                                              type: array
+                                              items:
+                                                  $ref: '#/components/schemas/SubscriptionDetailed'
+        post:
+            operationId: createSubscription
+            tags: [Subscriptions]
+            summary: Créer un abonnement
+            description: Création d'un abonnement mensuel complet (non proratisé) pour un utilisateur.
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/SubscriptionCreate'
+            responses:
+                '201':
+                    description: Abonnement créé
+                    content:
+                        application/json:
+                            schema:
+                                allOf:
+                                    - $ref: '#/components/schemas/BaseAPIResponse'
+                                    - type: object
+                                      properties:
+                                          payload:
+                                              $ref: '#/components/schemas/Subscription'
 
-  /subscriptions/{subscriptionId}:
-    get:
-      operationId: getSubscription
-      tags: [ Subscriptions ]
-      summary: Récupérer un abonnement
-      parameters:
-        - in: path
-          name: subscriptionId
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        "200":
-          description: Détails de l'abonnement
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: "#/components/schemas/BaseAPIResponse"
-                  - type: object
-                    properties:
-                      payload:
-                        $ref: "#/components/schemas/Subscription"
-        "404":
-          description: Abonnement non trouvé
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: "#/components/schemas/BaseAPIResponse"
-                  - type: object
-                    properties:
-                      payload:
-                        type: object
-                        nullable: true
-    put:
-      operationId: updateSubscription
-      tags: [ Subscriptions ]
-      summary: Mettre à jour un abonnement
-      parameters:
-        - in: path
-          name: subscriptionId
-          required: true
-          schema:
-            type: string
-            format: uuid
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/SubscriptionUpdate"
-      responses:
-        "200":
-          description: Abonnement mis à jour
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: "#/components/schemas/BaseAPIResponse"
-                  - type: object
-                    properties:
-                      payload:
-                        $ref: "#/components/schemas/Subscription"
-        "404":
-          description: Abonnement non trouvé
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: "#/components/schemas/BaseAPIResponse"
-                  - type: object
-                    properties:
-                      payload:
-                        type: object
-                        nullable: true
-    delete:
-      operationId: cancelSubscription
-      tags: [ Subscriptions ]
-      summary: Résilier un abonnement
-      description: Résiliation de l'abonnement (mise à jour de la date de résiliation et du statut).
-      parameters:
-        - in: path
-          name: subscriptionId
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        "200":
-          description: Abonnement résilié
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: "#/components/schemas/BaseAPIResponse"
-                  - type: object
-                    properties:
-                      payload:
-                        $ref: "#/components/schemas/Subscription"
-        "404":
-          description: Abonnement non trouvé
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: "#/components/schemas/BaseAPIResponse"
-                  - type: object
-                    properties:
-                      payload:
-                        type: object
-                        nullable: true
+    /subscriptions/{subscriptionId}:
+        get:
+            operationId: getSubscription
+            tags: [Subscriptions]
+            summary: Récupérer un abonnement
+            parameters:
+                - in: path
+                  name: subscriptionId
+                  required: true
+                  schema:
+                      type: string
+                      format: uuid
+            responses:
+                '200':
+                    description: Détails de l'abonnement
+                    content:
+                        application/json:
+                            schema:
+                                allOf:
+                                    - $ref: '#/components/schemas/BaseAPIResponse'
+                                    - type: object
+                                      properties:
+                                          payload:
+                                              $ref: '#/components/schemas/SubscriptionDetailed'
+                '404':
+                    description: Abonnement non trouvé
+                    content:
+                        application/json:
+                            schema:
+                                allOf:
+                                    - $ref: '#/components/schemas/BaseAPIResponse'
+                                    - type: object
+                                      properties:
+                                          payload:
+                                              type: object
+                                              nullable: true
+        put:
+            operationId: updateSubscription
+            tags: [Subscriptions]
+            summary: Mettre à jour un abonnement
+            parameters:
+                - in: path
+                  name: subscriptionId
+                  required: true
+                  schema:
+                      type: string
+                      format: uuid
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/SubscriptionUpdate'
+            responses:
+                '200':
+                    description: Abonnement mis à jour
+                    content:
+                        application/json:
+                            schema:
+                                allOf:
+                                    - $ref: '#/components/schemas/BaseAPIResponse'
+                                    - type: object
+                                      properties:
+                                          payload:
+                                              $ref: '#/components/schemas/Subscription'
+                '404':
+                    description: Abonnement non trouvé
+                    content:
+                        application/json:
+                            schema:
+                                allOf:
+                                    - $ref: '#/components/schemas/BaseAPIResponse'
+                                    - type: object
+                                      properties:
+                                          payload:
+                                              type: object
+                                              nullable: true
+        delete:
+            operationId: cancelSubscription
+            tags: [Subscriptions]
+            summary: Résilier un abonnement
+            description: Résiliation de l'abonnement (mise à jour de la date de résiliation et du statut).
+            parameters:
+                - in: path
+                  name: subscriptionId
+                  required: true
+                  schema:
+                      type: string
+                      format: uuid
+            responses:
+                '200':
+                    description: Abonnement résilié
+                    content:
+                        application/json:
+                            schema:
+                                allOf:
+                                    - $ref: '#/components/schemas/BaseAPIResponse'
+                                    - type: object
+                                      properties:
+                                          payload:
+                                              $ref: '#/components/schemas/Subscription'
+                '404':
+                    description: Abonnement non trouvé
+                    content:
+                        application/json:
+                            schema:
+                                allOf:
+                                    - $ref: '#/components/schemas/BaseAPIResponse'
+                                    - type: object
+                                      properties:
+                                          payload:
+                                              type: object
+                                              nullable: true
 
-  /billing/monthly:
-    post:
-      operationId: generateMonthlyBilling
-      tags: [ Billing ]
-      summary: Générer les facturations mensuelles
-      description: >
-        Génère les factures mensuelles pour tous les abonnements actifs
-        à la date de fin de mois indiquée, et prépare les données à
-        transmettre au Groupe Money (comptabilité).
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                billingDate:
-                  type: string
-                  format: date
+    /billing/monthly:
+        post:
+            operationId: generateMonthlyBilling
+            tags: [Billing]
+            summary: Générer les facturations mensuelles
+            description: >
+                Génère les factures mensuelles pour tous les abonnements actifs
+                à la date de fin de mois indiquée, et prépare les données à
+                transmettre au Groupe Money (comptabilité).
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                billingDate:
+                                    type: string
+                                    format: date
+                                    description: >
+                                        Dernier jour du mois de facturation (ex: 2026-06-30).
+            responses:
+                '200':
+                    description: Factures générées pour le mois
+                    content:
+                        application/json:
+                            schema:
+                                allOf:
+                                    - $ref: '#/components/schemas/BaseAPIResponse'
+                                    - type: object
+                                      properties:
+                                          payload:
+                                              type: object
+                                              properties:
+                                                  billingDate:
+                                                      type: string
+                                                      format: date
+                                                  invoices:
+                                                      type: array
+                                                      items:
+                                                          $ref: '#/components/schemas/InvoiceDetailed'
+
+    /exports/accounting/monthly-invoices:
+        get:
+            operationId: exportMonthlyInvoices
+            tags: [Billing]
+            summary: Export des factures mensuelles pour le Groupe Money
+            description: Fournit les écritures de facturation mensuelle à destination de l'application MONEY (Groupe Money).
+            parameters:
+                - in: query
+                  name: billingMonth
+                  required: true
+                  schema:
+                      type: string
+                      pattern: '^[0-9]{4}-(0[1-9]|1[0-2])$'
+                  description: 'Mois de facturation au format YYYY-MM (ex: 2026-06)'
+            responses:
+                '200':
+                    description: Données de facturation pour le Groupe Money
+                    content:
+                        application/json:
+                            schema:
+                                allOf:
+                                    - $ref: '#/components/schemas/BaseAPIResponse'
+                                    - type: object
+                                      properties:
+                                          payload:
+                                              type: array
+                                              items:
+                                                  $ref: '#/components/schemas/AccountingExportLine'
+
+    /exports/banking/direct-debits:
+        get:
+            operationId: exportDirectDebits
+            tags: [BankingExports]
+            summary: Export des prélèvements pour le Groupe Bank
+            description: Liste des prélèvements bancaires à réaliser, à destination de l'application BANK (Groupe Bank). Les prélèvements sont à exécuter le premier jour du mois suivant la facturation.
+            parameters:
+                - in: query
+                  name: executionDate
+                  required: true
+                  schema:
+                      type: string
+                      format: date
                   description: >
-                    Dernier jour du mois de facturation (ex: 2026-06-30).
-      responses:
-        "200":
-          description: Factures générées pour le mois
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: "#/components/schemas/BaseAPIResponse"
-                  - type: object
-                    properties:
-                      payload:
-                        type: object
-                        properties:
-                          billingDate:
-                            type: string
-                            format: date
-                          invoices:
+                      Date d'exécution des prélèvements (ex: 2026-07-01).
+            responses:
+                '200':
+                    description: Prélèvements à réaliser
+                    content:
+                        application/json:
+                            schema:
+                                allOf:
+                                    - $ref: '#/components/schemas/BaseAPIResponse'
+                                    - type: object
+                                      properties:
+                                          payload:
+                                              type: array
+                                              items:
+                                                  $ref: '#/components/schemas/DirectDebitOrder'
+
+    /bank/payment-updates:
+        post:
+            operationId: updatePaymentStatus
+            tags: [BankingExports]
+            summary: Réception des statuts de paiement (Webhook Banque)
+            description: Permet à la banque de notifier le succès ou le rejet des prélèvements.
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
                             type: array
                             items:
-                              $ref: "#/components/schemas/Invoice"
+                                $ref: '#/components/schemas/PaymentUpdate'
+            responses:
+                '200':
+                    description: Mise à jour effectuée
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BaseAPIResponse'
 
-  /exports/accounting/monthly-invoices:
-    get:
-      operationId: exportMonthlyInvoices
-      tags: [ Billing ]
-      summary: Export des factures mensuelles pour le Groupe Money
-      description: Fournit les écritures de facturation mensuelle à destination de l'application MONEY (Groupe Money).
-      parameters:
-        - in: query
-          name: billingMonth
-          required: true
-          schema:
-            type: string
-            pattern: "^[0-9]{4}-(0[1-9]|1[0-2])$"
-          description: "Mois de facturation au format YYYY-MM (ex: 2026-06)"
-      responses:
-        "200":
-          description: Données de facturation pour le Groupe Money
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: "#/components/schemas/BaseAPIResponse"
-                  - type: object
-                    properties:
-                      payload:
-                        type: array
-                        items:
-                          $ref: "#/components/schemas/AccountingExportLine"
-
-  /exports/banking/direct-debits:
-    get:
-      operationId: exportDirectDebits
-      tags: [ BankingExports ]
-      summary: Export des prélèvements pour le Groupe Bank
-      description: Liste des prélèvements bancaires à réaliser, à destination de l'application BANK (Groupe Bank). Les prélèvements sont à exécuter le premier jour du mois suivant la facturation.
-      parameters:
-        - in: query
-          name: executionDate
-          required: true
-          schema:
-            type: string
-            format: date
-          description: >
-            Date d'exécution des prélèvements (ex: 2026-07-01).
-      responses:
-        "200":
-          description: Prélèvements à réaliser
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: "#/components/schemas/BaseAPIResponse"
-                  - type: object
-                    properties:
-                      payload:
-                        type: array
-                        items:
-                          $ref: "#/components/schemas/DirectDebitOrder"
-
-  /reports/revenue/monthly:
-    get:
-      operationId: getMonthlyRevenue
-      tags: [ Reports ]
-      summary: Chiffre d'affaires mensuel
-      description: Retourne le chiffre d'affaires par mois sur la période demandée, calculé à partir des factures générées.
-      parameters:
-        - in: query
-          name: from
-          schema:
-            type: string
-            pattern: "^[0-9]{4}-(0[1-9]|1[0-2])$"
-          description: Mois de début (YYYY-MM).
-        - in: query
-          name: to
-          schema:
-            type: string
-            pattern: "^[0-9]{4}-(0[1-9]|1[0-2])$"
-          description: Mois de fin (YYYY-MM).
-      responses:
-        "200":
-          description: Chiffre d'affaires mensuel
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: "#/components/schemas/BaseAPIResponse"
-                  - type: object
-                    properties:
-                      payload:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            month:
-                              type: string
-                              example: "2026-06"
-                            revenueExclVat:
-                              type: number
-                              format: float
-                            vatAmount:
-                              type: number
-                              format: float
-                            revenueInclVat:
-                              type: number
-                              format: float
+    /reports/revenue/monthly:
+        get:
+            operationId: getMonthlyRevenue
+            tags: [Reports]
+            summary: Chiffre d'affaires mensuel
+            description: Retourne le chiffre d'affaires par mois sur la période demandée, calculé à partir des factures générées.
+            parameters:
+                - in: query
+                  name: from
+                  schema:
+                      type: string
+                      pattern: '^[0-9]{4}-(0[1-9]|1[0-2])$'
+                  description: Mois de début (YYYY-MM).
+                - in: query
+                  name: to
+                  schema:
+                      type: string
+                      pattern: '^[0-9]{4}-(0[1-9]|1[0-2])$'
+                  description: Mois de fin (YYYY-MM).
+            responses:
+                '200':
+                    description: Chiffre d'affaires mensuel
+                    content:
+                        application/json:
+                            schema:
+                                allOf:
+                                    - $ref: '#/components/schemas/BaseAPIResponse'
+                                    - type: object
+                                      properties:
+                                          payload:
+                                              type: array
+                                              items:
+                                                  type: object
+                                                  properties:
+                                                      month:
+                                                          type: string
+                                                          example: '2026-06'
+                                                      revenueExclVat:
+                                                          type: number
+                                                          format: float
+                                                      vatAmount:
+                                                          type: number
+                                                          format: float
+                                                      revenueInclVat:
+                                                          type: number
+                                                          format: float
 
 components:
-  schemas:
-    BaseAPIResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-        message:
-          type: string
-    UserStatus:
-      type: string
-      enum: [ OK, SUSPENDED, BLOCKED, DELETED ]
-      description: Statut d'accès du joueur. OK = accès plateforme autorisé.
+    schemas:
+        BaseAPIResponse:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                message:
+                    type: string
+        UserStatus:
+            type: string
+            enum: [OK, SUSPENDED, BLOCKED, DELETED]
+            description: Statut d'accès du joueur. OK = accès plateforme autorisé.
 
-    SubscriptionStatus:
-      type: string
-      enum: [ ACTIVE, CANCELLED, PENDING_CANCEL ]
-      description: Statut de l'abonnement.
+        SubscriptionStatus:
+            type: string
+            enum: [ACTIVE, CANCELLED, PENDING_CANCEL]
+            description: Statut de l'abonnement.
 
-    PaymentMethodType:
-      type: string
-      enum: [ SEPA, CARD ]
-      description: Type de moyen de paiement principal.
+        PaymentMethodType:
+            type: string
+            enum: [SEPA, CARD]
+            description: Type de moyen de paiement principal.
 
-    User:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        firstName:
-          type: string
-          example: "John"
-        lastName:
-          type: string
-          example: "Doe"
-        email:
-          type: string
-          format: email
-          example: "john.doe@example.com"
-        status:
-          $ref: "#/components/schemas/UserStatus"
-        paymentMethod:
-          $ref: "#/components/schemas/PaymentMethod"
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
+        User:
+            type: object
+            properties:
+                id:
+                    type: string
+                    format: uuid
+                firstName:
+                    type: string
+                    example: 'John'
+                lastName:
+                    type: string
+                    example: 'Doe'
+                email:
+                    type: string
+                    format: email
+                    example: 'john.doe@example.com'
+                status:
+                    $ref: '#/components/schemas/UserStatus'
+                paymentMethod:
+                    $ref: '#/components/schemas/PaymentMethod'
+                createdAt:
+                    type: string
+                    format: date-time
+                updatedAt:
+                    type: string
+                    format: date-time
 
-    UserCreate:
-      type: object
-      required: [ firstName, lastName, email, password ]
-      properties:
-        firstName:
-          type: string
-          example: "John"
-        lastName:
-          type: string
-          example: "Doe"
-        email:
-          type: string
-          format: email
-          example: "john.doe@example.com"
-        password:
-          type: string
-          format: password
-          example: "Password123!"
-        paymentMethod:
-          $ref: "#/components/schemas/PaymentMethod"
+        UserCreate:
+            type: object
+            required: [firstName, lastName, email, password]
+            properties:
+                firstName:
+                    type: string
+                    example: 'John'
+                lastName:
+                    type: string
+                    example: 'Doe'
+                email:
+                    type: string
+                    format: email
+                    example: 'john.doe@example.com'
+                password:
+                    type: string
+                    format: password
+                    example: 'Password123!'
+                paymentMethod:
+                    $ref: '#/components/schemas/PaymentMethod'
 
-    UserUpdate:
-      type: object
-      properties:
-        firstName:
-          type: string
-          example: "John"
-        lastName:
-          type: string
-          example: "Doe"
-        email:
-          type: string
-          format: email
-          example: "john.doe@example.com"
-        status:
-          $ref: "#/components/schemas/UserStatus"
-        paymentMethod:
-          $ref: "#/components/schemas/PaymentMethod"
+        UserUpdate:
+            type: object
+            properties:
+                firstName:
+                    type: string
+                    example: 'John'
+                lastName:
+                    type: string
+                    example: 'Doe'
+                email:
+                    type: string
+                    format: email
+                    example: 'john.doe@example.com'
+                status:
+                    $ref: '#/components/schemas/UserStatus'
+                paymentMethod:
+                    $ref: '#/components/schemas/PaymentMethod'
 
-    PaymentMethod:
-      type: object
-      properties:
-        type:
-          $ref: "#/components/schemas/PaymentMethodType"
-        iban:
-          type: string
-          description: IBAN masqué pour SEPA.
-          example: "FR76****************1234"
-        cardLast4:
-          type: string
-          description: 4 derniers chiffres pour CB.
-          example: "4242"
+        PaymentMethod:
+            type: object
+            properties:
+                type:
+                    $ref: '#/components/schemas/PaymentMethodType'
+                iban:
+                    type: string
+                    description: IBAN masqué pour SEPA.
+                    example: 'FR76****************1234'
+                cardLast4:
+                    type: string
+                    description: 4 derniers chiffres pour CB.
+                    example: '4242'
 
-    Subscription:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        userId:
-          type: string
-          format: uuid
-        contractCode:
-          type: string
-          example: "C001"
-        startDate:
-          type: string
-          format: date
-          example: "2026-06-01"
-        endDate:
-          type: string
-          format: date
-          nullable: true
-          description: Date de résiliation si résilié.
-        monthlyAmount:
-          type: number
-          format: float
-          example: 15.0
-        promoCode:
-          type: string
-          nullable: true
-          example: "B1M20"
-        status:
-          $ref: "#/components/schemas/SubscriptionStatus"
+        Subscription:
+            type: object
+            properties:
+                id:
+                    type: string
+                    format: uuid
+                userId:
+                    type: string
+                    format: uuid
+                contractCode:
+                    type: string
+                    example: 'C001'
+                startDate:
+                    type: string
+                    format: date
+                    example: '2026-06-01'
+                endDate:
+                    type: string
+                    format: date
+                    nullable: true
+                    description: Date de résiliation si résilié.
+                monthlyAmount:
+                    type: number
+                    format: float
+                    example: 15.0
+                promoCode:
+                    type: string
+                    nullable: true
+                    example: 'B1M20'
+                status:
+                    $ref: '#/components/schemas/SubscriptionStatus'
 
-    SubscriptionCreate:
-      type: object
-      required: [ userId, contractCode, startDate, monthlyAmount ]
-      properties:
-        userId:
-          type: string
-          format: uuid
-        contractCode:
-          type: string
-        startDate:
-          type: string
-          format: date
-        monthlyAmount:
-          type: number
-          format: float
-        promoCode:
-          type: string
-          nullable: true
+        SubscriptionDetailed:
+            allOf:
+                - $ref: '#/components/schemas/Subscription'
+                - type: object
+                  properties:
+                      user:
+                          $ref: '#/components/schemas/User'
 
-    SubscriptionUpdate:
-      type: object
-      properties:
-        endDate:
-          type: string
-          format: date
-          nullable: true
-        monthlyAmount:
-          type: number
-          format: float
-        promoCode:
-          type: string
-          nullable: true
-        status:
-          $ref: "#/components/schemas/SubscriptionStatus"
+        SubscriptionCreate:
+            type: object
+            required: [userId, contractCode, startDate, monthlyAmount]
+            properties:
+                userId:
+                    type: string
+                    format: uuid
+                contractCode:
+                    type: string
+                startDate:
+                    type: string
+                    format: date
+                monthlyAmount:
+                    type: number
+                    format: float
+                promoCode:
+                    type: string
+                    nullable: true
 
-    Invoice:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        userId:
-          type: string
-          format: uuid
-        subscriptionId:
-          type: string
-          format: uuid
-        invoiceRef:
-          type: string
-          example: "Facture1"
-        periodStart:
-          type: string
-          format: date
-        periodEnd:
-          type: string
-          format: date
-        billingDate:
-          type: string
-          format: date
-          description: Dernier jour du mois de facturation.
-        amountExclVat:
-          type: number
-          format: float
-          example: 12.0
-        vatAmount:
-          type: number
-          format: float
-          example: 3.0
-        amountInclVat:
-          type: number
-          format: float
-          example: 15.0
-        status:
-          type: string
-          enum: [ PENDING, SENT, PAID, FAILED ]
+        SubscriptionUpdate:
+            type: object
+            properties:
+                endDate:
+                    type: string
+                    format: date
+                    nullable: true
+                monthlyAmount:
+                    type: number
+                    format: float
+                promoCode:
+                    type: string
+                    nullable: true
+                status:
+                    $ref: '#/components/schemas/SubscriptionStatus'
 
-    AccountingExportLine:
-      type: object
-      description: Ligne d'export comptable pour le Groupe Money.
-      properties:
-        date:
-          type: string
-          format: date
-        generalAccount:
-          type: string
-          example: "700"
-        clientAccount:
-          type: string
-          example: "411"
-        description:
-          type: string
-          example: "Produit"
-        invoiceRef:
-          type: string
-          example: "Facture1"
-        debit:
-          type: number
-          format: float
-          nullable: true
-        credit:
-          type: number
-          format: float
-          nullable: true
-        customerName:
-          type: string
-          example: "John Doe"
+        Invoice:
+            type: object
+            properties:
+                id:
+                    type: string
+                    format: uuid
+                userId:
+                    type: string
+                    format: uuid
+                subscriptionId:
+                    type: string
+                    format: uuid
+                invoiceRef:
+                    type: string
+                    example: 'Facture1'
+                periodStart:
+                    type: string
+                    format: date
+                periodEnd:
+                    type: string
+                    format: date
+                billingDate:
+                    type: string
+                    format: date
+                    description: Dernier jour du mois de facturation.
+                amountExclVat:
+                    type: number
+                    format: float
+                    example: 12.0
+                vatAmount:
+                    type: number
+                    format: float
+                    example: 3.0
+                amountInclVat:
+                    type: number
+                    format: float
+                    example: 15.0
+                status:
+                    type: string
+                    enum: [PENDING, SENT, PAID, FAILED]
 
-    DirectDebitOrder:
-      type: object
-      description: Ordre de prélèvement à envoyer au Groupe Bank.
-      properties:
-        id:
-          type: string
-          format: uuid
-        invoiceId:
-          type: string
-          format: uuid
-        userId:
-          type: string
-          format: uuid
-        executionDate:
-          type: string
-          format: date
-        amount:
-          type: number
-          format: float
-        status:
-          type: string
-          enum: [ TO_SEND, SENT, EXECUTED, REJECTED ]
-        paymentMethod:
-          $ref: "#/components/schemas/PaymentMethodType"
+        InvoiceDetailed:
+            allOf:
+                - $ref: '#/components/schemas/Invoice'
+                - type: object
+                  properties:
+                      subscription:
+                          $ref: '#/components/schemas/SubscriptionDetailed'
 
-    LoginRequest:
-      type: object
-      required: [ email, password ]
-      properties:
-        email:
-          type: string
-          format: email
-          example: "john.doe@example.com"
-        password:
-          type: string
-          format: password
-          example: "Password123!"
+        AccountingExportLine:
+            type: object
+            description: Ligne d'export comptable pour le Groupe Money.
+            properties:
+                date:
+                    type: string
+                    format: date
+                generalAccount:
+                    type: string
+                    example: '700'
+                clientAccount:
+                    type: string
+                    example: '411'
+                description:
+                    type: string
+                    example: 'Produit'
+                invoiceRef:
+                    type: string
+                    example: 'Facture1'
+                debit:
+                    type: number
+                    format: float
+                    nullable: true
+                credit:
+                    type: number
+                    format: float
+                    nullable: true
+                customerName:
+                    type: string
+                    example: 'John Doe'
 
-    LoginResponse:
-      type: object
-      properties:
-        token:
-          type: string
-          description: "JWT Token"
-        user:
-          $ref: "#/components/schemas/User"
+        DirectDebitOrder:
+            type: object
+            description: Ordre de prélèvement à envoyer au Groupe Bank.
+            properties:
+                id:
+                    type: string
+                    format: uuid
+                invoiceId:
+                    type: string
+                    format: uuid
+                userId:
+                    type: string
+                    format: uuid
+                executionDate:
+                    type: string
+                    format: date
+                amount:
+                    type: number
+                    format: float
+                status:
+                    type: string
+                    enum: [TO_SEND, SENT, EXECUTED, REJECTED]
+                paymentMethod:
+                    $ref: '#/components/schemas/PaymentMethodType'
 
-    Admin:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        firstName:
-          type: string
-          example: "Admin"
-        lastName:
-          type: string
-          example: "User"
-        email:
-          type: string
-          format: email
-          example: "admin@gamers-erp.com"
-        isActive:
-          type: string
-          example: "true"
-        lastLogin:
-          type: string
-          format: date-time
-          nullable: true
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
+        PaymentUpdate:
+            type: object
+            required: [invoiceId, status]
+            properties:
+                invoiceId:
+                    type: string
+                    format: uuid
+                status:
+                    type: string
+                    enum: [EXECUTED, REJECTED]
+                rejectionReason:
+                    type: string
+                    nullable: true
 
-    AdminLoginResponse:
-      type: object
-      properties:
-        token:
-          type: string
-          description: "JWT Token"
-        admin:
-          $ref: "#/components/schemas/Admin"
+        LoginRequest:
+            type: object
+            required: [email, password]
+            properties:
+                email:
+                    type: string
+                    format: email
+                    example: 'john.doe@example.com'
+                password:
+                    type: string
+                    format: password
+                    example: 'Password123!'
 
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
+        LoginResponse:
+            type: object
+            properties:
+                token:
+                    type: string
+                    description: 'JWT Token'
+                user:
+                    $ref: '#/components/schemas/User'
+
+        Admin:
+            type: object
+            properties:
+                id:
+                    type: string
+                    format: uuid
+                firstName:
+                    type: string
+                    example: 'Admin'
+                lastName:
+                    type: string
+                    example: 'User'
+                email:
+                    type: string
+                    format: email
+                    example: 'admin@gamers-erp.com'
+                isActive:
+                    type: string
+                    example: 'true'
+                lastLogin:
+                    type: string
+                    format: date-time
+                    nullable: true
+                createdAt:
+                    type: string
+                    format: date-time
+                updatedAt:
+                    type: string
+                    format: date-time
+
+        AdminLoginResponse:
+            type: object
+            properties:
+                token:
+                    type: string
+                    description: 'JWT Token'
+                admin:
+                    $ref: '#/components/schemas/Admin'
+
+    securitySchemes:
+        bearerAuth:
+            type: http
+            scheme: bearer
+            bearerFormat: JWT

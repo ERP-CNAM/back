@@ -32,12 +32,14 @@ import type {
     t_GetMonthlyRevenueQuerySchema,
     t_GetSubscriptionParamSchema,
     t_GetUserParamSchema,
-    t_Invoice,
+    t_InvoiceDetailed,
     t_ListSubscriptionsQuerySchema,
     t_ListUsersQuerySchema,
     t_LoginRequestBodySchema,
     t_LoginResponse,
     t_Subscription,
+    t_SubscriptionDetailed,
+    t_UpdatePaymentStatusRequestBodySchema,
     t_UpdateSubscriptionParamSchema,
     t_UpdateSubscriptionRequestBodySchema,
     t_UpdateUserParamSchema,
@@ -51,11 +53,13 @@ import {
     s_AdminLoginResponse,
     s_BaseAPIResponse,
     s_DirectDebitOrder,
-    s_Invoice,
+    s_InvoiceDetailed,
     s_LoginRequest,
     s_LoginResponse,
+    s_PaymentUpdate,
     s_Subscription,
     s_SubscriptionCreate,
+    s_SubscriptionDetailed,
     s_SubscriptionStatus,
     s_SubscriptionUpdate,
     s_User,
@@ -218,7 +222,7 @@ export type UpdateUserStatus = (
 export type ListSubscriptionsResponder = {
     with200(): ExpressRuntimeResponse<
         t_BaseAPIResponse & {
-            payload?: t_Subscription[];
+            payload?: t_SubscriptionDetailed[];
         }
     >;
 } & ExpressRuntimeResponder;
@@ -250,7 +254,7 @@ export type CreateSubscription = (
 export type GetSubscriptionResponder = {
     with200(): ExpressRuntimeResponse<
         t_BaseAPIResponse & {
-            payload?: t_Subscription;
+            payload?: t_SubscriptionDetailed;
         }
     >;
     with404(): ExpressRuntimeResponse<
@@ -315,7 +319,7 @@ export type GenerateMonthlyBillingResponder = {
         t_BaseAPIResponse & {
             payload?: {
                 billingDate?: string;
-                invoices?: t_Invoice[];
+                invoices?: t_InvoiceDetailed[];
             };
         }
     >;
@@ -361,6 +365,18 @@ export type ExportDirectDebits = (
     next: NextFunction,
 ) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>;
 
+export type UpdatePaymentStatusResponder = {
+    with200(): ExpressRuntimeResponse<t_BaseAPIResponse>;
+} & ExpressRuntimeResponder;
+
+export type UpdatePaymentStatus = (
+    params: Params<void, void, t_UpdatePaymentStatusRequestBodySchema, void>,
+    respond: UpdatePaymentStatusResponder,
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>;
+
 export type GetMonthlyRevenueResponder = {
     with200(): ExpressRuntimeResponse<
         t_BaseAPIResponse & {
@@ -399,6 +415,7 @@ export type Implementation = {
     generateMonthlyBilling: GenerateMonthlyBilling;
     exportMonthlyInvoices: ExportMonthlyInvoices;
     exportDirectDebits: ExportDirectDebits;
+    updatePaymentStatus: UpdatePaymentStatus;
     getMonthlyRevenue: GetMonthlyRevenue;
 };
 
@@ -899,7 +916,7 @@ export function createRouter(implementation: Implementation): Router {
     });
 
     const listSubscriptionsResponseBodyValidator = responseValidationFactory(
-        [['200', s_BaseAPIResponse.merge(z.object({ payload: z.array(s_Subscription).optional() }))]],
+        [['200', s_BaseAPIResponse.merge(z.object({ payload: z.array(s_SubscriptionDetailed).optional() }))]],
         undefined,
     );
 
@@ -917,7 +934,7 @@ export function createRouter(implementation: Implementation): Router {
                 with200() {
                     return new ExpressRuntimeResponse<
                         t_BaseAPIResponse & {
-                            payload?: t_Subscription[];
+                            payload?: t_SubscriptionDetailed[];
                         }
                     >(200);
                 },
@@ -1006,7 +1023,7 @@ export function createRouter(implementation: Implementation): Router {
 
     const getSubscriptionResponseBodyValidator = responseValidationFactory(
         [
-            ['200', s_BaseAPIResponse.merge(z.object({ payload: s_Subscription.optional() }))],
+            ['200', s_BaseAPIResponse.merge(z.object({ payload: s_SubscriptionDetailed.optional() }))],
             ['404', s_BaseAPIResponse.merge(z.object({ payload: z.object({}).nullable().optional() }))],
         ],
         undefined,
@@ -1026,7 +1043,7 @@ export function createRouter(implementation: Implementation): Router {
                 with200() {
                     return new ExpressRuntimeResponse<
                         t_BaseAPIResponse & {
-                            payload?: t_Subscription;
+                            payload?: t_SubscriptionDetailed;
                         }
                     >(200);
                 },
@@ -1206,7 +1223,7 @@ export function createRouter(implementation: Implementation): Router {
                         payload: z
                             .object({
                                 billingDate: z.string().optional(),
-                                invoices: z.array(s_Invoice).optional(),
+                                invoices: z.array(s_InvoiceDetailed).optional(),
                             })
                             .optional(),
                     }),
@@ -1236,7 +1253,7 @@ export function createRouter(implementation: Implementation): Router {
                         t_BaseAPIResponse & {
                             payload?: {
                                 billingDate?: string;
-                                invoices?: t_Invoice[];
+                                invoices?: t_InvoiceDetailed[];
                             };
                         }
                     >(200);
@@ -1373,6 +1390,52 @@ export function createRouter(implementation: Implementation): Router {
 
             if (body !== undefined) {
                 res.json(exportDirectDebitsResponseBodyValidator(status, body));
+            } else {
+                res.end();
+            }
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    const updatePaymentStatusRequestBodySchema = z.array(s_PaymentUpdate);
+
+    const updatePaymentStatusResponseBodyValidator = responseValidationFactory([['200', s_BaseAPIResponse]], undefined);
+
+    // updatePaymentStatus
+    router.post(`/bank/payment-updates`, async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const input = {
+                params: undefined,
+                query: undefined,
+                body: parseRequestInput(updatePaymentStatusRequestBodySchema, req.body, RequestInputType.RequestBody),
+                headers: undefined,
+            };
+
+            const responder = {
+                with200() {
+                    return new ExpressRuntimeResponse<t_BaseAPIResponse>(200);
+                },
+                withStatus(status: StatusCode) {
+                    return new ExpressRuntimeResponse(status);
+                },
+            };
+
+            const response = await implementation.updatePaymentStatus(input, responder, req, res, next).catch((err) => {
+                throw ExpressRuntimeError.HandlerError(err);
+            });
+
+            // escape hatch to allow responses to be sent by the implementation handler
+            if (response === SkipResponse) {
+                return;
+            }
+
+            const { status, body } = response instanceof ExpressRuntimeResponse ? response.unpack() : response;
+
+            res.status(status);
+
+            if (body !== undefined) {
+                res.json(updatePaymentStatusResponseBodyValidator(status, body));
             } else {
                 res.end();
             }

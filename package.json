@@ -35,6 +35,8 @@
         "db:studio": "drizzle-kit studio",
         "db:generate:sqlite": "drizzle-kit generate --config=drizzle.config.sqlite.ts",
         "db:studio:sqlite": "drizzle-kit studio --config=drizzle.config.sqlite.ts",
+        "db:seed": "npx tsx src/database/postgres/seed.ts",
+        "db:seed:memory": "npx tsx src/database/memory/seed.ts",
         "generate": "openapi-code-generator --input api/spec/openapi.yaml --output api --template typescript-express",
         "generate:clean": "find api -type f -name '*.ts' -delete",
         "format": "prettier --write '**/*.{js,jsx,ts,mts,tsx,json,css,md}'"

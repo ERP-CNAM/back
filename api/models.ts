@@ -60,6 +60,10 @@ export type t_Invoice = {
     vatAmount?: number;
 };
 
+export type t_InvoiceDetailed = t_Invoice & {
+    subscription?: t_SubscriptionDetailed;
+};
+
 export type t_LoginResponse = {
     token?: string;
     user?: t_User;
@@ -73,6 +77,12 @@ export type t_PaymentMethod = {
 
 export type t_PaymentMethodType = 'SEPA' | 'CARD';
 
+export type t_PaymentUpdate = {
+    invoiceId: string;
+    rejectionReason?: string | null;
+    status: 'EXECUTED' | 'REJECTED';
+};
+
 export type t_Subscription = {
     contractCode?: string;
     endDate?: string | null;
@@ -82,6 +92,10 @@ export type t_Subscription = {
     startDate?: string;
     status?: t_SubscriptionStatus;
     userId?: string;
+};
+
+export type t_SubscriptionDetailed = t_Subscription & {
+    user?: t_User;
 };
 
 export type t_SubscriptionStatus = 'ACTIVE' | 'CANCELLED' | 'PENDING_CANCEL';
@@ -166,6 +180,8 @@ export type t_LoginRequestBodySchema = {
     email: string;
     password: string;
 };
+
+export type t_UpdatePaymentStatusRequestBodySchema = t_PaymentUpdate[];
 
 export type t_UpdateSubscriptionParamSchema = {
     subscriptionId: string;
