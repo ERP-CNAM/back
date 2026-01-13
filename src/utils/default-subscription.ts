@@ -9,13 +9,10 @@ import { InMemorySubscriptionRepository } from '../repository/memory/in-memory-s
 export async function seedSubscriptions() {
     const db = getDatabase();
 
-    const userRepo =
-        DB_TYPE === 'postgres' ? new PostgresUserRepository(db) : new InMemoryUserRepository(db);
+    const userRepo = DB_TYPE === 'postgres' ? new PostgresUserRepository(db) : new InMemoryUserRepository(db);
 
     const subRepo =
-        DB_TYPE === 'postgres'
-            ? new PostgresSubscriptionRepository(db)
-            : new InMemorySubscriptionRepository(db);
+        DB_TYPE === 'postgres' ? new PostgresSubscriptionRepository(db) : new InMemorySubscriptionRepository(db);
 
     const john = await userRepo.findByEmail('john.doe@example.com');
     if (!john) {
