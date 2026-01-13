@@ -1,4 +1,4 @@
-import { eq, and, gte, lt } from 'drizzle-orm';
+import { eq, and, gte, lt, count } from 'drizzle-orm';
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import type { InvoiceRepository, CreateInvoiceDTO } from '../invoice.repository';
 import type { t_Invoice } from '../../../api/models';
@@ -92,5 +92,15 @@ export class PostgresInvoiceRepository implements InvoiceRepository {
             .execute();
 
         return rows.map(this.toInvoice);
+    }
+
+    async countBySubscriptionId(subscriptionId: string): Promise<number> {
+        const result = await this.db
+            .select({ value: count() })
+            .from(invoices)
+            .where(eq(invoices.subscriptionId, subscriptionId))
+            .execute();
+            
+        return result[0]?.value || 0;
     }
 }

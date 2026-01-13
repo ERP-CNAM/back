@@ -92,13 +92,45 @@ describe('Billing Integration', () => {
 
             const inv2 = payload.invoices.find((i: any) => i.subscriptionId === activeSub2.id);
             expect(inv2).toBeDefined();
-            expect(inv2.amountExclVat).toBe(200);
-            expect(inv2.vatAmount).toBe(40);
-            expect(inv2.amountInclVat).toBe(240);
+            expect(inv2.amountExclVat).toBe(100); // 200 * 0.5 (First month promo)
+            expect(inv2.vatAmount).toBe(20);
+            expect(inv2.amountInclVat).toBe(120);
 
             // 5. Verify Persistence
             const storedInvoices = await invoiceRepo.findAllByDate(billingDate);
             expect(storedInvoices).toHaveLength(2);
+        });
+
+        it('should apply 50% discount on first billing with promo code', async () => {
+            // Setup: Subscription with promo code
+            const subWithPromo = await subscriptionRepo.create({
+                userId: 'user-promo',
+                contractCode: 'PROMO1',
+                startDate: '2026-01-01',
+                monthlyAmount: 100,
+                promoCode: 'WELCOME50'
+            });
+
+            const billingDate = '2026-01-31';
+            const params = { body: { billingDate } } as any;
+            const respond = createMockResponse();
+
+            // 1st Billing Run
+            const result1 = await billingHandlers.generateMonthlyBilling(params, respond, {} as any, {} as any, {} as any);
+            
+            const invoice1 = result1.body.payload.invoices[0];
+            expect(invoice1.amountExclVat).toBe(50); // 100 * 0.5
+            expect(invoice1.amountInclVat).toBe(60); // 50 + 20%
+
+            // 2nd Billing Run (Next Month)
+            const billingDate2 = '2026-02-28';
+            const params2 = { body: { billingDate: billingDate2 } } as any;
+            
+            const result2 = await billingHandlers.generateMonthlyBilling(params2, respond, {} as any, {} as any, {} as any);
+            
+            const invoice2 = result2.body.payload.invoices.find((i: any) => i.subscriptionId === subWithPromo.id);
+            expect(invoice2.amountExclVat).toBe(100); // Full price
+            expect(invoice2.amountInclVat).toBe(120);
         });
 
         it('should handle no active subscriptions gracefully', async () => {

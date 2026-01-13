@@ -67,4 +67,9 @@ export class InMemoryInvoiceRepository implements InvoiceRepository {
         const filtered = allInvoices.filter((inv) => inv.billingDate >= startDate && inv.billingDate <= endDate);
         return filtered.map(this.toInvoice);
     }
+
+    async countBySubscriptionId(subscriptionId: string): Promise<number> {
+        const rows = this.db.select().from(invoices).where(eq(invoices.subscriptionId, subscriptionId)).all();
+        return rows.length;
+    }
 }

@@ -18,4 +18,5 @@ export interface InvoiceRepository {
     findAllByDate(date: string): Promise<t_Invoice[]>;
     findAllByMonth(month: string): Promise<t_Invoice[]>;
     findAllByDateRange(startDate: string, endDate: string): Promise<t_Invoice[]>;
+    countBySubscriptionId(subscriptionId: string): Promise<number>;
 }

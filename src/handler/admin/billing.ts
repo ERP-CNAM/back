@@ -22,7 +22,16 @@ export function createBillingHandlers(
 
         // 2. Generate invoices for each subscription
         for (const sub of activeSubscriptions) {
-            const amountExclVat = sub.monthlyAmount || 0;
+            let amountExclVat = sub.monthlyAmount || 0;
+
+            // Apply 50% discount on first payment if promo code exists
+            if (sub.promoCode) {
+                const previousInvoicesCount = await invoiceRepository.countBySubscriptionId(sub.id!);
+                if (previousInvoicesCount === 0) {
+                    amountExclVat = amountExclVat * 0.5;
+                }
+            }
+
             const vatRate = 0.20;
             const vatAmount = Number((amountExclVat * vatRate).toFixed(2));
             const amountInclVat = Number((amountExclVat + vatAmount).toFixed(2));
