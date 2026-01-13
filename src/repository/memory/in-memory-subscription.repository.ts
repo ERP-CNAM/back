@@ -4,10 +4,12 @@ import type { SubscriptionQueryOptions, SubscriptionRepository } from '../subscr
 import type {
     t_CreateSubscriptionRequestBodySchema,
     t_Subscription,
+    t_SubscriptionDetailed,
     t_SubscriptionStatus,
+    t_UserStatus,
     t_UpdateSubscriptionRequestBodySchema,
 } from '../../../api/models';
-import { subscriptions } from '../../database/memory/schema';
+import { subscriptions, users } from '../../database/memory/schema';
 import { generateUUID } from '../../utils/uuid';
 
 const VALID_SUBSCRIPTION_STATUSES: t_SubscriptionStatus[] = ['ACTIVE', 'CANCELLED', 'PENDING_CANCEL'];
@@ -15,21 +17,27 @@ const VALID_SUBSCRIPTION_STATUSES: t_SubscriptionStatus[] = ['ACTIVE', 'CANCELLE
 export class InMemorySubscriptionRepository implements SubscriptionRepository {
     constructor(private db: BetterSQLite3Database) {}
 
-    private toSubscription(row: any): t_Subscription {
+    private toSubscriptionDetailed(row: any): t_SubscriptionDetailed {
         return {
-            id: row.id,
-            userId: row.userId,
-            contractCode: row.contractCode,
-            startDate: row.startDate,
-            endDate: row.endDate ?? null,
-            monthlyAmount: row.monthlyAmount,
-            promoCode: row.promoCode ?? null,
-            status: row.status as t_SubscriptionStatus,
+            id: row.subscriptions.id,
+            userId: row.subscriptions.userId,
+            contractCode: row.subscriptions.contractCode,
+            startDate: row.subscriptions.startDate,
+            endDate: row.subscriptions.endDate ?? null,
+            monthlyAmount: row.subscriptions.monthlyAmount,
+            promoCode: row.subscriptions.promoCode ?? null,
+            status: row.subscriptions.status as t_SubscriptionStatus,
+            user: {
+                id: row.users.id,
+                firstName: row.users.firstName,
+                lastName: row.users.lastName,
+                email: row.users.email,
+                status: row.users.status as t_UserStatus,
+            },
         };
     }
 
-    async findAll(options?: SubscriptionQueryOptions): Promise<t_Subscription[]> {
-        let query = this.db.select().from(subscriptions);
+    async findAll(options?: SubscriptionQueryOptions): Promise<t_SubscriptionDetailed[]> {
         const conditions = [];
 
         if (options?.userId) {
@@ -40,16 +48,24 @@ export class InMemorySubscriptionRepository implements SubscriptionRepository {
             conditions.push(eq(subscriptions.status, options.status));
         }
 
+        let query = this.db.select().from(subscriptions).innerJoin(users, eq(subscriptions.userId, users.id));
+
         if (conditions.length > 0) {
             query = query.where(and(...conditions)) as any;
         }
 
-        return query.all().map((row) => this.toSubscription(row));
+        return query.all().map((row) => this.toSubscriptionDetailed(row));
     }
 
-    async findById(id: string): Promise<t_Subscription | null> {
-        const rows = this.db.select().from(subscriptions).where(eq(subscriptions.id, id)).limit(1).all();
-        return rows[0] ? this.toSubscription(rows[0]) : null;
+    async findById(id: string): Promise<t_SubscriptionDetailed | null> {
+        const rows = this.db
+            .select()
+            .from(subscriptions)
+            .innerJoin(users, eq(subscriptions.userId, users.id))
+            .where(eq(subscriptions.id, id))
+            .limit(1)
+            .all();
+        return rows[0] ? this.toSubscriptionDetailed(rows[0]) : null;
     }
 
     async create(data: t_CreateSubscriptionRequestBodySchema): Promise<t_Subscription> {

@@ -32,12 +32,13 @@ import type {
     t_GetMonthlyRevenueQuerySchema,
     t_GetSubscriptionParamSchema,
     t_GetUserParamSchema,
-    t_Invoice,
+    t_InvoiceDetailed,
     t_ListSubscriptionsQuerySchema,
     t_ListUsersQuerySchema,
     t_LoginRequestBodySchema,
     t_LoginResponse,
     t_Subscription,
+    t_SubscriptionDetailed,
     t_UpdateSubscriptionParamSchema,
     t_UpdateSubscriptionRequestBodySchema,
     t_UpdateUserParamSchema,
@@ -51,11 +52,12 @@ import {
     s_AdminLoginResponse,
     s_BaseAPIResponse,
     s_DirectDebitOrder,
-    s_Invoice,
+    s_InvoiceDetailed,
     s_LoginRequest,
     s_LoginResponse,
     s_Subscription,
     s_SubscriptionCreate,
+    s_SubscriptionDetailed,
     s_SubscriptionStatus,
     s_SubscriptionUpdate,
     s_User,
@@ -218,7 +220,7 @@ export type UpdateUserStatus = (
 export type ListSubscriptionsResponder = {
     with200(): ExpressRuntimeResponse<
         t_BaseAPIResponse & {
-            payload?: t_Subscription[];
+            payload?: t_SubscriptionDetailed[];
         }
     >;
 } & ExpressRuntimeResponder;
@@ -250,7 +252,7 @@ export type CreateSubscription = (
 export type GetSubscriptionResponder = {
     with200(): ExpressRuntimeResponse<
         t_BaseAPIResponse & {
-            payload?: t_Subscription;
+            payload?: t_SubscriptionDetailed;
         }
     >;
     with404(): ExpressRuntimeResponse<
@@ -315,7 +317,7 @@ export type GenerateMonthlyBillingResponder = {
         t_BaseAPIResponse & {
             payload?: {
                 billingDate?: string;
-                invoices?: t_Invoice[];
+                invoices?: t_InvoiceDetailed[];
             };
         }
     >;
@@ -899,7 +901,7 @@ export function createRouter(implementation: Implementation): Router {
     });
 
     const listSubscriptionsResponseBodyValidator = responseValidationFactory(
-        [['200', s_BaseAPIResponse.merge(z.object({ payload: z.array(s_Subscription).optional() }))]],
+        [['200', s_BaseAPIResponse.merge(z.object({ payload: z.array(s_SubscriptionDetailed).optional() }))]],
         undefined,
     );
 
@@ -917,7 +919,7 @@ export function createRouter(implementation: Implementation): Router {
                 with200() {
                     return new ExpressRuntimeResponse<
                         t_BaseAPIResponse & {
-                            payload?: t_Subscription[];
+                            payload?: t_SubscriptionDetailed[];
                         }
                     >(200);
                 },
@@ -1006,7 +1008,7 @@ export function createRouter(implementation: Implementation): Router {
 
     const getSubscriptionResponseBodyValidator = responseValidationFactory(
         [
-            ['200', s_BaseAPIResponse.merge(z.object({ payload: s_Subscription.optional() }))],
+            ['200', s_BaseAPIResponse.merge(z.object({ payload: s_SubscriptionDetailed.optional() }))],
             ['404', s_BaseAPIResponse.merge(z.object({ payload: z.object({}).nullable().optional() }))],
         ],
         undefined,
@@ -1026,7 +1028,7 @@ export function createRouter(implementation: Implementation): Router {
                 with200() {
                     return new ExpressRuntimeResponse<
                         t_BaseAPIResponse & {
-                            payload?: t_Subscription;
+                            payload?: t_SubscriptionDetailed;
                         }
                     >(200);
                 },
@@ -1206,7 +1208,7 @@ export function createRouter(implementation: Implementation): Router {
                         payload: z
                             .object({
                                 billingDate: z.string().optional(),
-                                invoices: z.array(s_Invoice).optional(),
+                                invoices: z.array(s_InvoiceDetailed).optional(),
                             })
                             .optional(),
                     }),
@@ -1236,7 +1238,7 @@ export function createRouter(implementation: Implementation): Router {
                         t_BaseAPIResponse & {
                             payload?: {
                                 billingDate?: string;
-                                invoices?: t_Invoice[];
+                                invoices?: t_InvoiceDetailed[];
                             };
                         }
                     >(200);

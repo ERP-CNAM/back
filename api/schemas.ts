@@ -143,3 +143,7 @@ export const s_LoginResponse = z.object({
     token: z.string().optional(),
     user: s_User.optional(),
 });
+
+export const s_SubscriptionDetailed = s_Subscription.merge(z.object({ user: s_User.optional() }));
+
+export const s_InvoiceDetailed = s_Invoice.merge(z.object({ subscription: s_SubscriptionDetailed.optional() }));

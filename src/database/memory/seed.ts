@@ -13,7 +13,7 @@ const isoNow = () => new Date().toISOString();
 const isoDate = (d: Date | string) => (d instanceof Date ? d.toISOString() : new Date(d).toISOString());
 
 // SQLite n'aime pas `undefined` → on force null si besoin
-const nullIfUndef = <T,>(v: T | undefined) => (v === undefined ? null : v);
+const nullIfUndef = <T>(v: T | undefined) => (v === undefined ? null : v);
 
 async function seedUsers(db: any) {
     const hashedPassword = await security.hashPassword('Password123!');
@@ -76,9 +76,9 @@ async function seedSubscriptions(db: any) {
         userId: john.id,
         contractCode: 'C001',
         startDate: isoDate('2026-01-01'), // ✅ TEXT ISO
-        endDate: null,                   // ✅ null
-        monthlyAmount: 15.0,             // ✅ number (REAL)
-        promoCode: nullIfUndef('B1M20'),  // ✅ string / null
+        endDate: null, // ✅ null
+        monthlyAmount: 15.0, // ✅ number (REAL)
+        promoCode: nullIfUndef('B1M20'), // ✅ string / null
         status: 'ACTIVE',
     });
 

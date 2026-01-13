@@ -6,8 +6,7 @@ import { InMemoryUserRepository } from '../repository/memory/in-memory-user.repo
 
 export async function seedUsers() {
     const db = getDatabase();
-    const userRepo =
-        DB_TYPE === 'postgres' ? new PostgresUserRepository(db) : new InMemoryUserRepository(db);
+    const userRepo = DB_TYPE === 'postgres' ? new PostgresUserRepository(db) : new InMemoryUserRepository(db);
 
     const demoUsers = [
         {
@@ -45,8 +44,8 @@ export async function seedUsers() {
     }
 }
 
-export function createDefaultUsers() {
-    if (process.env.NODE_ENV !== 'production') {
-        seedUsers().then(() => console.log('Default users created!'));
-    }
+export async function createDefaultUsers() {
+    if (process.env.NODE_ENV === 'production') return;
+    await seedUsers();
+    console.log('Default users created!');
 }
