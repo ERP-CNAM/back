@@ -15,7 +15,7 @@ import { generateUUID } from '../../utils/uuid';
 const VALID_SUBSCRIPTION_STATUSES: t_SubscriptionStatus[] = ['ACTIVE', 'CANCELLED', 'PENDING_CANCEL'];
 
 export class PostgresSubscriptionRepository implements SubscriptionRepository {
-    constructor(private db: NodePgDatabase) { }
+    constructor(private db: NodePgDatabase) {}
 
     private toSubscription(row: typeof subscriptions.$inferSelect): t_Subscription {
         const startDate = row.startDate ? row.startDate.toISOString().slice(0, 10) : undefined;
@@ -32,8 +32,13 @@ export class PostgresSubscriptionRepository implements SubscriptionRepository {
         };
     }
 
-    private toSubscriptionDetailed(row: { subscriptions: typeof subscriptions.$inferSelect; users: typeof users.$inferSelect }): t_SubscriptionDetailed {
-        const startDate = row.subscriptions.startDate ? row.subscriptions.startDate.toISOString().slice(0, 10) : undefined;
+    private toSubscriptionDetailed(row: {
+        subscriptions: typeof subscriptions.$inferSelect;
+        users: typeof users.$inferSelect;
+    }): t_SubscriptionDetailed {
+        const startDate = row.subscriptions.startDate
+            ? row.subscriptions.startDate.toISOString().slice(0, 10)
+            : undefined;
         const endDate = row.subscriptions.endDate ? row.subscriptions.endDate.toISOString().slice(0, 10) : null;
         return {
             id: row.subscriptions.id,
@@ -41,7 +46,8 @@ export class PostgresSubscriptionRepository implements SubscriptionRepository {
             contractCode: row.subscriptions.contractCode,
             startDate,
             endDate,
-            monthlyAmount: row.subscriptions.monthlyAmount !== null ? Number(row.subscriptions.monthlyAmount) : undefined,
+            monthlyAmount:
+                row.subscriptions.monthlyAmount !== null ? Number(row.subscriptions.monthlyAmount) : undefined,
             promoCode: row.subscriptions.promoCode ?? null,
             status: row.subscriptions.status as t_SubscriptionStatus,
             user: {
@@ -50,7 +56,7 @@ export class PostgresSubscriptionRepository implements SubscriptionRepository {
                 lastName: row.users.lastName ?? undefined,
                 email: row.users.email ?? undefined,
                 status: row.users.status as t_UserStatus,
-            }
+            },
         };
     }
 
@@ -65,10 +71,7 @@ export class PostgresSubscriptionRepository implements SubscriptionRepository {
             conditions.push(eq(subscriptions.status, options.status));
         }
 
-        let query = this.db
-            .select()
-            .from(subscriptions)
-            .innerJoin(users, eq(subscriptions.userId, users.id));
+        let query = this.db.select().from(subscriptions).innerJoin(users, eq(subscriptions.userId, users.id));
 
         if (conditions.length > 0) {
             query = query.where(and(...conditions)) as any;

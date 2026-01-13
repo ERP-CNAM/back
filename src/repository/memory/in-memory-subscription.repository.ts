@@ -15,7 +15,7 @@ import { generateUUID } from '../../utils/uuid';
 const VALID_SUBSCRIPTION_STATUSES: t_SubscriptionStatus[] = ['ACTIVE', 'CANCELLED', 'PENDING_CANCEL'];
 
 export class InMemorySubscriptionRepository implements SubscriptionRepository {
-    constructor(private db: BetterSQLite3Database) { }
+    constructor(private db: BetterSQLite3Database) {}
 
     private toSubscriptionDetailed(row: any): t_SubscriptionDetailed {
         return {
@@ -33,7 +33,7 @@ export class InMemorySubscriptionRepository implements SubscriptionRepository {
                 lastName: row.users.lastName,
                 email: row.users.email,
                 status: row.users.status as t_UserStatus,
-            }
+            },
         };
     }
 
@@ -48,10 +48,7 @@ export class InMemorySubscriptionRepository implements SubscriptionRepository {
             conditions.push(eq(subscriptions.status, options.status));
         }
 
-        let query = this.db
-            .select()
-            .from(subscriptions)
-            .innerJoin(users, eq(subscriptions.userId, users.id));
+        let query = this.db.select().from(subscriptions).innerJoin(users, eq(subscriptions.userId, users.id));
 
         if (conditions.length > 0) {
             query = query.where(and(...conditions)) as any;
