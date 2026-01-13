@@ -11,7 +11,82 @@ import { InMemorySubscriptionRepository } from '../repository/memory/in-memory-s
 import { PostgresInvoiceRepository } from '../repository/postgres/postgres-invoice.repository';
 import { InMemoryInvoiceRepository } from '../repository/memory/in-memory-invoice.repository';
 
-export async function seedInvoices() {
+// ---- Types (minimal, sans dépendre de tes entités internes) ----
+type InvoiceStatus = 'PAID' | 'SENT' | 'PENDING' | 'FAILED';
+
+type UserLike = {
+    id: string;
+    firstName?: string | null;
+    lastName?: string | null;
+    email?: string | null;
+};
+
+type SubscriptionLike = {
+    id: string;
+    monthlyAmount?: number | null;
+};
+
+type InvoiceLike = {
+    id?: string;
+    billingDate: string;
+};
+
+type InvoiceCreateInput = {
+    invoiceRef: string;
+    userId: string;
+    subscriptionId: string;
+    billingDate: string;
+    periodStart: string;
+    periodEnd: string;
+    amountExclVat: number;
+    vatAmount: number;
+    amountInclVat: number;
+    status: InvoiceStatus;
+};
+
+// ---- Helpers ----
+function pad2(n: number): string {
+    return String(n).padStart(2, '0');
+}
+
+// fin de mois: YYYY-MM-<lastDay> (m = 1..12)
+function endOfMonth(y: number, m: number): string {
+    const last = new Date(y, m, 0).getDate();
+    return `${y}-${pad2(m)}-${pad2(last)}`;
+}
+
+function startOfMonth(y: number, m: number): string {
+    return `${y}-${pad2(m)}-01`;
+}
+
+function computeAmounts(monthlyInclVat: number): {
+    amountExclVat: number;
+    vatAmount: number;
+    amountInclVat: number;
+} {
+    // TVA 20%: incl = excl * 1.2 => excl = incl / 1.2
+    const excl = Math.round((monthlyInclVat / 1.2) * 100) / 100;
+    const vat = Math.round((monthlyInclVat - excl) * 100) / 100;
+    return { amountExclVat: excl, vatAmount: vat, amountInclVat: monthlyInclVat };
+}
+
+function statusForIndex(i: number): InvoiceStatus {
+    const cycle: readonly InvoiceStatus[] = [
+        'PAID',
+        'PAID',
+        'SENT',
+        'PENDING',
+        'FAILED',
+    ];
+
+    return cycle[i % cycle.length] ?? 'PAID';
+}
+function safeUpper(v?: string | null): string {
+    return (v ?? '').trim().toUpperCase();
+}
+
+// ---- Seed ----
+export async function seedInvoices(): Promise<void> {
     const db = getDatabase();
 
     const userRepo =
@@ -29,67 +104,82 @@ export async function seedInvoices() {
             ? new PostgresInvoiceRepository(db)
             : new InMemoryInvoiceRepository(db);
 
-    // 1️⃣ John
-    const john = await userRepo.findByEmail('john.doe@example.com');
-    if (!john) {
-        console.log('John not found, run seedUsers first');
+    // On caste en "Like" pour satisfaire TS sans dépendre de tes classes exactes
+    const john = (await (userRepo as any).findByEmail('john.doe@example.com')) as UserLike | null;
+    if (!john?.id) {
+        console.log('John not found (or no id), run seedUsers first');
         return;
     }
-    if (!john.id) {
-        throw new Error('John has no id');
-    }
 
-
-
-    // 2️⃣ Abonnement
-    const subs = await subRepo.findAll({ userId: john.id });
+    const subs = (await (subRepo as any).findAll({ userId: john.id })) as SubscriptionLike[];
     if (!subs.length) {
         console.log('No subscription found for John, run seedSubscriptions first');
         return;
     }
 
+    // Paramètres
+    const monthsToCreate: number = 8;
+    const startYear: number = 2025;
+    const startMonth: number = 7; // 07 => juillet 2025
 
+    const factors: number[] = [1, 1, 1.1, 0.9, 1.2, 1, 0.95, 1.05];
 
-    const sub = subs[0];
+    for (const sub of subs) {
+        if (!sub?.id) continue;
 
-    if (!sub?.id) {
-        throw new Error('Subscription has no id');
+        const existing = (await (invoiceRepo as any).findAll({ subscriptionId: sub.id })) as InvoiceLike[];
+        const existingBillingDates = new Set<string>(existing.map((i) => i.billingDate));
+
+        const baseInclVat: number =
+            typeof sub.monthlyAmount === 'number'
+                ? Math.round(sub.monthlyAmount * 100) / 100
+                : 15.0;
+
+        for (let i = 0; i < monthsToCreate; i++) {
+            const d = new Date(startYear, startMonth - 1 + i, 1);
+            const y: number = d.getFullYear();
+            const m: number = d.getMonth() + 1;
+
+            const periodStart: string = startOfMonth(y, m);
+            const periodEnd: string = endOfMonth(y, m);
+            const billingDate: string = periodEnd;
+
+            if (existingBillingDates.has(billingDate)) continue;
+
+            const factor: number = factors[i % factors.length] ?? 1;
+            const incl: number = Math.round(baseInclVat * factor * 100) / 100;
+
+            const { amountExclVat, vatAmount, amountInclVat } = computeAmounts(incl);
+            const status: InvoiceStatus = statusForIndex(i);
+
+            const first = safeUpper(john.firstName) || 'JOHN';
+            const subShort = String(sub.id).slice(0, 6);
+            const invoiceRef: string = `INV-${y}-${pad2(m)}-${first}-${subShort}`;
+
+            const payload: InvoiceCreateInput = {
+                invoiceRef,
+                userId: john.id,
+                subscriptionId: sub.id,
+                billingDate,
+                periodStart,
+                periodEnd,
+                amountExclVat,
+                vatAmount,
+                amountInclVat,
+                status,
+            };
+
+            await (invoiceRepo as any).create(payload);
+            existingBillingDates.add(billingDate);
+        }
+
+        console.log(`Invoices seeded for subscription ${sub.id}`);
     }
 
-    // 3️⃣ Vérifier si facture existe déjà (ex: Janvier 2026)
-    const billingDate = '2026-01-31';
-
-    const existing = await invoiceRepo.findAll({
-        subscriptionId: sub.id,
-    });
-
-    const alreadyExists = existing.some(
-        (i) => i.billingDate === billingDate
-    );
-
-    if (alreadyExists) {
-        console.log('ℹ Invoice already exists for this subscription');
-        return;
-    }
-
-    // 4️⃣ Création facture
-    await invoiceRepo.create({
-        invoiceRef: 'INV-2026-01-JOHN',
-        userId: john.id,
-        subscriptionId: sub.id,
-        billingDate,
-        periodStart: '2026-01-01',
-        periodEnd: '2026-01-31',
-        amountExclVat: 12.0,
-        vatAmount: 3.0,
-        amountInclVat: 15.0,
-        status: 'PAID',
-    });
-
-    console.log('Invoice created for John');
+    console.log('✅ Invoice seeding done');
 }
 
-export async function createDefaultInvoices() {
+export async function createDefaultInvoices(): Promise<void> {
     await seedInvoices();
     console.log('Default invoices created!');
 }
