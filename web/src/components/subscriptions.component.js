@@ -4,7 +4,7 @@ import { toastStore } from '../stores/toast.store.js';
 
 export function SubscriptionsComponent() {
     return `
-  <section class="bg-white rounded-xl border shadow-sm p-4"
+  <section   class="bg-white rounded-xl border shadow-sm p-4 h-full min-h-0 flex flex-col"
     x-data="subscriptionsPage()" x-init="init()">
 
     <div class="flex items-center justify-between gap-4 mb-4">

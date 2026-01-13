@@ -6,7 +6,8 @@ import { go } from '../router.js';
 
 export function LoginPage() {
     return `
-    <section class="max-w-md bg-white p-6 rounded-xl border shadow-sm mx-auto mt-10"
+  <div class="min-h-screen flex items-center justify-center bg-slate-50 px-4">
+    <section class="w-full max-w-md bg-white p-6 rounded-xl border shadow-sm"
       x-data="loginPage()"
       @keydown.enter.prevent="submit()"
     >
@@ -42,6 +43,7 @@ export function LoginPage() {
         </button>
       </div>
     </section>
+    </div>
   `;
 }
 
