@@ -39,6 +39,7 @@ import type {
   t_GetSubscriptionParamSchema,
   t_GetUserParamSchema,
   t_InvoiceDetailed,
+  t_ListInvoicesQuerySchema,
   t_ListSubscriptionsQuerySchema,
   t_ListUsersQuerySchema,
   t_LoginRequestBodySchema,
@@ -354,6 +355,22 @@ export type GenerateMonthlyBilling = (
   next: NextFunction,
 ) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>
 
+export type ListInvoicesResponder = {
+  with200(): ExpressRuntimeResponse<
+    t_BaseAPIResponse & {
+      payload?: t_InvoiceDetailed[]
+    }
+  >
+} & ExpressRuntimeResponder
+
+export type ListInvoices = (
+  params: Params<void, t_ListInvoicesQuerySchema, void, void>,
+  respond: ListInvoicesResponder,
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>
+
 export type ExportMonthlyInvoicesResponder = {
   with200(): ExpressRuntimeResponse<
     t_BaseAPIResponse & {
@@ -434,6 +451,7 @@ export type Implementation = {
   updateSubscription: UpdateSubscription
   cancelSubscription: CancelSubscription
   generateMonthlyBilling: GenerateMonthlyBilling
+  listInvoices: ListInvoices
   exportMonthlyInvoices: ExportMonthlyInvoices
   exportDirectDebits: ExportDirectDebits
   updatePaymentStatus: UpdatePaymentStatus
@@ -1572,6 +1590,82 @@ export function createRouter(implementation: Implementation): Router {
 
         if (body !== undefined) {
           res.json(generateMonthlyBillingResponseBodyValidator(status, body))
+        } else {
+          res.end()
+        }
+      } catch (error) {
+        next(error)
+      }
+    },
+  )
+
+  const listInvoicesQuerySchema = z.object({
+    userId: z.string().optional(),
+    subscriptionId: z.string().optional(),
+    status: z.enum(["PENDING", "SENT", "PAID", "FAILED"]).optional(),
+  })
+
+  const listInvoicesResponseBodyValidator = responseValidationFactory(
+    [
+      [
+        "200",
+        s_BaseAPIResponse.merge(
+          z.object({ payload: z.array(s_InvoiceDetailed).optional() }),
+        ),
+      ],
+    ],
+    undefined,
+  )
+
+  // listInvoices
+  router.get(
+    `/invoices`,
+    async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const input = {
+          params: undefined,
+          query: parseRequestInput(
+            listInvoicesQuerySchema,
+            req.query,
+            RequestInputType.QueryString,
+          ),
+          body: undefined,
+          headers: undefined,
+        }
+
+        const responder = {
+          with200() {
+            return new ExpressRuntimeResponse<
+              t_BaseAPIResponse & {
+                payload?: t_InvoiceDetailed[]
+              }
+            >(200)
+          },
+          withStatus(status: StatusCode) {
+            return new ExpressRuntimeResponse(status)
+          },
+        }
+
+        const response = await implementation
+          .listInvoices(input, responder, req, res, next)
+          .catch((err) => {
+            throw ExpressRuntimeError.HandlerError(err)
+          })
+
+        // escape hatch to allow responses to be sent by the implementation handler
+        if (response === SkipResponse) {
+          return
+        }
+
+        const { status, body } =
+          response instanceof ExpressRuntimeResponse
+            ? response.unpack()
+            : response
+
+        res.status(status)
+
+        if (body !== undefined) {
+          res.json(listInvoicesResponseBodyValidator(status, body))
         } else {
           res.end()
         }

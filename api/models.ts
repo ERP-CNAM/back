@@ -179,6 +179,12 @@ export type t_GetUserParamSchema = {
   userId: string
 }
 
+export type t_ListInvoicesQuerySchema = {
+  status?: "PENDING" | "SENT" | "PAID" | "FAILED"
+  subscriptionId?: string
+  userId?: string
+}
+
 export type t_ListSubscriptionsQuerySchema = {
   status?: t_SubscriptionStatus
   userId?: string
