@@ -4,7 +4,10 @@
 
 export type RepositoryType = 'in-memory' | 'postgres';
 
-export const DB_TYPE: RepositoryType = (process.env.REPOSITORY || 'postgres') as RepositoryType;
+const DEFAULT_REPOSITORY: RepositoryType =
+    process.env.NODE_ENV === 'production' ? 'postgres' : 'in-memory';
+
+export const DB_TYPE: RepositoryType = (process.env.REPOSITORY || DEFAULT_REPOSITORY) as RepositoryType;
 
 export const DB_CONFIG = {
     postgres: {
