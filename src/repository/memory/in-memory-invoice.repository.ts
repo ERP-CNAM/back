@@ -6,7 +6,7 @@ import { invoices } from '../../database/memory/schema';
 import { generateUUID } from '../../utils/uuid';
 
 export class InMemoryInvoiceRepository implements InvoiceRepository {
-    constructor(private db: BetterSQLite3Database) {}
+    constructor(private db: BetterSQLite3Database) { }
 
     private toInvoice(row: any): t_Invoice {
         return {
@@ -48,6 +48,26 @@ export class InMemoryInvoiceRepository implements InvoiceRepository {
             .run();
 
         return invoice;
+    }
+
+
+    async findAll(filter: {
+        userId?: string;
+        subscriptionId?: string;
+        status?: 'PENDING' | 'SENT' | 'PAID' | 'FAILED';
+    }): Promise<t_Invoice[]> {
+        let query = this.db.select().from(invoices);
+        if (filter.userId) {
+            query = query.where(eq(invoices.userId, filter.userId)) as any;
+        }
+        if (filter.subscriptionId) {
+            query = query.where(eq(invoices.subscriptionId, filter.subscriptionId)) as any;
+        }
+        if (filter.status) {
+            query = query.where(eq(invoices.status, filter.status)) as any;
+        }
+        const rows = query.all();
+        return rows.map((row) => this.toInvoice(row));
     }
 
     async findAllByDate(date: string): Promise<t_Invoice[]> {

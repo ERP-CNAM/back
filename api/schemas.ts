@@ -2,154 +2,162 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { z } from 'zod/v4';
+import { z } from "zod/v4"
 
 export const PermissiveBoolean = z.preprocess((value) => {
-    if (typeof value === 'string' && (value === 'true' || value === 'false')) {
-        return value === 'true';
-    } else if (typeof value === 'number' && (value === 1 || value === 0)) {
-        return value === 1;
-    }
-    return value;
-}, z.boolean());
+  if (typeof value === "string" && (value === "true" || value === "false")) {
+    return value === "true"
+  } else if (typeof value === "number" && (value === 1 || value === 0)) {
+    return value === 1
+  }
+  return value
+}, z.boolean())
 
 export const s_AccountingExportLine = z.object({
-    date: z.string().optional(),
-    generalAccount: z.string().optional(),
-    clientAccount: z.string().optional(),
-    description: z.string().optional(),
-    invoiceRef: z.string().optional(),
-    debit: z.coerce.number().nullable().optional(),
-    credit: z.coerce.number().nullable().optional(),
-    customerName: z.string().optional(),
-});
+  date: z.string().optional(),
+  generalAccount: z.string().optional(),
+  clientAccount: z.string().optional(),
+  description: z.string().optional(),
+  invoiceRef: z.string().optional(),
+  debit: z.coerce.number().nullable().optional(),
+  credit: z.coerce.number().nullable().optional(),
+  customerName: z.string().optional(),
+})
 
 export const s_Admin = z.object({
-    id: z.string().optional(),
-    firstName: z.string().optional(),
-    lastName: z.string().optional(),
-    email: z.email().optional(),
-    isActive: z.string().optional(),
-    lastLogin: z.iso.datetime({ offset: true }).nullable().optional(),
-    createdAt: z.iso.datetime({ offset: true }).optional(),
-    updatedAt: z.iso.datetime({ offset: true }).optional(),
-});
+  id: z.string().optional(),
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+  email: z.email().optional(),
+  isActive: z.string().optional(),
+  lastLogin: z.iso.datetime({ offset: true }).nullable().optional(),
+  createdAt: z.iso.datetime({ offset: true }).optional(),
+  updatedAt: z.iso.datetime({ offset: true }).optional(),
+})
 
 export const s_BaseAPIResponse = z.object({
-    success: PermissiveBoolean.optional(),
-    message: z.string().optional(),
-});
+  success: PermissiveBoolean.optional(),
+  message: z.string().optional(),
+})
 
 export const s_Invoice = z.object({
-    id: z.string().optional(),
-    userId: z.string().optional(),
-    subscriptionId: z.string().optional(),
-    invoiceRef: z.string().optional(),
-    periodStart: z.string().optional(),
-    periodEnd: z.string().optional(),
-    billingDate: z.string().optional(),
-    amountExclVat: z.coerce.number().optional(),
-    vatAmount: z.coerce.number().optional(),
-    amountInclVat: z.coerce.number().optional(),
-    status: z.enum(['PENDING', 'SENT', 'PAID', 'FAILED']).optional(),
-});
+  id: z.string().optional(),
+  userId: z.string().optional(),
+  subscriptionId: z.string().optional(),
+  invoiceRef: z.string().optional(),
+  periodStart: z.string().optional(),
+  periodEnd: z.string().optional(),
+  billingDate: z.string().optional(),
+  amountExclVat: z.coerce.number().optional(),
+  vatAmount: z.coerce.number().optional(),
+  amountInclVat: z.coerce.number().optional(),
+  status: z.enum(["PENDING", "SENT", "PAID", "FAILED"]).optional(),
+})
 
 export const s_LoginRequest = z.object({
-    email: z.email(),
-    password: z.string(),
-});
+  email: z.email(),
+  password: z.string(),
+})
 
-export const s_PaymentMethodType = z.enum(['SEPA', 'CARD']);
+export const s_PaymentMethodType = z.enum(["SEPA", "CARD"])
 
 export const s_PaymentUpdate = z.object({
-    invoiceId: z.string(),
-    status: z.enum(['EXECUTED', 'REJECTED']),
-    rejectionReason: z.string().nullable().optional(),
-});
+  invoiceId: z.string(),
+  status: z.enum(["EXECUTED", "REJECTED"]),
+  rejectionReason: z.string().nullable().optional(),
+})
 
 export const s_SubscriptionCreate = z.object({
-    userId: z.string(),
-    contractCode: z.string(),
-    startDate: z.string(),
-    monthlyAmount: z.coerce.number(),
-    promoCode: z.string().nullable().optional(),
-});
+  userId: z.string(),
+  contractCode: z.string(),
+  startDate: z.string(),
+  monthlyAmount: z.coerce.number(),
+  promoCode: z.string().nullable().optional(),
+})
 
-export const s_SubscriptionStatus = z.enum(['ACTIVE', 'CANCELLED', 'PENDING_CANCEL']);
+export const s_SubscriptionStatus = z.enum([
+  "ACTIVE",
+  "CANCELLED",
+  "PENDING_CANCEL",
+])
 
-export const s_UserStatus = z.enum(['OK', 'SUSPENDED', 'BLOCKED', 'DELETED']);
+export const s_UserStatus = z.enum(["OK", "SUSPENDED", "BLOCKED", "DELETED"])
 
 export const s_AdminLoginResponse = z.object({
-    token: z.string().optional(),
-    admin: s_Admin.optional(),
-});
+  token: z.string().optional(),
+  admin: s_Admin.optional(),
+})
 
 export const s_DirectDebitOrder = z.object({
-    id: z.string().optional(),
-    invoiceId: z.string().optional(),
-    userId: z.string().optional(),
-    executionDate: z.string().optional(),
-    amount: z.coerce.number().optional(),
-    status: z.enum(['TO_SEND', 'SENT', 'EXECUTED', 'REJECTED']).optional(),
-    paymentMethod: s_PaymentMethodType.optional(),
-});
+  id: z.string().optional(),
+  invoiceId: z.string().optional(),
+  userId: z.string().optional(),
+  executionDate: z.string().optional(),
+  amount: z.coerce.number().optional(),
+  status: z.enum(["TO_SEND", "SENT", "EXECUTED", "REJECTED"]).optional(),
+  paymentMethod: s_PaymentMethodType.optional(),
+})
 
 export const s_PaymentMethod = z.object({
-    type: s_PaymentMethodType.optional(),
-    iban: z.string().optional(),
-    cardLast4: z.string().optional(),
-});
+  type: s_PaymentMethodType.optional(),
+  iban: z.string().optional(),
+  cardLast4: z.string().optional(),
+})
 
 export const s_Subscription = z.object({
-    id: z.string().optional(),
-    userId: z.string().optional(),
-    contractCode: z.string().optional(),
-    startDate: z.string().optional(),
-    endDate: z.string().nullable().optional(),
-    monthlyAmount: z.coerce.number().optional(),
-    promoCode: z.string().nullable().optional(),
-    status: s_SubscriptionStatus.optional(),
-});
+  id: z.string().optional(),
+  userId: z.string().optional(),
+  contractCode: z.string().optional(),
+  startDate: z.string().optional(),
+  endDate: z.string().nullable().optional(),
+  monthlyAmount: z.coerce.number().optional(),
+  promoCode: z.string().nullable().optional(),
+  status: s_SubscriptionStatus.optional(),
+})
 
 export const s_SubscriptionUpdate = z.object({
-    endDate: z.string().nullable().optional(),
-    monthlyAmount: z.coerce.number().optional(),
-    promoCode: z.string().nullable().optional(),
-    status: s_SubscriptionStatus.optional(),
-});
+  endDate: z.string().nullable().optional(),
+  monthlyAmount: z.coerce.number().optional(),
+  promoCode: z.string().nullable().optional(),
+  status: s_SubscriptionStatus.optional(),
+})
 
 export const s_User = z.object({
-    id: z.string().optional(),
-    firstName: z.string().optional(),
-    lastName: z.string().optional(),
-    email: z.email().optional(),
-    status: s_UserStatus.optional(),
-    paymentMethod: s_PaymentMethod.optional(),
-    createdAt: z.iso.datetime({ offset: true }).optional(),
-    updatedAt: z.iso.datetime({ offset: true }).optional(),
-});
+  id: z.string().optional(),
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+  email: z.email().optional(),
+  status: s_UserStatus.optional(),
+  paymentMethod: s_PaymentMethod.optional(),
+  createdAt: z.iso.datetime({ offset: true }).optional(),
+  updatedAt: z.iso.datetime({ offset: true }).optional(),
+})
 
 export const s_UserCreate = z.object({
-    firstName: z.string(),
-    lastName: z.string(),
-    email: z.email(),
-    password: z.string(),
-    paymentMethod: s_PaymentMethod.optional(),
-});
+  firstName: z.string(),
+  lastName: z.string(),
+  email: z.email(),
+  password: z.string(),
+  paymentMethod: s_PaymentMethod.optional(),
+})
 
 export const s_UserUpdate = z.object({
-    firstName: z.string().optional(),
-    lastName: z.string().optional(),
-    email: z.email().optional(),
-    status: s_UserStatus.optional(),
-    paymentMethod: s_PaymentMethod.optional(),
-});
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+  email: z.email().optional(),
+  status: s_UserStatus.optional(),
+  paymentMethod: s_PaymentMethod.optional(),
+})
 
 export const s_LoginResponse = z.object({
-    token: z.string().optional(),
-    user: s_User.optional(),
-});
+  token: z.string().optional(),
+  user: s_User.optional(),
+})
 
-export const s_SubscriptionDetailed = s_Subscription.merge(z.object({ user: s_User.optional() }));
+export const s_SubscriptionDetailed = s_Subscription.merge(
+  z.object({ user: s_User.optional() }),
+)
 
-export const s_InvoiceDetailed = s_Invoice.merge(z.object({ subscription: s_SubscriptionDetailed.optional() }));
+export const s_InvoiceDetailed = s_Invoice.merge(
+  z.object({ subscription: s_SubscriptionDetailed.optional() }),
+)

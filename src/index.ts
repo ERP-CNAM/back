@@ -11,6 +11,7 @@ import { connectMiddleware } from './middleware/connect.middleware';
 import { createDefaultAdmin } from './utils/default-admin';
 import { createDefaultUsers } from './utils/default-users';
 import { createDefaultSubscriptions } from './utils/default-subscription';
+import { createDefaultInvoices } from './utils/default-invoice';
 
 const swaggerDocument = YAML.load(path.join(__dirname, '../api/spec/openapi.yaml'));
 const PORT = Number(process.env.PORT) || 3000;
@@ -29,8 +30,8 @@ async function main() {
 
     app.use('/swagger', swaggerUi.setup(swaggerDocument));
 
-    // ✅ subscriptions après users
     await createDefaultSubscriptions();
+    await createDefaultInvoices();
 
     console.log(`Server running on http://localhost:${PORT}`);
     console.log(`Swagger UI: http://localhost:${PORT}/swagger`);
