@@ -1,4 +1,4 @@
-import type { ExportDirectDebits, GetMonthlyRevenue } from '../../../api/generated';
+import type { ExportDirectDebits, GetMonthlyRevenue, UpdatePaymentStatus } from '../../../api/generated';
 import type { InvoiceRepository } from '../../repository/invoice.repository';
 import type { UserRepository } from '../../repository/user.repository';
 import type { t_DirectDebitOrder } from '../../../api/models';
@@ -100,9 +100,33 @@ export function createReportHandlers(
         });
     };
 
+    // POST /bank/payment-updates
+    const updatePaymentStatus: UpdatePaymentStatus = async (params, respond) => {
+        const updates = params.body;
+
+        for (const update of updates) {
+            const newStatus = update.status === 'EXECUTED' ? 'PAID' : 'FAILED';
+            
+            // 1. Update Invoice
+            const invoice = await invoiceRepository.updateStatus(update.invoiceId, newStatus);
+
+            // 2. If Failed, Block User
+            if (newStatus === 'FAILED' && invoice && invoice.userId) {
+                // Find user and update status to SUSPENDED
+                await userRepository.updateStatus(invoice.userId, 'SUSPENDED');
+            }
+        }
+
+        return respond.with200().body({
+            success: true,
+            message: 'Payment statuses updated'
+        });
+    };
+
     return {
         exportDirectDebits,
-        getMonthlyRevenue
+        getMonthlyRevenue,
+        updatePaymentStatus
     };
 }
 

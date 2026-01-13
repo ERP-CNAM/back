@@ -67,7 +67,9 @@ export const handlers: Implementation = {
     deleteUser: userHandlers.deleteUser,
     updateUserStatus: userHandlers.updateUserStatus,
     generateMonthlyBilling: billingHandlers.generateMonthlyBilling,
-    exportMonthlyInvoices: billingHandlers.exportMonthlyInvoices,
-    exportDirectDebits: reportHandlers.exportDirectDebits,
-    getMonthlyRevenue: reportHandlers.getMonthlyRevenue,
-};
+        exportMonthlyInvoices: billingHandlers.exportMonthlyInvoices,
+        exportDirectDebits: reportHandlers.exportDirectDebits,
+        updatePaymentStatus: reportHandlers.updatePaymentStatus,
+        getMonthlyRevenue: reportHandlers.getMonthlyRevenue,
+    };
+    
