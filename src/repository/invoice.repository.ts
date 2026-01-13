@@ -16,4 +16,6 @@ export type CreateInvoiceDTO = {
 export interface InvoiceRepository {
     create(data: CreateInvoiceDTO): Promise<t_Invoice>;
     findAllByDate(date: string): Promise<t_Invoice[]>;
+    findAllByMonth(month: string): Promise<t_Invoice[]>;
+    findAllByDateRange(startDate: string, endDate: string): Promise<t_Invoice[]>;
 }

@@ -1,10 +1,13 @@
 import type { GenerateMonthlyBilling, ExportMonthlyInvoices } from '../../../api/generated';
 import type { InvoiceRepository } from '../../repository/invoice.repository';
 import type { SubscriptionRepository } from '../../repository/subscription.repository';
+import type { UserRepository } from '../../repository/user.repository';
+import type { t_AccountingExportLine } from '../../../api/models';
 
 export function createBillingHandlers(
     invoiceRepository: InvoiceRepository,
-    subscriptionRepository: SubscriptionRepository
+    subscriptionRepository: SubscriptionRepository,
+    userRepository: UserRepository
 ) {
     // POST /billing/monthly
     const generateMonthlyBilling: GenerateMonthlyBilling = async (params, respond) => {
@@ -56,9 +59,63 @@ export function createBillingHandlers(
 
     // GET /exports/accounting/monthly-invoices
     const exportMonthlyInvoices: ExportMonthlyInvoices = async (params, respond) => {
-        // TODO: Implement export logic
-        const notImplemented = { params, respond };
-        throw new Error(`Not implemented : ${notImplemented}`);
+        const { billingMonth } = params.query;
+        
+        // 1. Fetch invoices for the month
+        const invoices = await invoiceRepository.findAllByMonth(billingMonth);
+        
+        const exportLines: t_AccountingExportLine[] = [];
+
+        for (const invoice of invoices) {
+            // 2. Fetch User for name
+            const user = await userRepository.findById(invoice.userId!);
+            const customerName = user ? `${user.firstName} ${user.lastName}` : 'Unknown Customer';
+            const clientAccount = `AUX_${user?.lastName?.toUpperCase().slice(0, 5) || 'CLI'}`;
+
+            // 3. Generate Accounting Lines
+            
+            // Line 1: Debit Client (Total Incl VAT)
+            exportLines.push({
+                date: invoice.billingDate,
+                generalAccount: '411',
+                clientAccount,
+                invoiceRef: invoice.invoiceRef,
+                description: `Facturation abonnement mensuel - ${customerName}`,
+                debit: invoice.amountInclVat,
+                credit: null,
+                customerName,
+            });
+
+            // Line 2: Credit Product (Excl VAT)
+            exportLines.push({
+                date: invoice.billingDate,
+                generalAccount: '706',
+                clientAccount: undefined,
+                invoiceRef: invoice.invoiceRef,
+                description: 'Prestation de service HT',
+                debit: null,
+                credit: invoice.amountExclVat,
+                customerName,
+            });
+
+            // Line 3: Credit VAT (VAT Amount)
+            exportLines.push({
+                date: invoice.billingDate,
+                generalAccount: '445',
+                clientAccount: undefined,
+                invoiceRef: invoice.invoiceRef,
+                description: 'TVA collectée 20%',
+                debit: null,
+                credit: invoice.vatAmount,
+                customerName,
+            });
+        }
+
+        return respond.with200().body({
+            success: true,
+            message: `Export generated for ${billingMonth}`,
+            payload: exportLines,
+        });
     };
 
     return {

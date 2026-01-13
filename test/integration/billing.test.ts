@@ -1,10 +1,12 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { InMemoryInvoiceRepository } from '../../src/repository/memory/in-memory-invoice.repository';
 import { InMemorySubscriptionRepository } from '../../src/repository/memory/in-memory-subscription.repository';
+import { InMemoryUserRepository } from '../../src/repository/memory/in-memory-user.repository';
 import { createBillingHandlers } from '../../src/handler/admin/billing';
 import { createTestDatabase } from '../../src/database/memory/test-instance';
 import type { SubscriptionRepository } from '../../src/repository/subscription.repository';
 import type { InvoiceRepository } from '../../src/repository/invoice.repository';
+import type { UserRepository } from '../../src/repository/user.repository';
 
 // Mock response object
 const createMockResponse = () => {
@@ -24,6 +26,7 @@ const createMockResponse = () => {
 describe('Billing Integration', () => {
     let invoiceRepo: InvoiceRepository;
     let subscriptionRepo: SubscriptionRepository;
+    let userRepo: UserRepository;
     let billingHandlers: ReturnType<typeof createBillingHandlers>;
 
     beforeEach(() => {
@@ -31,8 +34,9 @@ describe('Billing Integration', () => {
         const db = createTestDatabase([]); // Start with empty DB
         subscriptionRepo = new InMemorySubscriptionRepository(db);
         invoiceRepo = new InMemoryInvoiceRepository(db);
+        userRepo = new InMemoryUserRepository(db);
         
-        billingHandlers = createBillingHandlers(invoiceRepo, subscriptionRepo);
+        billingHandlers = createBillingHandlers(invoiceRepo, subscriptionRepo, userRepo);
     });
 
     describe('generateMonthlyBilling', () => {
@@ -106,6 +110,56 @@ describe('Billing Integration', () => {
 
             expect(result.status).toBe(200);
             expect(result.body.payload.invoices).toHaveLength(0);
+        });
+    });
+
+    describe('exportMonthlyInvoices', () => {
+        it('should generate accounting lines for a given month', async () => {
+            // 1. Setup: Create User and Invoice
+            const user = await userRepo.create({
+                firstName: 'John',
+                lastName: 'Doe',
+                email: 'john@example.com',
+                password: 'pass',
+            });
+
+            await invoiceRepo.create({
+                invoiceRef: 'INV-TEST',
+                subscriptionId: 'sub-1',
+                userId: user.id!,
+                billingDate: '2026-06-30',
+                periodStart: '2026-06-01',
+                periodEnd: '2026-06-30',
+                amountExclVat: 100,
+                vatAmount: 20,
+                amountInclVat: 120,
+                status: 'PENDING'
+            });
+
+            // 2. Execute
+            const params = { query: { billingMonth: '2026-06' } } as any;
+            const respond = createMockResponse();
+            const result = await billingHandlers.exportMonthlyInvoices(params, respond, {} as any, {} as any, {} as any);
+
+            // 3. Verify
+            expect(result.status).toBe(200);
+            const lines = result.body.payload;
+            expect(lines).toHaveLength(3);
+
+            // Verify Client Line
+            const clientLine = lines.find((l: any) => l.generalAccount === '411');
+            expect(clientLine).toBeDefined();
+            expect(clientLine.debit).toBe(120);
+            expect(clientLine.clientAccount).toBe('AUX_DOE');
+            expect(clientLine.customerName).toBe('John Doe');
+
+            // Verify Product Line
+            const productLine = lines.find((l: any) => l.generalAccount === '706');
+            expect(productLine.credit).toBe(100);
+
+            // Verify VAT Line
+            const vatLine = lines.find((l: any) => l.generalAccount === '445');
+            expect(vatLine.credit).toBe(20);
         });
     });
 });

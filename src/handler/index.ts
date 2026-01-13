@@ -19,7 +19,7 @@ import { createSubscriptionHandlers } from './authenticated/subscription';
 import { createUserHandlers } from './admin/user';
 import { createAdminAuthHandlers } from './admin/auth';
 import { createBillingHandlers } from './admin/billing';
-import * as reports from './admin/report';
+import { createReportHandlers } from './admin/report';
 
 const databaseInstance = getDatabase();
 let userRepository: UserRepository;
@@ -44,7 +44,8 @@ const registrationHandlers = createRegistrationHandlers(userRepository);
 const userHandlers = createUserHandlers(userRepository);
 const adminAuthHandlers = createAdminAuthHandlers(adminRepository);
 const subscriptionHandlers = createSubscriptionHandlers(subscriptionRepository);
-const billingHandlers = createBillingHandlers(invoiceRepository, subscriptionRepository);
+const billingHandlers = createBillingHandlers(invoiceRepository, subscriptionRepository, userRepository);
+const reportHandlers = createReportHandlers(invoiceRepository, userRepository);
 
 export const handlers: Implementation = {
     // PUBLIC
@@ -67,6 +68,6 @@ export const handlers: Implementation = {
     updateUserStatus: userHandlers.updateUserStatus,
     generateMonthlyBilling: billingHandlers.generateMonthlyBilling,
     exportMonthlyInvoices: billingHandlers.exportMonthlyInvoices,
-    exportDirectDebits: reports.exportDirectDebits,
-    getMonthlyRevenue: reports.getMonthlyRevenue,
+    exportDirectDebits: reportHandlers.exportDirectDebits,
+    getMonthlyRevenue: reportHandlers.getMonthlyRevenue,
 };

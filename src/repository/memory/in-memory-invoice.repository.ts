@@ -51,20 +51,20 @@ export class InMemoryInvoiceRepository implements InvoiceRepository {
     }
 
     async findAllByDate(date: string): Promise<t_Invoice[]> {
-        // Simple string matching for now, assuming date format YYYY-MM-DD matches
-        // Ideally we might want range queries or exact day matching
-        // The requirement says "Generate Monthly Billing", usually for a whole month.
-        // But for now let's just implement basic retrieval.
-        // Actually, "findAllByDate" is vague. Let's say we filter by billingDate.
-        // If date is "2023-10", we might want all invoices in that month.
-        // For this MVP step, let's assume exact match or partial match on billingDate string.
-        
-        // However, standard SQL matching on dates stored as strings (sqlite) or timestamps (pg) differs.
-        // Let's stick to exact match on the billingDate field for now as it's the simplest valid implementation.
-        
-        // Wait, the use case is usually "Show me invoices generated today" or "for this run".
-        
         const rows = this.db.select().from(invoices).where(eq(invoices.billingDate, date)).all();
         return rows.map(this.toInvoice);
+    }
+
+    async findAllByMonth(month: string): Promise<t_Invoice[]> {
+        // month is expected to be 'YYYY-MM'
+        const allInvoices = this.db.select().from(invoices).all();
+        const filtered = allInvoices.filter((inv) => inv.billingDate?.startsWith(month));
+        return filtered.map(this.toInvoice);
+    }
+
+    async findAllByDateRange(startDate: string, endDate: string): Promise<t_Invoice[]> {
+        const allInvoices = this.db.select().from(invoices).all();
+        const filtered = allInvoices.filter((inv) => inv.billingDate >= startDate && inv.billingDate <= endDate);
+        return filtered.map(this.toInvoice);
     }
 }
