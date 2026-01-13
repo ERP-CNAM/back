@@ -9,10 +9,8 @@ import { DashboardPage, registerDashboardAlpine } from './pages/dashboard.page.j
 
 const app = document.getElementById('app');
 
-// expose toast store au layout (utilisé dans template x-if)
 window.__toast = toastStore;
 
-// ---- Alpine: attendre qu'il soit réellement dispo, puis register une seule fois
 let alpineRegistered = false;
 
 function waitForAlpine() {
@@ -33,15 +31,15 @@ async function ensureAlpineReady() {
 
     if (!alpineRegistered) {
         alpineRegistered = true;
-        registerLoginAlpine(); // OK car window.loginPage
-        registerDashboardAlpine(Alpine); // IMPORTANT: passe Alpine ici
+        registerLoginAlpine();
+        registerDashboardAlpine(Alpine);
     }
 
     return Alpine;
 }
 
 function parseRoute() {
-    const raw = getRoute(); // "/login" etc.
+    const raw = getRoute();
     const [path, query] = raw.split('?');
     const params = new URLSearchParams(query || '');
     return { path, params };
@@ -50,7 +48,6 @@ async function render() {
     const { path } = parseRoute();
     const Alpine = await ensureAlpineReady();
 
-    // ✅ clean l’ancien arbre Alpine avant de remplacer le DOM
     Alpine.destroyTree(app);
 
     // inject HTML
