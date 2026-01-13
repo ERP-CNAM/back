@@ -47,8 +47,18 @@ export function Layout({ contentHtml }) {
 
     <header class="relative bg-white/5 backdrop-blur border-b border-white/10 shrink-0">
       <div class="mx-auto px-4 py-3 flex items-center justify-between">
-        <div class="font-semibold text-slate-100">
-          Gamers ERP — Backoffice Abonnés
+        <div class="flex items-center gap-2">
+            <div class="h-9 w-9 rounded-xl bg-white/10 border border-white/10 flex items-center justify-center">
+                <svg class="h-5 w-5 text-cyan-300" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M3 7h18M3 12h18M3 17h18M7 3v18" />
+                </svg>
+            </div>
+
+            <div class="leading-tight">
+                <div class="text-sm font-semibold text-slate-100">Gamers ERP</div>
+                <div class="text-[11px] text-slate-400">Backoffice abonnés</div>
+            </div>
         </div>
 
         <div class="flex items-center gap-3">
