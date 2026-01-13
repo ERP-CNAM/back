@@ -21,7 +21,8 @@ cp .env.example .env
 npm run dev
 ```
 
-L'API sera accessible sur `http://localhost:3000` et la documentation de l'API sur `http://localhost:3000/swagger`
+L'API sera accessible sur `http://localhost:3000` et la documentation de l'API sur `http://localhost:3000/swagger`.
+Une documentation complète par domaine métier est disponible dans le dossier [docs/api/](docs/api/README.md).
 
 ---
 
@@ -32,30 +33,7 @@ généré automatiquement.
 
 ### 1. Design - Définir l'API
 
-Modifiez `api/spec/openapi.yaml` pour ajouter ou modifier un endpoint :
-
-```yaml
-paths:
-    /users/{userId}:
-        get:
-            operationId: getUser
-            tags: [Users]
-            parameters:
-                - name: userId
-                  in: path
-                  required: true
-                  schema:
-                      type: string
-            responses:
-                '200':
-                    description: Utilisateur trouvé
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/User'
-                '404':
-                    description: Utilisateur non trouvé
-```
+Modifiez `api/spec/openapi.yaml` pour ajouter ou modifier un endpoint.
 
 ### 2. Generate - Générer les interfaces, routes, et types
 
@@ -66,64 +44,18 @@ npm run generate
 Cette commande génère automatiquement dans `api/` :
 
 - Types TypeScript (`GetUser`, `GetUserResponder`)
-- Schémas de validation Zod v4
+- Schémas de validation Zod v4 (dans `schemas.ts`)
 - Interface `Implementation` pour assembler les handlers
-
-> Les fichiers générés dans `api/` (generated.ts, models.ts, schemas.ts) sont créés automatiquement - ne les modifiez jamais manuellement !
 
 ### 3. Implement - Implémenter la logique métier
 
-Créez votre handler dans `handler/user.ts` en utilisant les types générés :
+Créez votre handler dans le sous-répertoire approprié de `src/handler/` (public, authenticated, admin) en utilisant les types générés.
 
-```typescript
-import type { GetUser } from '../api/generated';
+Enregistrez ensuite le handler dans `src/handler/index.ts`.
 
-const getUser: GetUser = async (params, respond) => {
-    const { userId } = params.params;
+### 4. Secure - Configurer la sécurité
 
-    const user = await repository.findById(userId);
-
-    if (!user) {
-        return respond.with404().body();
-    }
-
-    return respond.with200().body(user);
-};
-```
-
-Enregistrez ensuite le handler dans `handler/index.ts` :
-
-```typescript
-export const handlers: Implementation = {
-    getUser: userHandlers.getUser,
-    // ... autres handlers
-};
-```
-
-### Test - Valider les implémentations
-
-```bash
-# Lancer les tests
-npm test
-
-# Tests en mode watch (pratique en mode développement)
-npm run test:watch
-
-# Rapport de couverture
-npm run test:coverage
-```
-
----
-
-## Pourquoi cette approche ?
-
-| Avantage                       | Bénéfice                                           |
-| ------------------------------ | -------------------------------------------------- |
-| **Contrat respecté**           | L'implémentation respecte toujours la spec OpenAPI |
-| **Type Safety**                | TypeScript détecte les erreurs à la compilation    |
-| **Validation automatique**     | Zod valide les entrées/sorties automatiquement     |
-| **Documentation synchronisée** | Swagger UI toujours à jour                         |
-| **Productivité**               | Moins de code générique à écrire                   |
+Toute nouvelle route doit être déclarée dans `src/middleware/routes.config.ts` pour définir son niveau d'accès (public, authenticated, admin).
 
 ---
 
@@ -134,54 +66,21 @@ back/
 ├── api/
 │   ├── spec/
 │   │   └── openapi.yaml    # Source de vérité - Contrat API
-│   ├── generated.ts        # Code généré (ne pas toucher)
-│   ├── models.ts           # Code généré (ne pas toucher)
-│   └── schemas.ts          # Code généré (ne pas toucher)
-├── handler/                # Logique métier (vous codez ici)
-│   ├── user.ts
-│   ├── subscription.ts
-│   └── index.ts
-├── repository/             # Accès aux données
-├── database/               # Configuration DB (SQLite/PostgreSQL)
-└── index.ts                # Point d'entrée
+│   ├── generated.ts        # Routeur Express généré
+│   ├── models.ts           # Types TypeScript générés
+│   └── schemas.ts          # Validations Zod générées
+├── src/
+│   ├── handler/            # Logique métier par niveau d'accès
+│   │   ├── public/         # Routes publiques (login, reg)
+│   │   ├── authenticated/  # Routes utilisateurs connectés
+│   │   └── admin/          # Routes administrateurs
+│   ├── repository/         # Accès aux données (In-memory & Postgres)
+│   ├── database/           # Schémas et migrations (Drizzle)
+│   ├── middleware/         # Auth et sécurité des routes
+│   └── index.ts            # Point d'entrée Express
+├── docs/                   # Documentation et ADRs
+└── test/                   # Tests unitaires et intégration
 ```
-
----
-
-## Contribuer au développement
-
-### Workflow recommandé
-
-```bash
-# 1. Créer une branche
-git checkout -b feature/nom-de-la-feature
-
-# 2. Modifier l'API
-# Éditez api/spec/openapi.yaml
-
-# 3. Générer le code
-npm run generate
-
-# 4. Implémenter vos handlers dans handler/
-
-# 5. Tester
-npm test
-npm run dev
-
-# 6. Push et PR
-git add .
-git commit -m "feat: description"
-git push origin feature/nom-de-la-feature
-```
-
-### Règles d'or
-
-- Toujours commencer par modifier `api/spec/openapi.yaml`
-- Toujours regénérer après modification OpenAPI
-- Écrire des tests pour chaque nouveau handler
-- Ne jamais modifier les fichiers générés dans `api/` manuellement
-- Ne jamais ajouter un fichier Typescript personnalisé dans `api/`, privilégier d'autres répertoires
-- Ne jamais commit sans avoir lancé les tests
 
 ---
 
@@ -189,10 +88,11 @@ git push origin feature/nom-de-la-feature
 
 - **Runtime** : Node.js + TypeScript
 - **API Framework** : Express
-- **Validation schemas** : Zod v4
-- **Base de données** : SQLite in-memory (Drizzle ORM) → PostgreSQL à venir
-- **Framework de tests** : [Vitest](https://vitest.dev/)
-- **Générateur de code** : [@nahkies/openapi-code-generator](https://openapi-code-generator.nahkies.co.nz)
+- **ORM** : [Drizzle ORM](https://orm.drizzle.team/)
+- **Base de données** : SQLite in-memory (dev/tests) & PostgreSQL (prod)
+- **Validation** : Zod
+- **Tests** : [Vitest](https://vitest.dev/)
+- **Générateur** : [@nahkies/openapi-code-generator](https://openapi-code-generator.nahkies.co.nz)
 
 ---
 

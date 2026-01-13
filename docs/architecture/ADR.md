@@ -1,7 +1,7 @@
 # Architecture Decision Records
 
-Date: 09/01/2026
-Statut: En attente
+Date: 13/01/2026  
+Statut: Accepté
 
 ## Contexte
 
@@ -14,18 +14,21 @@ Le projet "Gamers ERP" nécessite une API robuste pour gérer des utilisateurs, 
 Nous utilisons la spécification OpenAPI (`openapi.yaml`) comme source unique de vérité pour notre API.
 
 - **Pourquoi** : garantit que la documentation est toujours à jour avec le code.
-- **Implémentation** : génération automatique du routeur Express et des types TypeScript via `openapi-code-generator` de @nahkies/openapi-code-generator.
+- **Implémentation** : génération automatique du routeur Express et des types TypeScript via `@nahkies/openapi-code-generator`.
 - **Validation** : la validation des entrées (Schema Validation) est déléguée aux validateurs générés (Zod).
 
-### 2. Architecture en Couches
+### 2. Architecture en Couches et Organisation des Handlers
 
-Nous adoptons une architecture en couches pour séparer les responsabilités :
+Nous adoptons une architecture en couches pour séparer les responsabilités. Les handlers sont organisés par niveau d'accès :
 
 - **API Layer (`/api`)** : définition des contrats et routage.
-- **Handler Layer (`/handler`)** : orchestration des requêtes HTTP (les "Contrôleurs").
-- **Middleware Layer (`/middleware`)** : fonctions transverses (Auth, Logs) exécutées avant les handlers.
-- **Repository Layer (`/repository`)** : abstraction de l'accès aux données.
-- **Database Layer (`/database`)** : implémentations concrètes (Drizzle ORM).
+- **Handler Layer (`/src/handler`)** : orchestration des requêtes HTTP.
+    - `/public` : routes ouvertes (ex: création de compte).
+    - `/authenticated` : routes nécessitant une connexion simple.
+    - `/admin` : routes réservées aux administrateurs.
+- **Middleware Layer (`/src/middleware`)** : fonctions transverses (Auth, Logs, Securité des routes).
+- **Repository Layer (`/src/repository`)** : abstraction de l'accès aux données.
+- **Database Layer (`/src/database`)** : implémentations concrètes (Drizzle ORM).
 
 ### 3. Stratégie d'Authentification : Bearer JWT
 
@@ -35,17 +38,24 @@ Nous utilisons des **JSON Web Tokens (JWT)** transmis via l'en-tête `Authorizat
     - **Stateless** : le serveur ne stocke pas de session en mémoire, idéal pour la scalabilité.
     - **Standard** : compatible avec tout type de client (Web, mobile, tiers).
 - **Sécurité** :
-    - les mots de passe sont hachés avec `bcrypt` (Salt Rounds = 10) avant stockage.
-    - les mots de passe ne sont **jamais** renvoyés dans les réponses API (suppression explicite dans les handlers).
+    - les mots de passe sont hachés avec `bcrypt` avant stockage.
+    - les mots de passe ne sont **jamais** renvoyés dans les réponses API.
 
 ### 4. Abstraction de la Base de Données
 
 Nous utilisons le pattern Repository pour découpler la logique métier de la base de données.
 
-- **Interface** : `UserRepository` définit les contrats.
+- **Interface** : `UserRepository`, `SubscriptionRepository`, etc.
 - **Implémentations** :
-    - `InMemoryUserRepository` : pour les tests unitaires rapides et le développement local sans dépendances (SQLite en mémoire).
-    - `PostgresUserRepository` : pour la production (PostgreSQL via Drizzle ORM).
+    - `InMemory...Repository` : pour les tests et le développement local (SQLite en mémoire).
+    - `Postgres...Repository` : pour la production (PostgreSQL via Drizzle ORM).
+
+### 5. Sécurité Centralisée des Routes
+
+La gestion des droits d'accès est centralisée dans un middleware de sécurité piloté par une configuration (`routes.config.ts`).
+
+- **Pourquoi** : éviter d'éparpiller les vérifications `if (user.isAdmin)` dans chaque handler.
+- **Implémentation** : le middleware `secureRouteMiddleware` intercepte chaque requête, consulte `ROUTE_RULES` pour déterminer le niveau d'accès requis (`public`, `authenticated`, `admin`), et valide le token JWT en conséquence.
 
 ## Bénéfices
 
