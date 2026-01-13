@@ -1,17 +1,10 @@
 import type { ListUsers, GetUser, UpdateUser, DeleteUser, UpdateUserStatus } from '../../../api/generated';
 import type { UserRepository } from '../../repository/user.repository';
-import { isAdmin } from '../../middleware/admin-guard';
 
 export function createUserHandlers(repository: UserRepository) {
     // GET /users
-    const listUsers: ListUsers = async (params, respond, req) => {
-        if (!isAdmin(req)) {
-            return respond.with403().body({
-                success: false,
-                message: 'Access denied - admin token required',
-            });
-        }
-
+    const listUsers: ListUsers = async (params, respond) => {
+        // Admin check is handled by auth middleware via routes.config.ts
         const queryOptions = params.query || {};
 
         const users = await repository.findAll(queryOptions);

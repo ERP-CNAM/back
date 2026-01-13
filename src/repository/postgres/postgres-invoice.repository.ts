@@ -40,10 +40,7 @@ export class PostgresInvoiceRepository implements InvoiceRepository {
             status: data.status,
         };
 
-        const [inserted] = await this.db
-            .insert(invoices)
-            .values(values)
-            .returning();
+        const [inserted] = await this.db.insert(invoices).values(values).returning();
 
         if (!inserted) {
             throw new Error('Failed to create invoice');
@@ -53,12 +50,12 @@ export class PostgresInvoiceRepository implements InvoiceRepository {
     }
 
     async findAllByDate(date: string): Promise<t_Invoice[]> {
-       // Exact match on date part is tricky with timestamps.
-       // For this prototype, we will assume the query provides a specific timestamp or handle it loosely.
-       // To keep it simple and consistent with memory repo:
-       const searchDate = new Date(date);
-       const rows = await this.db.select().from(invoices).where(eq(invoices.billingDate, searchDate)).execute();
-       return rows.map(this.toInvoice);
+        // Exact match on date part is tricky with timestamps.
+        // For this prototype, we will assume the query provides a specific timestamp or handle it loosely.
+        // To keep it simple and consistent with memory repo:
+        const searchDate = new Date(date);
+        const rows = await this.db.select().from(invoices).where(eq(invoices.billingDate, searchDate)).execute();
+        return rows.map(this.toInvoice);
     }
 
     async findAllByMonth(month: string): Promise<t_Invoice[]> {
@@ -71,20 +68,20 @@ export class PostgresInvoiceRepository implements InvoiceRepository {
             .from(invoices)
             .where(and(gte(invoices.billingDate, startDate), lt(invoices.billingDate, endDate)))
             .execute();
-            
+
         return rows.map(this.toInvoice);
     }
 
     async findAllByDateRange(startDate: string, endDate: string): Promise<t_Invoice[]> {
         const start = new Date(startDate);
         const end = new Date(endDate);
-        // Ensure end date covers the full day if only date part is provided, 
+        // Ensure end date covers the full day if only date part is provided,
         // but here we rely on the caller to provide precise boundaries or we assume strict date comparison.
         // If 'endDate' is '2026-06-30', it's '2026-06-30T00:00:00.000Z'.
-        // Any invoice on that day might be later in time. 
+        // Any invoice on that day might be later in time.
         // For safety, let's assume 'end' is inclusive for the day.
         // Actually, to make it simple and consistent with typical reporting, let's treat it as <=.
-        
+
         const rows = await this.db
             .select()
             .from(invoices)
@@ -100,7 +97,7 @@ export class PostgresInvoiceRepository implements InvoiceRepository {
             .from(invoices)
             .where(eq(invoices.subscriptionId, subscriptionId))
             .execute();
-            
+
         return result[0]?.value || 0;
     }
 }

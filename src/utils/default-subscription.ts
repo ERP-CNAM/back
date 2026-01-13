@@ -37,7 +37,6 @@ export async function seedSubscriptions() {
     console.log('Subscription created for John');
 }
 export async function createDefaultSubscriptions() {
-    if (process.env.NODE_ENV === 'production') return;
     await seedSubscriptions();
     console.log('Default subscriptions created!');
 }

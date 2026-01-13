@@ -27,10 +27,10 @@ describe('Banking Integration', () => {
     let reportHandlers: ReturnType<typeof createReportHandlers>;
 
     beforeEach(() => {
-        const db = createTestDatabase([]); 
+        const db = createTestDatabase([]);
         invoiceRepo = new InMemoryInvoiceRepository(db);
         userRepo = new InMemoryUserRepository(db);
-        
+
         reportHandlers = createReportHandlers(invoiceRepo, userRepo);
     });
 
@@ -42,7 +42,7 @@ describe('Banking Integration', () => {
                 lastName: 'Sepa',
                 email: 'alice@example.com',
                 password: 'pass',
-                paymentMethod: { type: 'SEPA', iban: 'FR76...' }
+                paymentMethod: { type: 'SEPA', iban: 'FR76...' },
             });
 
             const userNoPayment = await userRepo.create({
@@ -56,7 +56,7 @@ describe('Banking Integration', () => {
             // 2. Setup Invoices (for previous month relative to execution date)
             // Execution: 2026-07-01 -> Billing Month: 2026-06
             const billingMonth = '2026-06';
-            
+
             // Invoice 1: Eligible
             await invoiceRepo.create({
                 invoiceRef: 'INV-1',
@@ -68,7 +68,7 @@ describe('Banking Integration', () => {
                 amountExclVat: 10,
                 vatAmount: 2,
                 amountInclVat: 12,
-                status: 'PENDING'
+                status: 'PENDING',
             });
 
             // Invoice 2: Not Eligible (No Payment Method)
@@ -82,11 +82,11 @@ describe('Banking Integration', () => {
                 amountExclVat: 10,
                 vatAmount: 2,
                 amountInclVat: 12,
-                status: 'PENDING'
+                status: 'PENDING',
             });
 
-             // Invoice 3: Wrong Month (May)
-             await invoiceRepo.create({
+            // Invoice 3: Wrong Month (May)
+            await invoiceRepo.create({
                 invoiceRef: 'INV-3',
                 subscriptionId: 'sub-1',
                 userId: userWithSepa.id!,
@@ -96,7 +96,7 @@ describe('Banking Integration', () => {
                 amountExclVat: 10,
                 vatAmount: 2,
                 amountInclVat: 12,
-                status: 'PENDING'
+                status: 'PENDING',
             });
 
             // 3. Execute
@@ -109,10 +109,10 @@ describe('Banking Integration', () => {
             // 4. Verify
             expect(result.status).toBe(200);
             const orders = result.body.payload;
-            
+
             // Should verify that we have exactly 1 order (Alice's June invoice)
             expect(orders).toHaveLength(1);
-            
+
             const order = orders[0];
             expect(order.userId).toBe(userWithSepa.id);
             expect(order.amount).toBe(12);

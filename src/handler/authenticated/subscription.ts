@@ -7,7 +7,6 @@ import type {
 } from '../../../api/generated';
 import type { SubscriptionRepository } from '../../repository/subscription.repository';
 import type { UserPayload } from '../../utils/security';
-import { isAdmin } from '../../middleware/admin-guard';
 
 function getUserPayload(req: any): UserPayload | undefined {
     return (req as any).user as UserPayload | undefined;
@@ -31,7 +30,8 @@ export const createSubscriptionHandlers = (repository: SubscriptionRepository) =
         const user = getUserPayload(req);
         const queryOptions = params.query ? { ...params.query } : {};
 
-        if (!isAdmin(req) && user?.userId) {
+        // Non-admin users can only see their own subscriptions
+        if (user?.userType !== 'admin' && user?.userId) {
             queryOptions.userId = user.userId;
         }
 
@@ -49,9 +49,10 @@ export const createSubscriptionHandlers = (repository: SubscriptionRepository) =
         const user = getUserPayload(req);
         const body = params.body;
 
+        // Non-admin users can only create subscriptions for themselves
         const payload = {
             ...body,
-            userId: !isAdmin(req) && user?.userId ? user.userId : body.userId,
+            userId: user?.userType !== 'admin' && user?.userId ? user.userId : body.userId,
         };
 
         const subscription = await repository.create(payload);

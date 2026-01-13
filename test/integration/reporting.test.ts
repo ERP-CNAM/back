@@ -27,7 +27,7 @@ describe('Reporting Integration', () => {
     let reportHandlers: ReturnType<typeof createReportHandlers>;
 
     beforeEach(() => {
-        const db = createTestDatabase([]); 
+        const db = createTestDatabase([]);
         invoiceRepo = new InMemoryInvoiceRepository(db);
         userRepo = new InMemoryUserRepository(db);
         reportHandlers = createReportHandlers(invoiceRepo, userRepo);
@@ -48,7 +48,7 @@ describe('Reporting Integration', () => {
                 amountExclVat: 100,
                 vatAmount: 20,
                 amountInclVat: 120,
-                status: 'PAID'
+                status: 'PAID',
             });
 
             // Jan Invoice 2: 50 HT
@@ -62,7 +62,7 @@ describe('Reporting Integration', () => {
                 amountExclVat: 50,
                 vatAmount: 10,
                 amountInclVat: 60,
-                status: 'PAID'
+                status: 'PAID',
             });
 
             // Feb Invoice: 200 HT
@@ -76,7 +76,7 @@ describe('Reporting Integration', () => {
                 amountExclVat: 200,
                 vatAmount: 40,
                 amountInclVat: 240,
-                status: 'PAID'
+                status: 'PAID',
             });
 
             // Mar Invoice: Should be excluded
@@ -90,7 +90,7 @@ describe('Reporting Integration', () => {
                 amountExclVat: 300,
                 vatAmount: 60,
                 amountInclVat: 360,
-                status: 'PAID'
+                status: 'PAID',
             });
 
             // Execute: Get Revenue for Jan & Feb
@@ -102,9 +102,9 @@ describe('Reporting Integration', () => {
             // Verify
             expect(result.status).toBe(200);
             const payload = result.body.payload;
-            
+
             expect(payload).toHaveLength(2);
-            
+
             // Verify Jan (Total 150 HT)
             const janStats = payload.find((s: any) => s.month === '2026-01');
             expect(janStats).toBeDefined();

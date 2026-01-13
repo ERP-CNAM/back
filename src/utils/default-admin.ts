@@ -40,7 +40,6 @@ async function seedAdmin() {
 }
 
 export async function createDefaultAdmin() {
-    if (process.env.NODE_ENV === 'production') return;
     await seedAdmin();
     console.log('Default admin created!');
 }
