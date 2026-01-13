@@ -78,7 +78,7 @@ export class InMemoryInvoiceRepository implements InvoiceRepository {
         if (!existing) return null;
 
         this.db.update(invoices).set({ status }).where(eq(invoices.id, id)).run();
-        
+
         return this.toInvoice({ ...existing, status });
     }
 }

@@ -97,7 +97,7 @@ export function createReportHandlers(invoiceRepository: InvoiceRepository, userR
         return respond.with200().body({
             success: true,
             message: `Revenue report generated from ${startMonth} to ${endMonth}`,
-            payload
+            payload,
         });
     };
 
@@ -120,13 +120,13 @@ export function createReportHandlers(invoiceRepository: InvoiceRepository, userR
 
         return respond.with200().body({
             success: true,
-            message: 'Payment statuses updated'
+            message: 'Payment statuses updated',
         });
     };
 
     return {
         exportDirectDebits,
         getMonthlyRevenue,
-        updatePaymentStatus
+        updatePaymentStatus,
     };
 }

@@ -102,11 +102,7 @@ export class PostgresInvoiceRepository implements InvoiceRepository {
     }
 
     async updateStatus(id: string, status: 'PAID' | 'FAILED'): Promise<t_Invoice | null> {
-        const [updated] = await this.db
-            .update(invoices)
-            .set({ status })
-            .where(eq(invoices.id, id))
-            .returning();
+        const [updated] = await this.db.update(invoices).set({ status }).where(eq(invoices.id, id)).returning();
 
         return updated ? this.toInvoice(updated) : null;
     }

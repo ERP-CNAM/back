@@ -126,7 +126,10 @@ describe('Banking Integration', () => {
         it('should mark invoice as PAID when payment is executed', async () => {
             // Setup
             const user = await userRepo.create({
-                firstName: 'Good', lastName: 'Payer', email: 'good@example.com', password: 'pass'
+                firstName: 'Good',
+                lastName: 'Payer',
+                email: 'good@example.com',
+                password: 'pass',
             });
             const invoice = await invoiceRepo.create({
                 invoiceRef: 'INV-GOOD',
@@ -138,7 +141,7 @@ describe('Banking Integration', () => {
                 amountExclVat: 10,
                 vatAmount: 2,
                 amountInclVat: 12,
-                status: 'SENT'
+                status: 'SENT',
             });
 
             // Execute Webhook
@@ -149,9 +152,9 @@ describe('Banking Integration', () => {
             await reportHandlers.updatePaymentStatus(params, respond, {} as any, {} as any, {} as any);
 
             // Verify
-            const updatedInvoice = (await invoiceRepo.findAllByDate('2026-06-30')).find(i => i.id === invoice.id);
+            const updatedInvoice = (await invoiceRepo.findAllByDate('2026-06-30')).find((i) => i.id === invoice.id);
             expect(updatedInvoice?.status).toBe('PAID');
-            
+
             const updatedUser = await userRepo.findById(user.id!);
             expect(updatedUser?.status).toBe('OK'); // Should remain OK
         });
@@ -159,7 +162,11 @@ describe('Banking Integration', () => {
         it('should mark invoice as FAILED and suspend user when payment is rejected', async () => {
             // Setup
             const user = await userRepo.create({
-                firstName: 'Bad', lastName: 'Payer', email: 'bad@example.com', password: 'pass', status: 'OK'
+                firstName: 'Bad',
+                lastName: 'Payer',
+                email: 'bad@example.com',
+                password: 'pass',
+                status: 'OK',
             });
             const invoice = await invoiceRepo.create({
                 invoiceRef: 'INV-BAD',
@@ -171,7 +178,7 @@ describe('Banking Integration', () => {
                 amountExclVat: 10,
                 vatAmount: 2,
                 amountInclVat: 12,
-                status: 'SENT'
+                status: 'SENT',
             });
 
             // Execute Webhook
@@ -182,9 +189,9 @@ describe('Banking Integration', () => {
             await reportHandlers.updatePaymentStatus(params, respond, {} as any, {} as any, {} as any);
 
             // Verify
-            const updatedInvoice = (await invoiceRepo.findAllByDate('2026-06-30')).find(i => i.id === invoice.id);
+            const updatedInvoice = (await invoiceRepo.findAllByDate('2026-06-30')).find((i) => i.id === invoice.id);
             expect(updatedInvoice?.status).toBe('FAILED');
-            
+
             const updatedUser = await userRepo.findById(user.id!);
             expect(updatedUser?.status).toBe('SUSPENDED');
         });
