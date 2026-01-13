@@ -14,20 +14,12 @@ import { InMemoryInvoiceRepository } from '../repository/memory/in-memory-invoic
 export async function seedInvoices() {
     const db = getDatabase();
 
-    const userRepo =
-        DB_TYPE === 'postgres'
-            ? new PostgresUserRepository(db)
-            : new InMemoryUserRepository(db);
+    const userRepo = DB_TYPE === 'postgres' ? new PostgresUserRepository(db) : new InMemoryUserRepository(db);
 
     const subRepo =
-        DB_TYPE === 'postgres'
-            ? new PostgresSubscriptionRepository(db)
-            : new InMemorySubscriptionRepository(db);
+        DB_TYPE === 'postgres' ? new PostgresSubscriptionRepository(db) : new InMemorySubscriptionRepository(db);
 
-    const invoiceRepo =
-        DB_TYPE === 'postgres'
-            ? new PostgresInvoiceRepository(db)
-            : new InMemoryInvoiceRepository(db);
+    const invoiceRepo = DB_TYPE === 'postgres' ? new PostgresInvoiceRepository(db) : new InMemoryInvoiceRepository(db);
 
     // 1️⃣ John
     const john = await userRepo.findByEmail('john.doe@example.com');
@@ -39,16 +31,12 @@ export async function seedInvoices() {
         throw new Error('John has no id');
     }
 
-
-
     // 2️⃣ Abonnement
     const subs = await subRepo.findAll({ userId: john.id });
     if (!subs.length) {
         console.log('No subscription found for John, run seedSubscriptions first');
         return;
     }
-
-
 
     const sub = subs[0];
 
@@ -63,9 +51,7 @@ export async function seedInvoices() {
         subscriptionId: sub.id,
     });
 
-    const alreadyExists = existing.some(
-        (i) => i.billingDate === billingDate
-    );
+    const alreadyExists = existing.some((i) => i.billingDate === billingDate);
 
     if (alreadyExists) {
         console.log('ℹ Invoice already exists for this subscription');

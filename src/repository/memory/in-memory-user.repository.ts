@@ -12,7 +12,7 @@ import { generateUUID } from '../../utils/uuid';
 import { security } from '../../utils/security';
 
 export class InMemoryUserRepository implements UserRepository {
-    constructor(private db: BetterSQLite3Database) { }
+    constructor(private db: BetterSQLite3Database) {}
 
     private toUser(row: any): t_User {
         return {

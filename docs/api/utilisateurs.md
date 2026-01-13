@@ -11,34 +11,36 @@ Création d'un nouveau compte joueur. Cet endpoint est généralement appelé lo
 - **Accès** : Public
 
 ### Exemple de Requête
+
 ```json
 {
-  "firstName": "Alice",
-  "lastName": "Smith",
-  "email": "alice.smith@example.com",
-  "password": "SecurePassword123!",
-  "phone": "+33600000000",
-  "address": "10 Rue de Rivoli",
-  "city": "Paris",
-  "postalCode": "75004",
-  "country": "FR",
-  "dateOfBirth": "1992-08-24"
+    "firstName": "Alice",
+    "lastName": "Smith",
+    "email": "alice.smith@example.com",
+    "password": "SecurePassword123!",
+    "phone": "+33600000000",
+    "address": "10 Rue de Rivoli",
+    "city": "Paris",
+    "postalCode": "75004",
+    "country": "FR",
+    "dateOfBirth": "1992-08-24"
 }
 ```
 
 ### Exemple de Réponse (201 Created)
+
 ```json
 {
-  "success": true,
-  "message": "Utilisateur créé",
-  "payload": {
-    "id": "a1b2c3d4-e5f6-4g7h-8i9j-k1l2m3n4o5p6",
-    "firstName": "Alice",
-    "lastName": "Smith",
-    "email": "alice.smith@example.com",
-    "status": "OK",
-    "createdAt": "2026-01-13T20:00:00Z"
-  }
+    "success": true,
+    "message": "Utilisateur créé",
+    "payload": {
+        "id": "a1b2c3d4-e5f6-4g7h-8i9j-k1l2m3n4o5p6",
+        "firstName": "Alice",
+        "lastName": "Smith",
+        "email": "alice.smith@example.com",
+        "status": "OK",
+        "createdAt": "2026-01-13T20:00:00Z"
+    }
 }
 ```
 
@@ -46,9 +48,10 @@ Création d'un nouveau compte joueur. Cet endpoint est généralement appelé lo
 
 ## Administration des Utilisateurs
 
-*Note : Les endpoints suivants nécessitent un token **Administrateur**.*
+_Note : Les endpoints suivants nécessitent un token **Administrateur**._
 
 ### Lister les utilisateurs
+
 Récupère la liste de tous les joueurs inscrits.
 
 - **Méthode** : `GET`
@@ -58,6 +61,7 @@ Récupère la liste de tous les joueurs inscrits.
     - `status` : Filtrer par statut (`OK`, `SUSPENDED`, `BLOCKED`, `DELETED`).
 
 ### Consulter un utilisateur
+
 Détails complets d'un joueur par son ID.
 
 - **Méthode** : `GET`
@@ -65,6 +69,7 @@ Détails complets d'un joueur par son ID.
 - **Accès** : Admin
 
 ### Modifier un statut financier/accès
+
 Permet de suspendre ou bloquer un utilisateur (souvent suite à un incident de paiement).
 
 - **Méthode** : `PATCH`
@@ -72,13 +77,15 @@ Permet de suspendre ou bloquer un utilisateur (souvent suite à un incident de p
 - **Accès** : Admin
 
 **Exemple de Requête :**
+
 ```json
 {
-  "status": "BLOCKED"
+    "status": "BLOCKED"
 }
 ```
 
 ### Suppression Logique
+
 Désactive le compte d'un utilisateur sans supprimer les données historiques.
 
 - **Méthode** : `DELETE`

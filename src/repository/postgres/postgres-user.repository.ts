@@ -12,7 +12,7 @@ import { generateUUID } from '../../utils/uuid';
 import { security } from '../../utils/security';
 
 export class PostgresUserRepository implements UserRepository {
-    constructor(private db: NodePgDatabase) { }
+    constructor(private db: NodePgDatabase) {}
 
     private toUser(row: typeof users.$inferSelect): t_User {
         return {

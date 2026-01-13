@@ -6,7 +6,7 @@ import type { UserRepository } from '../../repository/user.repository';
 export function createInvoiceHandlers(
     invoiceRepo: InvoiceRepository,
     subscriptionRepo: SubscriptionRepository,
-    userRepo: UserRepository
+    userRepo: UserRepository,
 ) {
     // GET /invoices?userId=&subscriptionId=&status=
     const listInvoices: ListInvoices = async (params, respond) => {
