@@ -9,6 +9,7 @@ import { authMiddleware } from './middleware/auth.middleware';
 import { debugRequestMiddleware } from './middleware/debug.middleware';
 import { connectMiddleware } from './middleware/connect.middleware';
 import { createDefaultAdmin } from './utils/default-admin';
+import { createDefaultUsers } from './utils/default-users';
 
 // Load OpenAPI spec for Swagger UI
 const swaggerDocument = YAML.load(path.join(__dirname, '../api/spec/openapi.yaml'));
@@ -17,6 +18,7 @@ const swaggerDocument = YAML.load(path.join(__dirname, '../api/spec/openapi.yaml
 const PORT = Number(process.env.PORT) || 3000;
 
 createDefaultAdmin();
+createDefaultUsers();
 
 bootstrap({
     port: PORT,

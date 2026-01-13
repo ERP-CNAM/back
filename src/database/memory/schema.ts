@@ -1,5 +1,5 @@
-import { sqliteTable, real, text } from 'drizzle-orm/sqlite-core';
-import { t_SubscriptionStatus, t_UserStatus } from '../../../api/models';
+import { sqliteTable, text, real } from 'drizzle-orm/sqlite-core';
+import { t_UserStatus, t_SubscriptionStatus } from '../../../api/models';
 
 export const users = sqliteTable('users', {
     id: text('id').primaryKey().notNull(),
@@ -33,5 +33,8 @@ export const subscriptions = sqliteTable('subscriptions', {
     endDate: text('endDate'),
     monthlyAmount: real('monthlyAmount').notNull(),
     promoCode: text('promoCode'),
-    status: text('status').$type<t_SubscriptionStatus>().notNull().default('ACTIVE'),
+    status: text('status')
+        .$type<t_SubscriptionStatus>()
+        .notNull()
+        .default('ACTIVE'),
 });
