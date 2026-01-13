@@ -45,6 +45,14 @@ export function Layout({ contentHtml }) {
                 @click="window.__nav('/subscriptions')">
                 Abonnements
               </button>
+                <button class="text-left px-3 py-2 rounded-lg hover:bg-slate-100"
+                @click="window.__nav('/invoices')">
+                Factures
+                </button>
+            <button class="text-left px-3 py-2 rounded-lg hover:bg-slate-100"
+                @click="window.__nav('/revenue')">
+                Chiffre d’affaires
+                </button>
             </nav>
           </aside>
 

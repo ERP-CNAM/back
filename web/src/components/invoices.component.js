@@ -11,7 +11,6 @@ export function InvoicesComponent() {
   <div class="flex items-center justify-between gap-4 mb-4">
     <div>
       <h2 class="text-lg font-semibold">Factures</h2>
-      <p class="text-xs text-slate-500">Filtre par userId / subscriptionId (optionnel)</p>
     </div>
 
     <div class="flex gap-2 items-end flex-wrap">
@@ -75,7 +74,11 @@ export function InvoicesComponent() {
             <td class="p-2 text-right" x-text="formatMoney(inv.amountInclVat)"></td>
 
             <td class="p-2">
-              <span class="px-2 py-1 rounded bg-slate-100" x-text="inv.status"></span>
+              <span
+                class="px-2 py-1 rounded text-xs font-medium transition-colors"
+                :class="statusClass(inv.status)"
+                x-text="inv.status"
+                ></span>
             </td>
           </tr>
         </template>
@@ -93,11 +96,6 @@ export function InvoicesComponent() {
         </template>
       </tbody>
     </table>
-  </div>
-
-  <div class="text-xs text-slate-500 mt-3">
-    Astuce : accès direct via
-    <code>#/invoices?userId=...</code> ou <code>#/invoices?subscriptionId=...</code>
   </div>
 </section>
   `;
@@ -128,6 +126,20 @@ export function registerInvoicesAlpine(Alpine) {
                 if (userId) this.filterUserId = userId;
                 if (subscriptionId) this.filterSubscriptionId = subscriptionId;
             } catch {}
+        },
+        statusClass(status) {
+            switch (status) {
+                case 'PAID':
+                    return 'bg-emerald-100 text-emerald-800';
+                case 'SENT':
+                    return 'bg-indigo-100 text-indigo-800';
+                case 'PENDING':
+                    return 'bg-amber-100 text-amber-800';
+                case 'FAILED':
+                    return 'bg-red-100 text-red-800';
+                default:
+                    return 'bg-slate-100 text-slate-700';
+            }
         },
 
         async load() {
