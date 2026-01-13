@@ -14,6 +14,12 @@ export async function seedUsers() {
             password: 'Password123!',
             firstName: 'John',
             lastName: 'Doe',
+            phone: '+33612345678',
+            address: '123 Rue de la Paix',
+            city: 'Paris',
+            postalCode: '75001',
+            country: 'FR',
+            dateOfBirth: '1985-03-15',
             paymentMethod: { type: 'CARD', cardLast4: '4242' },
         },
         {
@@ -21,6 +27,12 @@ export async function seedUsers() {
             password: 'Password123!',
             firstName: 'Jane',
             lastName: 'Roux',
+            phone: '+33698765432',
+            address: '45 Avenue des Champs-Élysées',
+            city: 'Paris',
+            postalCode: '75008',
+            country: 'FR',
+            dateOfBirth: '1990-07-22',
             paymentMethod: { type: 'SEPA', iban: 'FR76****************1234' },
         },
     ] as const;
@@ -37,6 +49,12 @@ export async function seedUsers() {
             password: u.password,
             firstName: u.firstName,
             lastName: u.lastName,
+            phone: u.phone,
+            address: u.address,
+            city: u.city,
+            postalCode: u.postalCode,
+            country: u.country,
+            dateOfBirth: u.dateOfBirth,
             paymentMethod: u.paymentMethod as any,
         });
 

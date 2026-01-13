@@ -15,7 +15,7 @@ import { generateUUID } from '../../utils/uuid';
 const VALID_SUBSCRIPTION_STATUSES: t_SubscriptionStatus[] = ['ACTIVE', 'CANCELLED', 'PENDING_CANCEL'];
 
 export class InMemorySubscriptionRepository implements SubscriptionRepository {
-    constructor(private db: BetterSQLite3Database) {}
+    constructor(private db: BetterSQLite3Database) { }
 
     private toSubscriptionDetailed(row: any): t_SubscriptionDetailed {
         return {
@@ -32,7 +32,16 @@ export class InMemorySubscriptionRepository implements SubscriptionRepository {
                 firstName: row.users.firstName,
                 lastName: row.users.lastName,
                 email: row.users.email,
+                phone: row.users.phone ?? undefined,
+                address: row.users.address ?? undefined,
+                city: row.users.city ?? undefined,
+                postalCode: row.users.postalCode ?? undefined,
+                country: row.users.country ?? undefined,
+                dateOfBirth: row.users.dateOfBirth,
+                paymentMethod: row.users.paymentMethod ? JSON.parse(row.users.paymentMethod) : undefined,
                 status: row.users.status as t_UserStatus,
+                createdAt: row.users.createdAt,
+                updatedAt: row.users.updatedAt,
             },
         };
     }

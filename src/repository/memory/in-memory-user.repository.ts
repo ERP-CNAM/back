@@ -12,7 +12,7 @@ import { generateUUID } from '../../utils/uuid';
 import { security } from '../../utils/security';
 
 export class InMemoryUserRepository implements UserRepository {
-    constructor(private db: BetterSQLite3Database) {}
+    constructor(private db: BetterSQLite3Database) { }
 
     private toUser(row: any): t_User {
         return {
@@ -20,8 +20,14 @@ export class InMemoryUserRepository implements UserRepository {
             firstName: row.firstName,
             lastName: row.lastName,
             email: row.email,
-            status: row.status,
+            phone: row.phone ?? undefined,
+            address: row.address ?? undefined,
+            city: row.city ?? undefined,
+            postalCode: row.postalCode ?? undefined,
+            country: row.country ?? undefined,
+            dateOfBirth: row.dateOfBirth,
             paymentMethod: row.paymentMethod ? JSON.parse(row.paymentMethod) : undefined,
+            status: row.status,
             createdAt: row.createdAt,
             updatedAt: row.updatedAt,
         };
@@ -65,6 +71,12 @@ export class InMemoryUserRepository implements UserRepository {
             id: generateUUID(),
             status: 'OK',
             ...userData,
+            country: userData.country ?? 'FR',
+            phone: userData.phone ?? undefined,
+            address: userData.address ?? undefined,
+            city: userData.city ?? undefined,
+            postalCode: userData.postalCode ?? undefined,
+            dateOfBirth: userData.dateOfBirth ?? null,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
         };
@@ -77,6 +89,12 @@ export class InMemoryUserRepository implements UserRepository {
                 lastName: newUser.lastName,
                 email: newUser.email,
                 password: hashedPassword,
+                phone: newUser.phone,
+                address: newUser.address,
+                city: newUser.city,
+                postalCode: newUser.postalCode,
+                country: newUser.country ?? 'FR',
+                dateOfBirth: newUser.dateOfBirth,
                 paymentMethod: newUser.paymentMethod ? JSON.stringify(newUser.paymentMethod) : null,
                 status: newUser.status,
                 createdAt: newUser.createdAt,
@@ -112,6 +130,12 @@ export class InMemoryUserRepository implements UserRepository {
                 firstName: updatedUser.firstName,
                 lastName: updatedUser.lastName,
                 email: updatedUser.email,
+                phone: updatedUser.phone,
+                address: updatedUser.address,
+                city: updatedUser.city,
+                postalCode: updatedUser.postalCode,
+                country: updatedUser.country,
+                dateOfBirth: updatedUser.dateOfBirth,
                 paymentMethod: updatedUser.paymentMethod ? JSON.stringify(updatedUser.paymentMethod) : null,
                 status: updatedUser.status,
                 updatedAt: updatedUser.updatedAt,

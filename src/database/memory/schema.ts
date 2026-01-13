@@ -7,6 +7,15 @@ export const users = sqliteTable('users', {
     lastName: text('lastName'),
     email: text('email').unique(),
     password: text('password').notNull(),
+
+    // Address fields (required for SEPA mandates and FacturX)
+    phone: text('phone'),
+    address: text('address'),
+    city: text('city'),
+    postalCode: text('postalCode'),
+    country: text('country').default('FR'), // ISO 3166-1 alpha-2
+    dateOfBirth: text('dateOfBirth'), // Optional
+
     paymentMethod: text('paymentMethod'),
     status: text('status').$type<t_UserStatus>().notNull().default('OK'),
     createdAt: text('createdAt'),

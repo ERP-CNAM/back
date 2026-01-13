@@ -12,7 +12,7 @@ import { generateUUID } from '../../utils/uuid';
 import { security } from '../../utils/security';
 
 export class PostgresUserRepository implements UserRepository {
-    constructor(private db: NodePgDatabase) {}
+    constructor(private db: NodePgDatabase) { }
 
     private toUser(row: typeof users.$inferSelect): t_User {
         return {
@@ -20,6 +20,12 @@ export class PostgresUserRepository implements UserRepository {
             firstName: row.firstName ?? undefined,
             lastName: row.lastName ?? undefined,
             email: row.email ?? undefined,
+            phone: row.phone ?? undefined,
+            address: row.address ?? undefined,
+            city: row.city ?? undefined,
+            postalCode: row.postalCode ?? undefined,
+            country: row.country ?? undefined,
+            dateOfBirth: row.dateOfBirth ? row.dateOfBirth.toISOString().split('T')[0] : undefined,
             status: row.status as t_UserStatus,
             paymentMethod: row.paymentMethod ? JSON.parse(row.paymentMethod) : undefined,
             createdAt: row.createdAt ? row.createdAt.toISOString() : undefined,
@@ -70,6 +76,12 @@ export class PostgresUserRepository implements UserRepository {
                 lastName: data.lastName,
                 email: data.email,
                 password: hashedPassword,
+                phone: data.phone,
+                address: data.address,
+                city: data.city,
+                postalCode: data.postalCode,
+                country: data.country ?? 'FR',
+                dateOfBirth: data.dateOfBirth ? new Date(data.dateOfBirth) : null,
                 paymentMethod: data.paymentMethod ? JSON.stringify(data.paymentMethod) : null,
                 status: 'OK',
             })
@@ -99,6 +111,12 @@ export class PostgresUserRepository implements UserRepository {
                 firstName: data.firstName,
                 lastName: data.lastName,
                 email: data.email,
+                phone: data.phone,
+                address: data.address,
+                city: data.city,
+                postalCode: data.postalCode,
+                country: data.country,
+                dateOfBirth: data.dateOfBirth ? new Date(data.dateOfBirth) : undefined,
                 paymentMethod: data.paymentMethod ? JSON.stringify(data.paymentMethod) : undefined,
                 status: data.status,
                 updatedAt: new Date(),

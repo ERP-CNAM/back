@@ -20,6 +20,12 @@ describe('InMemoryUserRepository', () => {
             createdAt: '2026-01-01T00:00:00Z',
             updatedAt: '2026-01-01T00:00:00Z',
             password: 'secret12345',
+            country: 'FR',
+            phone: undefined,
+            address: undefined,
+            city: undefined,
+            postalCode: undefined,
+            dateOfBirth: null,
         },
         {
             id: 'user-2',
@@ -30,6 +36,12 @@ describe('InMemoryUserRepository', () => {
             createdAt: '2026-01-02T00:00:00Z',
             updatedAt: '2026-01-02T00:00:00Z',
             password: 'secret12345',
+            country: 'FR',
+            phone: undefined,
+            address: undefined,
+            city: undefined,
+            postalCode: undefined,
+            dateOfBirth: null,
         },
         {
             id: 'user-3',
@@ -40,6 +52,12 @@ describe('InMemoryUserRepository', () => {
             createdAt: '2026-01-03T00:00:00Z',
             updatedAt: '2026-01-03T00:00:00Z',
             password: 'secret12345',
+            country: 'FR',
+            phone: undefined,
+            address: undefined,
+            city: undefined,
+            postalCode: undefined,
+            dateOfBirth: null,
         },
     ];
 
@@ -126,6 +144,11 @@ describe('InMemoryUserRepository', () => {
                 lastName: 'Wilson',
                 email: 'david@example.com',
                 password: 'secret123',
+                address: '123 Test St',
+                city: 'Test City',
+                country: 'FR',
+                phone: '0123456789',
+                postalCode: '12345',
             };
 
             const createdUser = await repository.create(newUserData);
@@ -137,6 +160,7 @@ describe('InMemoryUserRepository', () => {
             expect(createdUser.status).toBe('OK');
             expect(createdUser.createdAt).toBeDefined();
             expect(createdUser.updatedAt).toBeDefined();
+            expect(createdUser.country).toBe('FR'); // Default value
         });
 
         it('should generate unique IDs for multiple users', async () => {
@@ -145,6 +169,11 @@ describe('InMemoryUserRepository', () => {
                 lastName: 'One',
                 email: 'user1@example.com',
                 password: 'secret123',
+                address: 'Addr 1',
+                city: 'City 1',
+                country: 'FR',
+                phone: '111',
+                postalCode: '11111',
             });
 
             const user2 = await repository.create({
@@ -152,6 +181,11 @@ describe('InMemoryUserRepository', () => {
                 lastName: 'Two',
                 email: 'user2@example.com',
                 password: 'secret123',
+                address: 'Addr 2',
+                city: 'City 2',
+                country: 'FR',
+                phone: '222',
+                postalCode: '22222',
             });
 
             expect(user1.id).not.toBe(user2.id);
@@ -163,6 +197,11 @@ describe('InMemoryUserRepository', () => {
                 lastName: 'Davis',
                 email: 'eve@example.com',
                 password: 'secret123',
+                address: 'Addr Eve',
+                city: 'City Eve',
+                country: 'FR',
+                phone: '333',
+                postalCode: '33333',
             });
 
             const found = await repository.findById(newUser.id!);
@@ -176,6 +215,11 @@ describe('InMemoryUserRepository', () => {
                 lastName: 'Miller',
                 email: 'frank@example.com',
                 password: 'secret123',
+                address: 'Addr Frank',
+                city: 'City Frank',
+                country: 'FR',
+                phone: '444',
+                postalCode: '44444',
                 paymentMethod: {
                     type: 'SEPA',
                     iban: 'FR76****************1234',

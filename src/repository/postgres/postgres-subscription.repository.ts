@@ -15,7 +15,7 @@ import { generateUUID } from '../../utils/uuid';
 const VALID_SUBSCRIPTION_STATUSES: t_SubscriptionStatus[] = ['ACTIVE', 'CANCELLED', 'PENDING_CANCEL'];
 
 export class PostgresSubscriptionRepository implements SubscriptionRepository {
-    constructor(private db: NodePgDatabase) {}
+    constructor(private db: NodePgDatabase) { }
 
     private toSubscription(row: typeof subscriptions.$inferSelect): t_Subscription {
         const startDate = row.startDate ? row.startDate.toISOString().slice(0, 10) : undefined;
@@ -55,7 +55,16 @@ export class PostgresSubscriptionRepository implements SubscriptionRepository {
                 firstName: row.users.firstName ?? undefined,
                 lastName: row.users.lastName ?? undefined,
                 email: row.users.email ?? undefined,
+                phone: row.users.phone ?? undefined,
+                address: row.users.address ?? undefined,
+                city: row.users.city ?? undefined,
+                postalCode: row.users.postalCode ?? undefined,
+                country: row.users.country ?? undefined,
+                dateOfBirth: row.users.dateOfBirth ? row.users.dateOfBirth.toISOString() : null,
+                paymentMethod: row.users.paymentMethod ? JSON.parse(row.users.paymentMethod) : undefined,
                 status: row.users.status as t_UserStatus,
+                createdAt: row.users.createdAt ? row.users.createdAt.toISOString() : undefined,
+                updatedAt: row.users.updatedAt ? row.users.updatedAt.toISOString() : undefined,
             },
         };
     }
