@@ -38,3 +38,17 @@ export const subscriptions = sqliteTable('subscriptions', {
         .notNull()
         .default('ACTIVE'),
 });
+
+export const invoices = sqliteTable('invoices', {
+    id: text('id').primaryKey().notNull(),
+    invoiceRef: text('invoiceRef').notNull(),
+    subscriptionId: text('subscriptionId').notNull(),
+    userId: text('userId').notNull(),
+    billingDate: text('billingDate').notNull(),
+    periodStart: text('periodStart').notNull(),
+    periodEnd: text('periodEnd').notNull(),
+    amountExclVat: real('amountExclVat').notNull(),
+    vatAmount: real('vatAmount').notNull(),
+    amountInclVat: real('amountInclVat').notNull(),
+    status: text('status').notNull().default('PENDING'),
+});

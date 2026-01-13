@@ -39,3 +39,17 @@ export const subscriptions = pgTable('subscriptions', {
         .notNull()
         .default('ACTIVE'),
 });
+
+export const invoices = pgTable('invoices', {
+    id: uuid('id').primaryKey().notNull(),
+    invoiceRef: varchar('invoiceRef', { length: 50 }).notNull(),
+    subscriptionId: uuid('subscriptionId').notNull(),
+    userId: uuid('userId').notNull(),
+    billingDate: timestamp('billingDate').notNull(),
+    periodStart: timestamp('periodStart').notNull(),
+    periodEnd: timestamp('periodEnd').notNull(),
+    amountExclVat: numeric('amountExclVat', { precision: 10, scale: 2 }).notNull(),
+    vatAmount: numeric('vatAmount', { precision: 10, scale: 2 }).notNull(),
+    amountInclVat: numeric('amountInclVat', { precision: 10, scale: 2 }).notNull(),
+    status: varchar('status', { length: 20 }).notNull().default('PENDING'),
+});
