@@ -11,7 +11,6 @@ export function InvoicesComponent() {
   <div class="flex items-center justify-between gap-4 mb-4">
     <div>
       <h2 class="text-lg font-semibold">Factures</h2>
-      <p class="text-xs text-slate-500">Filtre par userId / subscriptionId (optionnel)</p>
     </div>
 
     <div class="flex gap-2 items-end flex-wrap">
@@ -93,11 +92,6 @@ export function InvoicesComponent() {
         </template>
       </tbody>
     </table>
-  </div>
-
-  <div class="text-xs text-slate-500 mt-3">
-    Astuce : accès direct via
-    <code>#/invoices?userId=...</code> ou <code>#/invoices?subscriptionId=...</code>
   </div>
 </section>
   `;

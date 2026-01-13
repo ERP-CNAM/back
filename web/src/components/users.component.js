@@ -41,6 +41,7 @@ export function UsersComponent() {
           <th class="text-left p-2">Email</th>
           <th class="text-left p-2">Status</th>
           <th class="text-left p-2">Paiement</th>
+          <th class="text-left p-2">Abonnement</th>
           <th class="text-left p-2 text-right">Actions</th>
         </tr>
       </thead>
@@ -54,17 +55,20 @@ export function UsersComponent() {
               <span class="px-2 py-1 rounded bg-slate-100" x-text="u.status"></span>
             </td>
             <td class="p-2" x-text="formatPayment(u.paymentMethod)"></td>
+            <td class="p-2" >
+                <button
+                    class="px-3 py-1.5 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700"
+                    @click="goSubs(u.id)"
+                    >
+                    Voir abonnement
+                </button>
+            </td>
 
             <td class="p-2 text-right">
   <div class="flex justify-end items-center gap-2">
 
     <!-- Action principale -->
-    <button
-      class="px-3 py-1.5 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700"
-      @click="goSubs(u.id)"
-    >
-      Abonnements
-    </button>
+
 
     <!-- Menu secondaire -->
     <div class="relative" x-data="{ open: false }">
