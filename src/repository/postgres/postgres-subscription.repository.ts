@@ -16,13 +16,15 @@ export class PostgresSubscriptionRepository implements SubscriptionRepository {
     constructor(private db: NodePgDatabase) {}
 
     private toSubscription(row: typeof subscriptions.$inferSelect): t_Subscription {
+        const startDate = row.startDate ? row.startDate.toISOString().slice(0, 10) : undefined;
+        const endDate = row.endDate ? row.endDate.toISOString().slice(0, 10) : null;
         return {
             id: row.id,
             userId: row.userId,
             contractCode: row.contractCode,
-            startDate: row.startDate,
-            endDate: row.endDate ?? null,
-            monthlyAmount: row.monthlyAmount,
+            startDate,
+            endDate,
+            monthlyAmount: row.monthlyAmount !== null ? Number(row.monthlyAmount) : undefined,
             promoCode: row.promoCode ?? null,
             status: row.status as t_SubscriptionStatus,
         };
@@ -55,19 +57,20 @@ export class PostgresSubscriptionRepository implements SubscriptionRepository {
 
     async create(data: t_CreateSubscriptionRequestBodySchema): Promise<t_Subscription> {
         const id = generateUUID();
+        const values: typeof subscriptions.$inferInsert = {
+            id,
+            userId: data.userId,
+            contractCode: data.contractCode,
+            startDate: new Date(data.startDate),
+            endDate: null,
+            monthlyAmount: String(data.monthlyAmount),
+            promoCode: data.promoCode ?? null,
+            status: 'ACTIVE',
+        };
 
         const [inserted] = await this.db
             .insert(subscriptions)
-            .values({
-                id,
-                userId: data.userId,
-                contractCode: data.contractCode,
-                startDate: data.startDate,
-                endDate: null,
-                monthlyAmount: data.monthlyAmount,
-                promoCode: data.promoCode ?? null,
-                status: 'ACTIVE',
-            })
+            .values(values)
             .returning();
 
         if (!inserted) {
@@ -90,11 +93,11 @@ export class PostgresSubscriptionRepository implements SubscriptionRepository {
         const updateData: Partial<typeof subscriptions.$inferInsert> = {};
 
         if (data.endDate !== undefined) {
-            updateData.endDate = data.endDate;
+            updateData.endDate = data.endDate ? new Date(data.endDate) : null;
         }
 
         if (data.monthlyAmount !== undefined) {
-            updateData.monthlyAmount = data.monthlyAmount;
+            updateData.monthlyAmount = String(data.monthlyAmount);
         }
 
         if (data.promoCode !== undefined) {
@@ -129,7 +132,7 @@ export class PostgresSubscriptionRepository implements SubscriptionRepository {
         const [updated] = await this.db
             .update(subscriptions)
             .set({
-                endDate,
+                endDate: new Date(endDate),
                 status: 'CANCELLED',
             })
             .where(eq(subscriptions.id, id))
