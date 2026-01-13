@@ -32,19 +32,50 @@ export function InvoicesComponent() {
         />
       </div>
 
-      <div class="flex flex-col gap-1">
+        <div class="relative flex flex-col gap-1" x-data="{ open: false }">
         <label class="text-[11px] text-slate-400">Statut</label>
-        <select
-          class="border border-white/10 bg-white/5 text-slate-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-300/40"
-          x-model="filterStatus"
+
+        <button
+            type="button"
+            class="border border-white/10 bg-white/5 text-slate-100 rounded-lg px-3 py-2 w-40
+                flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-cyan-300/40"
+            @click="open = !open"
+            @click.outside="open = false"
         >
-          <option value="">Tous</option>
-          <option value="PENDING">PENDING</option>
-          <option value="SENT">SENT</option>
-          <option value="PAID">PAID</option>
-          <option value="FAILED">FAILED</option>
-        </select>
-      </div>
+            <span x-text="filterStatus || 'Tous'"></span>
+            <svg class="h-4 w-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+        </button>
+
+        <div
+            x-show="open"
+            x-transition
+            class="absolute top-full mt-2 left-0 w-40 z-20 overflow-hidden rounded-xl border border-white/10
+                bg-slate-950/95 backdrop-blur shadow-[0_20px_60px_-20px_rgba(0,0,0,.7)]"
+        >
+            <button class="w-full text-left px-3 py-2 hover:bg-white/10"
+            @click="filterStatus=''; open=false"
+            >Tous</button>
+
+            <button class="w-full text-left px-3 py-2 hover:bg-white/10"
+            @click="filterStatus='PENDING'; open=false"
+            >PENDING</button>
+
+            <button class="w-full text-left px-3 py-2 hover:bg-white/10"
+            @click="filterStatus='SENT'; open=false"
+            >SENT</button>
+
+            <button class="w-full text-left px-3 py-2 hover:bg-white/10"
+            @click="filterStatus='PAID'; open=false"
+            >PAID</button>
+
+            <button class="w-full text-left px-3 py-2 hover:bg-white/10"
+            @click="filterStatus='FAILED'; open=false"
+            >FAILED</button>
+        </div>
+        </div>
+
 
       <button
         class="px-3 py-2 rounded-lg bg-gradient-to-r from-slate-100 to-white text-slate-950 font-medium hover:opacity-95 disabled:opacity-50"
