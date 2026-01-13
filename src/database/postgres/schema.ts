@@ -8,6 +8,15 @@ export const users = pgTable('users', {
     lastName: varchar('lastName', { length: 255 }),
     email: varchar('email', { length: 255 }).unique(),
     password: varchar('password', { length: 255 }).notNull(), // Hashed password
+
+    // Address fields (required for SEPA mandates and FacturX)
+    phone: varchar('phone', { length: 20 }),
+    address: varchar('address', { length: 255 }),
+    city: varchar('city', { length: 100 }),
+    postalCode: varchar('postalCode', { length: 10 }),
+    country: varchar('country', { length: 2 }).default('FR'), // ISO 3166-1 alpha-2
+    dateOfBirth: timestamp('dateOfBirth'), // Optional
+
     paymentMethod: text('paymentMethod'), // Storing JSON string
     status: varchar('status', { length: 50 }).$type<t_UserStatus>().notNull().default('OK'),
     createdAt: timestamp('createdAt').defaultNow(),
