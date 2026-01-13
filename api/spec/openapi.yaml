@@ -582,6 +582,28 @@ paths:
                                               items:
                                                   $ref: '#/components/schemas/DirectDebitOrder'
 
+    /bank/payment-updates:
+        post:
+            operationId: updatePaymentStatus
+            tags: [BankingExports]
+            summary: Réception des statuts de paiement (Webhook Banque)
+            description: Permet à la banque de notifier le succès ou le rejet des prélèvements.
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: array
+                            items:
+                                $ref: '#/components/schemas/PaymentUpdate'
+            responses:
+                '200':
+                    description: Mise à jour effectuée
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BaseAPIResponse'
+
     /reports/revenue/monthly:
         get:
             operationId: getMonthlyRevenue
@@ -912,6 +934,20 @@ components:
                     enum: [TO_SEND, SENT, EXECUTED, REJECTED]
                 paymentMethod:
                     $ref: '#/components/schemas/PaymentMethodType'
+
+        PaymentUpdate:
+            type: object
+            required: [invoiceId, status]
+            properties:
+                invoiceId:
+                    type: string
+                    format: uuid
+                status:
+                    type: string
+                    enum: [EXECUTED, REJECTED]
+                rejectionReason:
+                    type: string
+                    nullable: true
 
         LoginRequest:
             type: object

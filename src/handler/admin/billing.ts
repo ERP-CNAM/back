@@ -7,7 +7,7 @@ import type { t_AccountingExportLine } from '../../../api/models';
 export function createBillingHandlers(
     invoiceRepository: InvoiceRepository,
     subscriptionRepository: SubscriptionRepository,
-    userRepository: UserRepository
+    userRepository: UserRepository,
 ) {
     // POST /billing/monthly
     const generateMonthlyBilling: GenerateMonthlyBilling = async (params, respond) => {
@@ -17,7 +17,7 @@ export function createBillingHandlers(
 
         // 1. Fetch active subscriptions
         const activeSubscriptions = await subscriptionRepository.findAll({ status: 'ACTIVE' });
-        
+
         const invoices = [];
 
         // 2. Generate invoices for each subscription
@@ -32,7 +32,7 @@ export function createBillingHandlers(
                 }
             }
 
-            const vatRate = 0.20;
+            const vatRate = 0.2;
             const vatAmount = Number((amountExclVat * vatRate).toFixed(2));
             const amountInclVat = Number((amountExclVat + vatAmount).toFixed(2));
 
@@ -69,10 +69,10 @@ export function createBillingHandlers(
     // GET /exports/accounting/monthly-invoices
     const exportMonthlyInvoices: ExportMonthlyInvoices = async (params, respond) => {
         const { billingMonth } = params.query;
-        
+
         // 1. Fetch invoices for the month
         const invoices = await invoiceRepository.findAllByMonth(billingMonth);
-        
+
         const exportLines: t_AccountingExportLine[] = [];
 
         for (const invoice of invoices) {
@@ -82,7 +82,7 @@ export function createBillingHandlers(
             const clientAccount = `AUX_${user?.lastName?.toUpperCase().slice(0, 5) || 'CLI'}`;
 
             // 3. Generate Accounting Lines
-            
+
             // Line 1: Debit Client (Total Incl VAT)
             exportLines.push({
                 date: invoice.billingDate,
@@ -98,7 +98,7 @@ export function createBillingHandlers(
             // Line 2: Credit Product (Excl VAT)
             exportLines.push({
                 date: invoice.billingDate,
-                generalAccount: '706',
+                generalAccount: '700',
                 clientAccount: undefined,
                 invoiceRef: invoice.invoiceRef,
                 description: 'Prestation de service HT',
@@ -132,4 +132,3 @@ export function createBillingHandlers(
         exportMonthlyInvoices,
     };
 }
-

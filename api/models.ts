@@ -77,6 +77,12 @@ export type t_PaymentMethod = {
 
 export type t_PaymentMethodType = 'SEPA' | 'CARD';
 
+export type t_PaymentUpdate = {
+    invoiceId: string;
+    rejectionReason?: string | null;
+    status: 'EXECUTED' | 'REJECTED';
+};
+
 export type t_Subscription = {
     contractCode?: string;
     endDate?: string | null;
@@ -174,6 +180,8 @@ export type t_LoginRequestBodySchema = {
     email: string;
     password: string;
 };
+
+export type t_UpdatePaymentStatusRequestBodySchema = t_PaymentUpdate[];
 
 export type t_UpdateSubscriptionParamSchema = {
     subscriptionId: string;

@@ -69,5 +69,6 @@ export const handlers: Implementation = {
     generateMonthlyBilling: billingHandlers.generateMonthlyBilling,
     exportMonthlyInvoices: billingHandlers.exportMonthlyInvoices,
     exportDirectDebits: reportHandlers.exportDirectDebits,
+    updatePaymentStatus: reportHandlers.updatePaymentStatus,
     getMonthlyRevenue: reportHandlers.getMonthlyRevenue,
 };

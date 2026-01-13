@@ -2,9 +2,8 @@
  * Middleware to handle Connect request format
  */
 
-const API_KEY = process.env.CONNECT_API_KEY || 'your-api-key-change-it';
+const API_KEY = process.env.CONNECT_API_KEY || 'changethis';
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
-const BYPASS_CONNECT = !IS_PRODUCTION && process.env.BYPASS_CONNECT === 'true';
 
 interface ConnectRequest {
     apiKey?: string;
@@ -13,21 +12,32 @@ interface ConnectRequest {
     payload?: any;
 }
 
-export const connectMiddleware = (req: any, res: any, next: any) => {
-    if (BYPASS_CONNECT) {
-        return next();
-    }
+function isLocalRequest(req: any): boolean {
+    const ip = req.ip || req.connection?.remoteAddress || '';
+    const isLocalIp = ip === '127.0.0.1' || ip === '::1' || ip === '::ffff:127.0.0.1';
 
+    const origin = req.get('Origin') || '';
+    const isLocalOrigin = origin.includes('localhost') || origin.includes('127.0.0.1');
+
+    return isLocalIp || isLocalOrigin;
+}
+
+export const connectMiddleware = (req: any, res: any, next: any) => {
     if (req.path.startsWith('/swagger')) {
         return next();
     }
 
+    // Dev: bypass Connect
+    // Production: bypass only backoffice (localhost)
+    if (!IS_PRODUCTION || isLocalRequest(req)) {
+        return next();
+    }
     const connectRequest = req.body as ConnectRequest;
 
     if (!connectRequest || typeof connectRequest !== 'object') {
         return res.status(400).json({
             success: false,
-            message: 'Invalid format, Connect request',
+            message: 'Invalid format, Connect request expected',
         });
     }
 
@@ -35,7 +45,7 @@ export const connectMiddleware = (req: any, res: any, next: any) => {
         console.error('[ERROR] Invalid Connect API key');
         return res.status(401).json({
             success: false,
-            message: 'Invalid Connect key',
+            message: 'Invalid Connect API key',
         });
     }
 

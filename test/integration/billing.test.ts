@@ -35,35 +35,55 @@ describe('Billing Integration', () => {
         subscriptionRepo = new InMemorySubscriptionRepository(db);
         invoiceRepo = new InMemoryInvoiceRepository(db);
         userRepo = new InMemoryUserRepository(db);
-        
+
         billingHandlers = createBillingHandlers(invoiceRepo, subscriptionRepo, userRepo);
     });
 
     describe('generateMonthlyBilling', () => {
         it('should generate invoices for active subscriptions', async () => {
-            // 1. Setup Data: Create active and inactive subscriptions
+            // 1. Setup Data: Create users first (required for INNER JOIN)
+            const user1 = await userRepo.create({
+                firstName: 'User',
+                lastName: 'One',
+                email: 'user1@example.com',
+                password: 'pass123',
+            });
+            const user2 = await userRepo.create({
+                firstName: 'User',
+                lastName: 'Two',
+                email: 'user2@example.com',
+                password: 'pass123',
+            });
+            const user3 = await userRepo.create({
+                firstName: 'User',
+                lastName: 'Three',
+                email: 'user3@example.com',
+                password: 'pass123',
+            });
+
+            // Create active and inactive subscriptions
             const activeSub1 = await subscriptionRepo.create({
-                userId: 'user-1',
+                userId: user1.id!,
                 contractCode: 'C001',
                 startDate: '2025-01-01',
                 monthlyAmount: 100,
-                promoCode: null
+                promoCode: null,
             });
 
             const activeSub2 = await subscriptionRepo.create({
-                userId: 'user-2',
+                userId: user2.id!,
                 contractCode: 'C002',
                 startDate: '2025-02-01',
                 monthlyAmount: 200,
-                promoCode: 'B1M20'
+                promoCode: 'B1M20',
             });
 
             const cancelledSub = await subscriptionRepo.create({
-                userId: 'user-3',
+                userId: user3.id!,
                 contractCode: 'C003',
                 startDate: '2025-01-01',
                 monthlyAmount: 50,
-                promoCode: null
+                promoCode: null,
             });
             await subscriptionRepo.cancel(cancelledSub.id!); // Assuming ID is returned
 
@@ -72,12 +92,18 @@ describe('Billing Integration', () => {
             const params = { body: { billingDate } } as any;
             const respond = createMockResponse();
 
-            const result = await billingHandlers.generateMonthlyBilling(params, respond, {} as any, {} as any, {} as any);
+            const result = await billingHandlers.generateMonthlyBilling(
+                params,
+                respond,
+                {} as any,
+                {} as any,
+                {} as any,
+            );
 
             // 3. Verify Response
             expect(result.status).toBe(200);
             expect(result.body.success).toBe(true);
-            
+
             const payload = result.body.payload;
             expect(payload.billingDate).toBe(billingDate);
             expect(payload.invoices).toHaveLength(2); // Only active subscriptions
@@ -102,13 +128,21 @@ describe('Billing Integration', () => {
         });
 
         it('should apply 50% discount on first billing with promo code', async () => {
-            // Setup: Subscription with promo code
+            // Setup: Create user first (required for INNER JOIN)
+            const userPromo = await userRepo.create({
+                firstName: 'Promo',
+                lastName: 'User',
+                email: 'promo@example.com',
+                password: 'pass123',
+            });
+
+            // Create subscription with promo code
             const subWithPromo = await subscriptionRepo.create({
-                userId: 'user-promo',
+                userId: userPromo.id!,
                 contractCode: 'PROMO1',
                 startDate: '2026-01-01',
                 monthlyAmount: 100,
-                promoCode: 'B1M20'
+                promoCode: 'B1M20',
             });
 
             const billingDate = '2026-01-31';
@@ -116,8 +150,14 @@ describe('Billing Integration', () => {
             const respond = createMockResponse();
 
             // 1st Billing Run
-            const result1 = await billingHandlers.generateMonthlyBilling(params, respond, {} as any, {} as any, {} as any);
-            
+            const result1 = await billingHandlers.generateMonthlyBilling(
+                params,
+                respond,
+                {} as any,
+                {} as any,
+                {} as any,
+            );
+
             const invoice1 = result1.body.payload.invoices[0];
             expect(invoice1.amountExclVat).toBe(50); // 100 * 0.5
             expect(invoice1.amountInclVat).toBe(60); // 50 + 20%
@@ -125,9 +165,15 @@ describe('Billing Integration', () => {
             // 2nd Billing Run (Next Month)
             const billingDate2 = '2026-02-28';
             const params2 = { body: { billingDate: billingDate2 } } as any;
-            
-            const result2 = await billingHandlers.generateMonthlyBilling(params2, respond, {} as any, {} as any, {} as any);
-            
+
+            const result2 = await billingHandlers.generateMonthlyBilling(
+                params2,
+                respond,
+                {} as any,
+                {} as any,
+                {} as any,
+            );
+
             const invoice2 = result2.body.payload.invoices.find((i: any) => i.subscriptionId === subWithPromo.id);
             expect(invoice2.amountExclVat).toBe(100); // Full price
             expect(invoice2.amountInclVat).toBe(120);
@@ -138,7 +184,13 @@ describe('Billing Integration', () => {
             const params = { body: { billingDate } } as any;
             const respond = createMockResponse();
 
-            const result = await billingHandlers.generateMonthlyBilling(params, respond, {} as any, {} as any, {} as any);
+            const result = await billingHandlers.generateMonthlyBilling(
+                params,
+                respond,
+                {} as any,
+                {} as any,
+                {} as any,
+            );
 
             expect(result.status).toBe(200);
             expect(result.body.payload.invoices).toHaveLength(0);
@@ -165,13 +217,19 @@ describe('Billing Integration', () => {
                 amountExclVat: 100,
                 vatAmount: 20,
                 amountInclVat: 120,
-                status: 'PENDING'
+                status: 'PENDING',
             });
 
             // 2. Execute
             const params = { query: { billingMonth: '2026-06' } } as any;
             const respond = createMockResponse();
-            const result = await billingHandlers.exportMonthlyInvoices(params, respond, {} as any, {} as any, {} as any);
+            const result = await billingHandlers.exportMonthlyInvoices(
+                params,
+                respond,
+                {} as any,
+                {} as any,
+                {} as any,
+            );
 
             // 3. Verify
             expect(result.status).toBe(200);
@@ -186,7 +244,7 @@ describe('Billing Integration', () => {
             expect(clientLine.customerName).toBe('John Doe');
 
             // Verify Product Line
-            const productLine = lines.find((l: any) => l.generalAccount === '706');
+            const productLine = lines.find((l: any) => l.generalAccount === '700');
             expect(productLine.credit).toBe(100);
 
             // Verify VAT Line

@@ -39,9 +39,9 @@ export const security = {
         return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
     },
 
-    verifyToken(token: string): string | jwt.JwtPayload {
+    verifyToken(token: string): UserPayload {
         try {
-            return jwt.verify(token, JWT_SECRET);
+            return jwt.verify(token, JWT_SECRET) as UserPayload;
         } catch (error) {
             throw new Error('Invalid token');
         }

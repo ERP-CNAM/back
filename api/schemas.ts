@@ -61,6 +61,12 @@ export const s_LoginRequest = z.object({
 
 export const s_PaymentMethodType = z.enum(['SEPA', 'CARD']);
 
+export const s_PaymentUpdate = z.object({
+    invoiceId: z.string(),
+    status: z.enum(['EXECUTED', 'REJECTED']),
+    rejectionReason: z.string().nullable().optional(),
+});
+
 export const s_SubscriptionCreate = z.object({
     userId: z.string(),
     contractCode: z.string(),
