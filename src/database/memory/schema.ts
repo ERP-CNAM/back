@@ -1,5 +1,5 @@
-import { sqliteTable, text } from 'drizzle-orm/sqlite-core';
-import { t_UserStatus } from '../../../api/models';
+import { sqliteTable, real, text } from 'drizzle-orm/sqlite-core';
+import { t_SubscriptionStatus, t_UserStatus } from '../../../api/models';
 
 export const users = sqliteTable('users', {
     id: text('id').primaryKey().notNull(),
@@ -23,4 +23,15 @@ export const admins = sqliteTable('admins', {
     lastLogin: text('lastLogin'),
     createdAt: text('createdAt'),
     updatedAt: text('updatedAt'),
+});
+
+export const subscriptions = sqliteTable('subscriptions', {
+    id: text('id').primaryKey().notNull(),
+    userId: text('userId').notNull(),
+    contractCode: text('contractCode').notNull(),
+    startDate: text('startDate').notNull(),
+    endDate: text('endDate'),
+    monthlyAmount: real('monthlyAmount').notNull(),
+    promoCode: text('promoCode'),
+    status: text('status').$type<t_SubscriptionStatus>().notNull().default('ACTIVE'),
 });
