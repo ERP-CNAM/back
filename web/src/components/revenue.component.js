@@ -16,18 +16,48 @@ export function RevenueComponent() {
     </div>
 
     <div class="flex gap-2 items-end flex-wrap">
-      <div class="flex flex-col gap-1">
+        <div class="relative flex flex-col gap-1" x-data="{ open: false }">
         <label class="text-[11px] text-slate-400">Période</label>
-        <select
-          class="border border-white/10 bg-white/5 text-slate-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-300/40"
-          x-model="range"
-          @change="load()"
+
+        <button
+            type="button"
+            class="border border-white/10 bg-white/5 text-slate-100 rounded-lg px-3 py-2 w-44
+                flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-cyan-300/40"
+            @click="open = !open"
+            @click.outside="open = false"
         >
-          <option value="ALL">Tout</option>
-          <option value="30D">30 derniers jours</option>
-          <option value="THIS_MONTH">Ce mois-ci</option>
-        </select>
-      </div>
+            <span x-text="
+            range === 'ALL' ? 'Tout'
+            : range === '30D' ? '30 derniers jours'
+            : range === 'THIS_MONTH' ? 'Ce mois-ci'
+            : range
+            "></span>
+
+            <svg class="h-4 w-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+        </button>
+
+        <div
+            x-show="open"
+            x-transition
+            class="absolute top-full mt-2 left-0 w-44 z-20 overflow-hidden rounded-xl border border-white/10
+                bg-slate-950/95 backdrop-blur shadow-[0_20px_60px_-20px_rgba(0,0,0,.7)]"
+        >
+            <button class="w-full text-left px-3 py-2 hover:bg-white/10"
+            @click="range='ALL'; open=false; load()"
+            >Tout</button>
+
+            <button class="w-full text-left px-3 py-2 hover:bg-white/10"
+            @click="range='30D'; open=false; load()"
+            >30 derniers jours</button>
+
+            <button class="w-full text-left px-3 py-2 hover:bg-white/10"
+            @click="range='THIS_MONTH'; open=false; load()"
+            >Ce mois-ci</button>
+        </div>
+        </div>
+
 
       <button
         class="px-3 py-2 rounded-lg bg-gradient-to-r from-slate-100 to-white text-slate-950 font-medium hover:opacity-95 disabled:opacity-50"
@@ -171,7 +201,7 @@ export function registerRevenueAlpine(Alpine) {
     Alpine.data('revenuePage', () => ({
         loading: false,
 
-        range: 'ALL', // ALL | 30D | THIS_MONTH
+        range: 'ALL',
 
         // Data
         paid: [],
