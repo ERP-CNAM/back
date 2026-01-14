@@ -49,6 +49,30 @@ export class PostgresInvoiceRepository implements InvoiceRepository {
         return this.toInvoice(inserted);
     }
 
+    async findAll(filter: {
+        userId?: string;
+        subscriptionId?: string;
+        status?: 'PENDING' | 'SENT' | 'PAID' | 'FAILED';
+    }): Promise<t_Invoice[]> {
+        const whereParts = [];
+
+        if (filter.userId) {
+            whereParts.push(eq(invoices.userId, filter.userId));
+        }
+        if (filter.subscriptionId) {
+            whereParts.push(eq(invoices.subscriptionId, filter.subscriptionId));
+        }
+        if (filter.status) {
+            whereParts.push(eq(invoices.status, filter.status));
+        }
+
+        const query = this.db.select().from(invoices);
+
+        const rows = whereParts.length > 0 ? await query.where(and(...whereParts)).execute() : await query.execute();
+
+        return rows.map((r) => this.toInvoice(r));
+    }
+
     async findAllByDate(date: string): Promise<t_Invoice[]> {
         // Exact match on date part is tricky with timestamps.
         // For this prototype, we will assume the query provides a specific timestamp or handle it loosely.

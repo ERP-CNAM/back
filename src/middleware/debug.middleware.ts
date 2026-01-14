@@ -1,3 +1,5 @@
+import { logger } from '../utils/logger';
+
 /**
  * Debug middleware to log raw request data BEFORE Zod parsing
  */
@@ -15,10 +17,9 @@ export const debugRequestMiddleware = (req: any, _res: any, next: any) => {
         if (sanitizedBody.password) {
             sanitizedBody.password = '***MASKED***';
         }
-        console.log('Request Body (raw):');
-        console.log(JSON.stringify(sanitizedBody, null, 2));
+        logger.debug({ body: sanitizedBody }, 'Request Body (raw)');
     } else {
-        console.log('Request Body: (empty)');
+        logger.debug('Request Body: (empty)');
     }
 
     next();

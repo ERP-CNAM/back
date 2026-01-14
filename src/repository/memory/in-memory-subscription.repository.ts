@@ -15,7 +15,7 @@ import { generateUUID } from '../../utils/uuid';
 const VALID_SUBSCRIPTION_STATUSES: t_SubscriptionStatus[] = ['ACTIVE', 'CANCELLED', 'PENDING_CANCEL'];
 
 export class InMemorySubscriptionRepository implements SubscriptionRepository {
-    constructor(private db: BetterSQLite3Database) { }
+    constructor(private db: BetterSQLite3Database) {}
 
     private toSubscriptionDetailed(row: any): t_SubscriptionDetailed {
         return {

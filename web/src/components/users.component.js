@@ -1,120 +1,188 @@
-// src/components/users.component.js
 import { apiRequest } from '../api/client.js';
 import { toastStore } from '../stores/toast.store.js';
 
 export function UsersComponent() {
     return `
 <section
-  class="bg-white rounded-xl border shadow-sm p-4 h-full min-h-0 flex flex-col"
+  class="rounded-2xl border border-white/10 bg-white/8 backdrop-blur-xl shadow-[0_20px_60px_-20px_rgba(0,0,0,.7)] p-4 h-full min-h-0 flex flex-col text-slate-100"
   x-data="usersPage()"
   x-init="init()"
 >
   <!-- Header -->
   <div class="flex items-center justify-between gap-4 mb-4 shrink-0">
-    <h2 class="text-lg font-semibold">Utilisateurs</h2>
+    <div>
+      <h2 class="text-lg font-semibold text-white">Utilisateurs</h2>
+      <p class="text-xs text-slate-400">Gestion des statuts et accès aux abonnements.</p>
+    </div>
 
-    <div class="flex gap-2 items-end">
-      <select class="border rounded-lg px-3 py-2" x-model="filterStatus">
-        <option value="">Tous</option>
-        <option value="OK">OK</option>
-        <option value="SUSPENDED">SUSPENDED</option>
-        <option value="BLOCKED">BLOCKED</option>
-        <option value="DELETED">DELETED</option>
-      </select>
+    <div class="flex gap-2 items-end flex-wrap">
+        <div class="flex flex-col gap-1" x-data="{ open: false }">
+        <label class="text-[11px] text-slate-400">Statut</label>
+
+        <button
+            type="button"
+            class="border border-white/10 bg-white/5 text-slate-100 rounded-lg px-3 py-2 w-40
+                flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-cyan-300/40"
+            @click="open = !open"
+            @click.outside="open = false"
+        >
+            <span x-text="filterStatus || 'Tous'"></span>
+            <svg class="h-4 w-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+        </button>
+
+        <div
+            x-show="open"
+            x-transition
+            class="absolute mt-[68px] w-40 z-20 overflow-hidden rounded-xl border border-white/10
+                bg-slate-950/95 backdrop-blur shadow-[0_20px_60px_-20px_rgba(0,0,0,.7)]"
+        >
+            <button class="w-full text-left px-3 py-2 hover:bg-white/10"
+            @click="filterStatus=''; open=false; load()"
+            >Tous</button>
+
+            <button class="w-full text-left px-3 py-2 hover:bg-white/10"
+            @click="filterStatus='OK'; open=false; load()"
+            >OK</button>
+
+            <button class="w-full text-left px-3 py-2 hover:bg-white/10"
+            @click="filterStatus='SUSPENDED'; open=false; load()"
+            >SUSPENDED</button>
+
+            <button class="w-full text-left px-3 py-2 hover:bg-white/10"
+            @click="filterStatus='BLOCKED'; open=false; load()"
+            >BLOCKED</button>
+
+            <button class="w-full text-left px-3 py-2 hover:bg-white/10"
+            @click="filterStatus='DELETED'; open=false; load()"
+            >DELETED</button>
+        </div>
+        </div>
 
       <button
-        class="px-3 py-2 rounded-lg bg-slate-900 text-white hover:bg-slate-800 disabled:opacity-50"
+        class="px-3 py-2 rounded-lg bg-gradient-to-r from-slate-100 to-white text-slate-950 font-medium hover:opacity-95 disabled:opacity-50"
         :disabled="loading"
         @click="load()"
       >
-        Rafraîchir
+        <span x-show="!loading">Rafraîchir</span>
+        <span x-show="loading">Chargement…</span>
       </button>
     </div>
   </div>
 
-  <!-- Table container (prend toute la hauteur restante) -->
-  <div class="flex-1 min-h-0 overflow-auto border rounded-lg">
+  <!-- Table container -->
+  <div class="flex-1 min-h-0 overflow-auto rounded-xl border border-white/10 bg-white/5">
     <table class="min-w-full text-sm">
-      <thead class="bg-slate-100 sticky top-0 z-10">
-        <tr>
-          <th class="text-left p-2">Nom</th>
-          <th class="text-left p-2">Email</th>
-          <th class="text-left p-2">Status</th>
-          <th class="text-left p-2">Paiement</th>
-          <th class="text-left p-2 text-right">Actions</th>
+      <thead class="sticky top-0 z-10 bg-slate-950/70 backdrop-blur border-b border-white/10">
+        <tr class="text-slate-300">
+          <th class="text-left p-2 font-medium">Nom</th>
+          <th class="text-left p-2 font-medium">Email</th>
+          <th class="text-left p-2 font-medium">Status</th>
+          <th class="text-left p-2 font-medium">Paiement</th>
+          <th class="text-left p-2 font-medium">Abonnement</th>
+          <th class="text-left p-2 font-medium">Factures</th>
+          <th class="text-right p-2 font-medium">Actions</th>
         </tr>
       </thead>
 
-      <tbody>
+      <tbody class="text-slate-100">
         <template x-for="u in users" :key="u.id">
-          <tr class="border-t">
-            <td class="p-2" x-text="u.firstName + ' ' + u.lastName"></td>
-            <td class="p-2" x-text="u.email"></td>
-            <td class="p-2">
-              <span class="px-2 py-1 rounded bg-slate-100" x-text="u.status"></span>
+          <tr class="border-t border-white/10 hover:bg-white/5">
+            <td class="p-2 text-slate-100" x-text="(u.firstName ?? '') + ' ' + (u.lastName ?? '')"></td>
+
+            <td class="p-2 text-slate-200">
+              <span class="font-mono text-xs" x-text="u.email"></span>
             </td>
-            <td class="p-2" x-text="formatPayment(u.paymentMethod)"></td>
+
+            <td class="p-2">
+              <span
+                class="px-2 py-1 rounded text-xs font-medium border border-white/10"
+                :class="statusClass(u.status)"
+                x-text="u.status"
+              ></span>
+            </td>
+
+            <td class="p-2 text-slate-200" x-text="formatPayment(u.paymentMethod)"></td>
+
+            <td class="p-2">
+              <button
+                class="px-3 py-1.5 rounded-lg border border-white/10 bg-white/10 text-slate-100 hover:bg-white/15"
+                @click="goSubs(u.id)"
+              >
+                Voir abonnement
+              </button>
+            </td>
+
+                        <td class="p-2">
+              <button
+                class="px-3 py-1.5 rounded-lg border border-white/10 bg-white/10 text-slate-100 hover:bg-white/15"
+                @click="goInvoices(u.id)"
+              >
+                Voir factures
+              </button>
+            </td>
 
             <td class="p-2 text-right">
-  <div class="flex justify-end items-center gap-2">
+              <div class="flex justify-end items-center gap-2">
+                <div class="relative" x-data="{ open: false }">
+                  <button
+                    class="px-2 py-1.5 rounded-lg border border-white/10 bg-white/5 text-slate-200 hover:bg-white/10 disabled:opacity-50"
+                    :disabled="loading"
+                    @click="open = !open"
+                    @click.outside="open = false"
+                    aria-label="Actions"
+                  >
+                    ⋯
+                  </button>
 
-    <!-- Action principale -->
-    <button
-      class="px-3 py-1.5 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700"
-      @click="goSubs(u.id)"
-    >
-      Abonnements
-    </button>
+                  <div
+                    x-show="open"
+                    x-transition
+                    class="absolute right-0 mt-2 w-52 bg-slate-950/95 backdrop-blur border border-white/10 rounded-xl shadow-[0_20px_60px_-20px_rgba(0,0,0,.7)] z-20 overflow-hidden"
+                  >
+                    <button
+                      class="w-full text-left px-3 py-2 hover:bg-emerald-500/10 text-emerald-200 disabled:opacity-50"
+                      :disabled="loading || u.status === 'OK'"
+                      @click="open=false; setStatus(u.id,'OK')"
+                    >
+                      ✔ Mettre OK
+                    </button>
 
-    <!-- Menu secondaire -->
-    <div class="relative" x-data="{ open: false }">
-      <button
-        class="px-2 py-1.5 rounded-lg border text-slate-600 hover:bg-slate-100"
-        @click="open = !open"
-        @click.outside="open = false"
-      >
-        ⋯
-      </button>
+                    <button
+                      class="w-full text-left px-3 py-2 hover:bg-amber-500/10 text-amber-200 disabled:opacity-50"
+                      :disabled="loading || u.status === 'SUSPENDED'"
+                      @click="open=false; setStatus(u.id,'SUSPENDED')"
+                    >
+                      ⏸ Suspendre
+                    </button>
 
-      <div
-        x-show="open"
-        x-transition
-        class="absolute right-0 mt-2 w-44 bg-white border rounded-lg shadow-lg z-20"
-      >
-        <button
-          class="w-full text-left px-3 py-2 hover:bg-emerald-50 text-emerald-700"
-          :disabled="u.status === 'OK'"
-          @click="open=false; setStatus(u.id,'OK')"
-        >
-          ✔ Mettre OK
-        </button>
-
-        <button
-          class="w-full text-left px-3 py-2 hover:bg-amber-50 text-amber-700"
-          :disabled="u.status === 'SUSPENDED'"
-          @click="open=false; setStatus(u.id,'SUSPENDED')"
-        >
-          ⏸ Suspendre
-        </button>
-
-        <button
-          class="w-full text-left px-3 py-2 hover:bg-red-50 text-red-700"
-          :disabled="u.status === 'BLOCKED'"
-          @click="open=false; setStatus(u.id,'BLOCKED')"
-        >
-          ⛔ Bloquer
-        </button>
-      </div>
-    </div>
-  </div>
-</td>
+                    <button
+                      class="w-full text-left px-3 py-2 hover:bg-red-500/10 text-red-200 disabled:opacity-50"
+                      :disabled="loading || u.status === 'BLOCKED'"
+                      @click="open=false; setStatus(u.id,'BLOCKED')"
+                    >
+                      ⛔ Bloquer
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </td>
           </tr>
         </template>
 
         <template x-if="users.length === 0 && !loading">
           <tr>
-            <td class="p-3 text-slate-500 text-center" colspan="5">
+            <td class="p-4 text-slate-400 text-center" colspan="6">
               Aucun utilisateur.
+            </td>
+          </tr>
+        </template>
+
+        <template x-if="loading">
+          <tr>
+            <td class="p-4 text-slate-400 text-center" colspan="6">
+              Chargement…
             </td>
           </tr>
         </template>
@@ -163,6 +231,24 @@ export function registerUsersAlpine() {
 
         goSubs(userId) {
             location.hash = `#/subscriptions?userId=${encodeURIComponent(userId)}`;
+        },
+        goInvoices(userId) {
+            location.hash = `#/invoices?userId=${encodeURIComponent(userId)}`;
+        },
+
+        statusClass(status) {
+            switch (status) {
+                case 'OK':
+                    return 'bg-emerald-100 text-emerald-800';
+                case 'SUSPENDED':
+                    return 'bg-amber-100 text-amber-800';
+                case 'BLOCKED':
+                    return 'bg-red-100 text-red-800';
+                case 'DELETED':
+                    return 'bg-slate-200 text-slate-600';
+                default:
+                    return 'bg-slate-100 text-slate-700';
+            }
         },
 
         formatPayment(pm) {

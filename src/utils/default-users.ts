@@ -4,6 +4,8 @@ import { DB_TYPE } from '../database/config';
 import { PostgresUserRepository } from '../repository/postgres/postgres-user.repository';
 import { InMemoryUserRepository } from '../repository/memory/in-memory-user.repository';
 
+import { logger } from './logger';
+
 export async function seedUsers() {
     const db = getDatabase();
     const userRepo = DB_TYPE === 'postgres' ? new PostgresUserRepository(db) : new InMemoryUserRepository(db);
@@ -40,7 +42,7 @@ export async function seedUsers() {
     for (const u of demoUsers) {
         const exists = await userRepo.findByEmail(u.email);
         if (exists) {
-            console.log(`ℹ️ User exists: ${u.email}`);
+            logger.debug(`User exists: ${u.email}`);
             continue;
         }
 
@@ -58,11 +60,11 @@ export async function seedUsers() {
             paymentMethod: u.paymentMethod as any,
         });
 
-        console.log(`User created: ${u.email}`);
+        logger.info(`User created: ${u.email}`);
     }
 }
 
 export async function createDefaultUsers() {
     await seedUsers();
-    console.log('Default users created!');
+    logger.info('Default users creation check complete');
 }
