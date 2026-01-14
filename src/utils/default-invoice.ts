@@ -161,7 +161,7 @@ export async function seedInvoices(): Promise<void> {
         logger.info(`Invoices seeded for subscription ${sub.id}`);
     }
 
-    logger.info('✅ Invoice seeding done');
+    logger.info('Invoice seeding done');
 }
 
 export async function createDefaultInvoices(): Promise<void> {
