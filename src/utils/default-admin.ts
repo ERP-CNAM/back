@@ -6,7 +6,7 @@ import { InMemoryAdminRepository } from '../repository/memory/in-memory-admin.re
 import { logger } from './logger';
 
 /**
- * Script to create an initial admin user (dev only)
+ * Script to create an initial admin user
  */
 async function seedAdmin() {
     try {

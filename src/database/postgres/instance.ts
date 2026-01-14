@@ -1,6 +1,8 @@
+import path from 'path';
 import { drizzle } from 'drizzle-orm/node-postgres';
+import { migrate } from 'drizzle-orm/node-postgres/migrator';
 import { Pool } from 'pg';
-import { DB_CONFIG } from '../config';
+import { DB_CONFIG, DB_TYPE } from '../config';
 import * as schema from './schema';
 
 let pool: Pool;
@@ -19,4 +21,12 @@ export function getPostgresDatabase() {
 
     db = drizzle(pool, { schema });
     return db;
+}
+
+export async function runPostgresMigrations() {
+    if (DB_TYPE !== 'postgres') return;
+
+    const database = getPostgresDatabase();
+    const migrationsFolder = path.join(__dirname, 'migrations');
+    await migrate(database, { migrationsFolder });
 }
