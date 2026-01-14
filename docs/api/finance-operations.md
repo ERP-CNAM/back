@@ -18,7 +18,7 @@ Déclenche la génération des factures pour tous les abonnements actifs. Cette 
 
 ```json
 {
-    "billingDate": "2026-06-30"
+  "billingDate": "2026-06-30"
 }
 ```
 
@@ -26,19 +26,19 @@ Déclenche la génération des factures pour tous les abonnements actifs. Cette 
 
 ```json
 {
-    "success": true,
-    "message": "Factures générées",
-    "payload": {
-        "billingDate": "2026-06-30",
-        "invoices": [
-            {
-                "id": "inv-001",
-                "invoiceRef": "FAC-2026-06-001",
-                "amountInclVat": 19.99,
-                "status": "PENDING"
-            }
-        ]
-    }
+  "success": true,
+  "message": "Factures générées",
+  "payload": {
+    "billingDate": "2026-06-30",
+    "invoices": [
+      {
+        "id": "inv-001",
+        "invoiceRef": "FAC-2026-06-001",
+        "amountInclVat": 19.99,
+        "status": "PENDING"
+      }
+    ]
+  }
 }
 ```
 
@@ -74,15 +74,15 @@ Permet à la banque de notifier le système du succès ou du rejet des prélève
 
 ```json
 [
-    {
-        "invoiceId": "inv-001",
-        "status": "EXECUTED"
-    },
-    {
-        "invoiceId": "inv-002",
-        "status": "REJECTED",
-        "rejectionReason": "Solde insuffisant"
-    }
+  {
+    "invoiceId": "inv-001",
+    "status": "EXECUTED"
+  },
+  {
+    "invoiceId": "inv-002",
+    "status": "REJECTED",
+    "rejectionReason": "Solde insuffisant"
+  }
 ]
 ```
 
@@ -96,21 +96,21 @@ Récupère le CA (HT, TVA, TTC) agrégé par mois.
 - **Chemin** : `/reports/revenue/monthly`
 - **Accès** : Admin
 - **Paramètres (Query)** :
-    - `from` : Mois de début (YYYY-MM).
-    - `to` : Mois de fin (YYYY-MM).
+  - `from` : Mois de début (YYYY-MM).
+  - `to` : Mois de fin (YYYY-MM).
 
 ### Exemple de Réponse
 
 ```json
 {
-    "success": true,
-    "payload": [
-        {
-            "month": "2026-06",
-            "revenueExclVat": 1000.0,
-            "vatAmount": 200.0,
-            "revenueInclVat": 1200.0
-        }
-    ]
+  "success": true,
+  "payload": [
+    {
+      "month": "2026-06",
+      "revenueExclVat": 1000.0,
+      "vatAmount": 200.0,
+      "revenueInclVat": 1200.0
+    }
+  ]
 }
 ```

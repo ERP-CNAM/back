@@ -2,6 +2,13 @@ trailingComma: all
 semi: true
 singleQuote: true
 printWidth: 120
-tabWidth: 4
+tabWidth: 2
 useTabs: false
 endOfLine: lf
+
+overrides:
+  - files:
+      - '*.ts'
+      - '*.js'
+    options:
+      tabWidth: 4

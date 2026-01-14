@@ -6,10 +6,23 @@ const SALT_ROUNDS = 10;
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-it';
 const JWT_EXPIRES_IN = '24h';
 
+/**
+ * Connect compatible JWT payload format
+ * Connect expects exactly: userId, permission, exp (exp is auto-added by jwt.sign)
+ */
+interface ConnectJwtPayload {
+    userId: string;
+    permission: number;
+}
+
+/**
+ * Internal user payload with derived userType
+ * Used internally after decoding JWT
+ */
 export interface UserPayload {
     userId: string;
-    email: string;
-    userType: 'user' | 'admin';
+    userType: 'user' | 'admin'; // we use userType for auth middleware
+    permission: number;
 }
 
 export const security = {
@@ -22,26 +35,29 @@ export const security = {
     },
 
     generateToken(user: t_User): string {
-        const payload: UserPayload = {
+        const payload: ConnectJwtPayload = {
             userId: user.id || '',
-            email: user.email || '',
-            userType: 'user',
+            permission: 1, // Authenticated
         };
         return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
     },
 
     generateAdminToken(admin: t_Admin): string {
-        const payload: UserPayload = {
+        const payload: ConnectJwtPayload = {
             userId: admin.id || '',
-            email: admin.email || '',
-            userType: 'admin',
+            permission: 2, // Admin
         };
         return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
     },
 
     verifyToken(token: string): UserPayload {
         try {
-            return jwt.verify(token, JWT_SECRET) as UserPayload;
+            const decoded = jwt.verify(token, JWT_SECRET) as ConnectJwtPayload;
+            return {
+                userId: decoded.userId,
+                userType: decoded.permission >= 2 ? 'admin' : 'user',
+                permission: decoded.permission,
+            };
         } catch (error) {
             throw new Error('Invalid token');
         }

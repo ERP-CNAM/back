@@ -14,16 +14,16 @@ Création d'un nouveau compte joueur. Cet endpoint est généralement appelé lo
 
 ```json
 {
-    "firstName": "Alice",
-    "lastName": "Smith",
-    "email": "alice.smith@example.com",
-    "password": "SecurePassword123!",
-    "phone": "+33600000000",
-    "address": "10 Rue de Rivoli",
-    "city": "Paris",
-    "postalCode": "75004",
-    "country": "FR",
-    "dateOfBirth": "1992-08-24"
+  "firstName": "Alice",
+  "lastName": "Smith",
+  "email": "alice.smith@example.com",
+  "password": "SecurePassword123!",
+  "phone": "+33600000000",
+  "address": "10 Rue de Rivoli",
+  "city": "Paris",
+  "postalCode": "75004",
+  "country": "FR",
+  "dateOfBirth": "1992-08-24"
 }
 ```
 
@@ -31,16 +31,16 @@ Création d'un nouveau compte joueur. Cet endpoint est généralement appelé lo
 
 ```json
 {
-    "success": true,
-    "message": "Utilisateur créé",
-    "payload": {
-        "id": "a1b2c3d4-e5f6-4g7h-8i9j-k1l2m3n4o5p6",
-        "firstName": "Alice",
-        "lastName": "Smith",
-        "email": "alice.smith@example.com",
-        "status": "OK",
-        "createdAt": "2026-01-13T20:00:00Z"
-    }
+  "success": true,
+  "message": "Utilisateur créé",
+  "payload": {
+    "id": "a1b2c3d4-e5f6-4g7h-8i9j-k1l2m3n4o5p6",
+    "firstName": "Alice",
+    "lastName": "Smith",
+    "email": "alice.smith@example.com",
+    "status": "OK",
+    "createdAt": "2026-01-13T20:00:00Z"
+  }
 }
 ```
 
@@ -58,7 +58,7 @@ Récupère la liste de tous les joueurs inscrits.
 - **Chemin** : `/users`
 - **Accès** : Admin
 - **Paramètres (Query)** :
-    - `status` : Filtrer par statut (`OK`, `SUSPENDED`, `BLOCKED`, `DELETED`).
+  - `status` : Filtrer par statut (`OK`, `SUSPENDED`, `BLOCKED`, `DELETED`).
 
 ### Consulter un utilisateur
 
@@ -80,7 +80,7 @@ Permet de suspendre ou bloquer un utilisateur (souvent suite à un incident de p
 
 ```json
 {
-    "status": "BLOCKED"
+  "status": "BLOCKED"
 }
 ```
 
