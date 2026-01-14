@@ -5,6 +5,7 @@ import { PostgresUserRepository } from '../repository/postgres/postgres-user.rep
 import { InMemoryUserRepository } from '../repository/memory/in-memory-user.repository';
 import { PostgresSubscriptionRepository } from '../repository/postgres/postgres-subscription.repository';
 import { InMemorySubscriptionRepository } from '../repository/memory/in-memory-subscription.repository';
+import { logger } from './logger';
 
 export async function seedSubscriptions() {
     const db = getDatabase();
@@ -16,13 +17,13 @@ export async function seedSubscriptions() {
 
     const john = await userRepo.findByEmail('john.doe@example.com');
     if (!john) {
-        console.log('John not found, run seedUsers first');
+        logger.warn('John not found, run seedUsers first');
         return;
     }
 
     const existing = await subRepo.findAll?.({ userId: john.id });
     if (existing?.length) {
-        console.log('ℹSubscription already exists for John');
+        logger.debug('Subscription already exists for John');
         return;
     }
 
@@ -34,9 +35,9 @@ export async function seedSubscriptions() {
         promoCode: 'B1M20',
     } as any);
 
-    console.log('Subscription created for John');
+    logger.info('Subscription created for John');
 }
 export async function createDefaultSubscriptions() {
     await seedSubscriptions();
-    console.log('Default subscriptions created!');
+    logger.info('Default subscriptions creation check complete');
 }

@@ -11,6 +11,8 @@ import { InMemorySubscriptionRepository } from '../repository/memory/in-memory-s
 import { PostgresInvoiceRepository } from '../repository/postgres/postgres-invoice.repository';
 import { InMemoryInvoiceRepository } from '../repository/memory/in-memory-invoice.repository';
 
+import { logger } from './logger';
+
 export async function seedInvoices() {
     const db = getDatabase();
 
@@ -24,7 +26,7 @@ export async function seedInvoices() {
     // 1️⃣ John
     const john = await userRepo.findByEmail('john.doe@example.com');
     if (!john) {
-        console.log('John not found, run seedUsers first');
+        logger.warn('John not found, run seedUsers first');
         return;
     }
     if (!john.id) {
@@ -34,7 +36,7 @@ export async function seedInvoices() {
     // 2️⃣ Abonnement
     const subs = await subRepo.findAll({ userId: john.id });
     if (!subs.length) {
-        console.log('No subscription found for John, run seedSubscriptions first');
+        logger.warn('No subscription found for John, run seedSubscriptions first');
         return;
     }
 
@@ -54,7 +56,7 @@ export async function seedInvoices() {
     const alreadyExists = existing.some((i) => i.billingDate === billingDate);
 
     if (alreadyExists) {
-        console.log('ℹ Invoice already exists for this subscription');
+        logger.debug('Invoice already exists for this subscription');
         return;
     }
 
@@ -72,10 +74,10 @@ export async function seedInvoices() {
         status: 'PAID',
     });
 
-    console.log('Invoice created for John');
+    logger.info('Invoice created for John');
 }
 
 export async function createDefaultInvoices() {
     await seedInvoices();
-    console.log('Default invoices created!');
+    logger.info('Default invoices creation check complete');
 }

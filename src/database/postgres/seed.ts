@@ -6,6 +6,9 @@ import { users, admins, subscriptions } from './schema';
 import { eq } from 'drizzle-orm';
 import { randomUUID } from 'crypto';
 import { security } from '../../utils/security';
+import { logger } from '../../utils/logger';
+
+const seedLogger = logger.child({ component: 'seeder' });
 
 async function seedAdmins(db: any) {
     const email = process.env.ADMIN_EMAIL ?? 'admin@gamers-erp.com';
@@ -15,7 +18,7 @@ async function seedAdmins(db: any) {
 
     const existing = await db.select().from(admins).where(eq(admins.email, email));
     if (existing.length > 0) {
-        console.log('ℹ️ Admin already exists');
+        seedLogger.info('Admin already exists');
         return;
     }
 
@@ -33,7 +36,7 @@ async function seedAdmins(db: any) {
         updatedAt: new Date(),
     });
 
-    console.log('✅ Admin seeded');
+    seedLogger.info('Admin seeded');
 }
 
 async function seedUsers(db: any) {
@@ -63,7 +66,7 @@ async function seedUsers(db: any) {
     for (const user of demoUsers) {
         const existing = await db.select().from(users).where(eq(users.email, user.email));
         if (existing.length > 0) {
-            console.log(`ℹ️ User ${user.email} already exists`);
+            seedLogger.debug(`User ${user.email} already exists`);
             continue;
         }
 
@@ -73,7 +76,7 @@ async function seedUsers(db: any) {
             updatedAt: new Date(),
         });
 
-        console.log(`✅ User ${user.email} seeded`);
+        seedLogger.info(`User ${user.email} seeded`);
     }
 }
 
@@ -81,13 +84,13 @@ async function seedSubscriptions(db: any) {
     const rows = await db.select().from(users).where(eq(users.email, 'john.doe@example.com'));
     const john = rows[0];
     if (!john) {
-        console.log('ℹ️ John not found, skipping subscriptions');
+        seedLogger.warn('John not found, skipping subscriptions');
         return;
     }
 
     const existing = await db.select().from(subscriptions).where(eq(subscriptions.userId, john.id));
     if (existing.length > 0) {
-        console.log('ℹ️ Subscription already exists');
+        seedLogger.info('Subscription already exists');
         return;
     }
 
@@ -102,15 +105,15 @@ async function seedSubscriptions(db: any) {
         status: 'ACTIVE',
     });
 
-    console.log('✅ Subscription seeded');
+    seedLogger.info('Subscription seeded');
 }
 
 async function main() {
     if (process.env.NODE_ENV === 'production') {
-        throw new Error('❌ Seed forbidden in production');
+        throw new Error('Seed forbidden in production');
     }
 
-    // ✅ Import dynamique: garantit que dotenv + DB_TYPE sont déjà posés
+    // Import dynamique: garantit que dotenv + DB_TYPE sont déjà posés
     const { getDatabase } = await import('../client.js');
     const db = getDatabase();
 
@@ -119,18 +122,18 @@ async function main() {
         throw new Error('DATABASE_URL is not set (check your .env)');
     }
 
-    console.log('🌱 Seeding Postgres database...');
+    seedLogger.info('Seeding Postgres database...');
 
     await seedAdmins(db);
     await seedUsers(db);
     await seedSubscriptions(db);
 
-    console.log('🎉 Seed completed successfully');
+    seedLogger.info('Seed completed successfully');
 }
 
 main()
     .then(() => process.exit(0))
     .catch((err) => {
-        console.error(err);
+        seedLogger.error(err, 'Seed failed');
         process.exit(1);
     });
