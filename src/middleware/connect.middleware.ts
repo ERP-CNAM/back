@@ -1,16 +1,27 @@
 import { logger } from '../utils/logger';
+import { UserPayload } from '../utils/security';
 
 /**
  * Middleware to handle Connect request format
+ *
+ * Connect validates JWT and sends decoded userData in the request body.
+ * This middleware extracts userData and attaches it to req.user for
+ * the auth middleware to use.
  */
 
 const API_KEY = String(process.env.CONNECT_API_KEY);
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 
+interface ConnectUserData {
+    userId: string;
+    permission: number;
+    exp: number;
+}
+
 interface ConnectRequest {
     apiKey?: string;
     debug?: boolean;
-    userData?: any;
+    userData?: ConnectUserData;
     payload?: any;
 }
 
@@ -49,6 +60,25 @@ export const connectMiddleware = (req: any, res: any, next: any) => {
             success: false,
             message: 'Invalid Connect API key',
         });
+    }
+
+    // Extract userData from Connect and attach to req.user
+    if (connectRequest.userData && connectRequest.userData.userId) {
+        const userPayload: UserPayload = {
+            userId: connectRequest.userData.userId,
+            userType: connectRequest.userData.permission >= 2 ? 'admin' : 'user',
+            permission: connectRequest.userData.permission,
+        };
+        req.user = userPayload;
+
+        if (req.log) {
+            req.log = req.log.child({
+                userId: userPayload.userId,
+                userType: userPayload.userType,
+            });
+        }
+
+        logger.debug({ userId: userPayload.userId }, '[CONNECT] User authenticated via Connect');
     }
 
     if (connectRequest.payload !== undefined && connectRequest.payload !== null) {
