@@ -25,6 +25,47 @@ interface ConnectRequest {
     payload?: any;
 }
 
+export const connectMiddleware = (req: any, res: any, next: any) => {
+    if (shouldBypassConnect(req)) {
+        return next();
+    }
+
+    const connectRequest = req.body as ConnectRequest;
+
+    if (!isValidRequestFormat(connectRequest)) {
+        return res.status(400).json({
+            success: false,
+            message: 'Invalid format, Connect request expected',
+        });
+    }
+
+    if (!isValidApiKey(connectRequest.apiKey)) {
+        logger.error('[CONNECT] Invalid API key');
+        return res.status(401).json({
+            success: false,
+            message: 'Invalid Connect API key',
+        });
+    }
+
+    processConnectUser(req, connectRequest);
+    unwrapPayload(req, connectRequest);
+
+    logger.debug('[CONNECT] Request unwrapped successfully');
+    next();
+};
+
+// --- Helper Functions ---
+
+function shouldBypassConnect(req: any): boolean {
+    if (req.path.startsWith('/swagger')) {
+        return true;
+    }
+
+    // Dev: bypass Connect
+    // Production: bypass only backoffice (localhost)
+    return !IS_PRODUCTION || isLocalRequest(req);
+}
+
 function isLocalRequest(req: any): boolean {
     const ip = req.ip || req.connection?.remoteAddress || '';
     const isLocalIp = ip === '127.0.0.1' || ip === '::1' || ip === '::ffff:127.0.0.1';
@@ -35,34 +76,15 @@ function isLocalRequest(req: any): boolean {
     return isLocalIp || isLocalOrigin;
 }
 
-export const connectMiddleware = (req: any, res: any, next: any) => {
-    if (req.path.startsWith('/swagger')) {
-        return next();
-    }
+function isValidRequestFormat(body: any): boolean {
+    return body && typeof body === 'object';
+}
 
-    // Dev: bypass Connect
-    // Production: bypass only backoffice (localhost)
-    if (!IS_PRODUCTION || isLocalRequest(req)) {
-        return next();
-    }
-    const connectRequest = req.body as ConnectRequest;
+function isValidApiKey(apiKey?: string): boolean {
+    return apiKey === API_KEY;
+}
 
-    if (!connectRequest || typeof connectRequest !== 'object') {
-        return res.status(400).json({
-            success: false,
-            message: 'Invalid format, Connect request expected',
-        });
-    }
-
-    if (connectRequest.apiKey !== API_KEY) {
-        logger.error('[CONNECT] Invalid API key');
-        return res.status(401).json({
-            success: false,
-            message: 'Invalid Connect API key',
-        });
-    }
-
-    // Extract userData from Connect and attach to req.user
+function processConnectUser(req: any, connectRequest: ConnectRequest): void {
     if (connectRequest.userData && connectRequest.userData.userId) {
         const userPayload: UserPayload = {
             userId: connectRequest.userData.userId,
@@ -80,13 +102,12 @@ export const connectMiddleware = (req: any, res: any, next: any) => {
 
         logger.debug({ userId: userPayload.userId }, '[CONNECT] User authenticated via Connect');
     }
+}
 
+function unwrapPayload(req: any, connectRequest: ConnectRequest): void {
     if (connectRequest.payload !== undefined && connectRequest.payload !== null) {
         req.body = connectRequest.payload;
     } else {
         req.body = {};
     }
-
-    logger.debug('[CONNECT] Request unwrapped successfully');
-    next();
-};
+}
