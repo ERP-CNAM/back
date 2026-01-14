@@ -40,10 +40,10 @@ Toutes les réponses de l'API suivent un format standardisé :
 
 ```json
 {
-    "success": true,
-    "message": "Description optionnelle du résultat",
-    "payload": {
-        "data": "..."
-    }
+  "success": true,
+  "message": "Description optionnelle du résultat",
+  "payload": {
+    "data": "..."
+  }
 }
 ```

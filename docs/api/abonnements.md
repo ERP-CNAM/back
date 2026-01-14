@@ -26,11 +26,11 @@ Active un nouvel abonnement pour un joueur.
 
 ```json
 {
-    "userId": "a1b2c3d4-e5f6-4g7h-8i9j-k1l2m3n4o5p6",
-    "contractCode": "GAMER_GOLD_2026",
-    "startDate": "2026-02-01",
-    "monthlyAmount": 19.99,
-    "promoCode": "WELCOME2026"
+  "userId": "a1b2c3d4-e5f6-4g7h-8i9j-k1l2m3n4o5p6",
+  "contractCode": "GAMER_GOLD_2026",
+  "startDate": "2026-02-01",
+  "monthlyAmount": 19.99,
+  "promoCode": "WELCOME2026"
 }
 ```
 
@@ -38,15 +38,15 @@ Active un nouvel abonnement pour un joueur.
 
 ```json
 {
-    "success": true,
-    "message": "Abonnement créé",
-    "payload": {
-        "id": "sub-uuid-123",
-        "contractCode": "GAMER_GOLD_2026",
-        "status": "ACTIVE",
-        "monthlyAmount": 19.99,
-        "startDate": "2026-02-01"
-    }
+  "success": true,
+  "message": "Abonnement créé",
+  "payload": {
+    "id": "sub-uuid-123",
+    "contractCode": "GAMER_GOLD_2026",
+    "status": "ACTIVE",
+    "monthlyAmount": 19.99,
+    "startDate": "2026-02-01"
+  }
 }
 ```
 
@@ -58,8 +58,8 @@ Liste les abonnements actifs ou passés.
 - **Chemin** : `/subscriptions`
 - **Accès** : Authentifié
 - **Paramètres (Query)** :
-    - `userId` : (Optionnel) Filtrer par utilisateur.
-    - `status` : (Optionnel) Filtrer par statut (`ACTIVE`, `CANCELLED`).
+  - `userId` : (Optionnel) Filtrer par utilisateur.
+  - `status` : (Optionnel) Filtrer par statut (`ACTIVE`, `CANCELLED`).
 
 ### Consulter un abonnement
 
