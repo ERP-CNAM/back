@@ -74,5 +74,4 @@ export const handlers: Implementation = {
     updatePaymentStatus: reportHandlers.updatePaymentStatus,
     getMonthlyRevenue: reportHandlers.getMonthlyRevenue,
     listInvoices: invoiceHandlers.listInvoices,
-
 };

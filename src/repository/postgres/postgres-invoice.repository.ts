@@ -6,7 +6,7 @@ import { invoices } from '../../database/postgres/schema';
 import { generateUUID } from '../../utils/uuid';
 
 export class PostgresInvoiceRepository implements InvoiceRepository {
-    constructor(private db: NodePgDatabase) { }
+    constructor(private db: NodePgDatabase) {}
 
     private toInvoice(row: typeof invoices.$inferSelect): t_Invoice {
         return {
@@ -49,7 +49,6 @@ export class PostgresInvoiceRepository implements InvoiceRepository {
         return this.toInvoice(inserted);
     }
 
-
     async findAll(filter: {
         userId?: string;
         subscriptionId?: string;
@@ -69,10 +68,7 @@ export class PostgresInvoiceRepository implements InvoiceRepository {
 
         const query = this.db.select().from(invoices);
 
-        const rows =
-            whereParts.length > 0
-                ? await query.where(and(...whereParts)).execute()
-                : await query.execute();
+        const rows = whereParts.length > 0 ? await query.where(and(...whereParts)).execute() : await query.execute();
 
         return rows.map((r) => this.toInvoice(r));
     }

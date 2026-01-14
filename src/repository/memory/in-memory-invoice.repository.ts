@@ -6,7 +6,7 @@ import { invoices } from '../../database/memory/schema';
 import { generateUUID } from '../../utils/uuid';
 
 export class InMemoryInvoiceRepository implements InvoiceRepository {
-    constructor(private db: BetterSQLite3Database) { }
+    constructor(private db: BetterSQLite3Database) {}
 
     private toInvoice(row: any): t_Invoice {
         return {
@@ -49,7 +49,6 @@ export class InMemoryInvoiceRepository implements InvoiceRepository {
 
         return invoice;
     }
-
 
     async findAll(filter: {
         userId?: string;

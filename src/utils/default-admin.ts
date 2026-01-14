@@ -3,6 +3,7 @@ import { getDatabase } from '../database/client';
 import { DB_TYPE } from '../database/config';
 import { PostgresAdminRepository } from '../repository/postgres/postgres-admin.repository';
 import { InMemoryAdminRepository } from '../repository/memory/in-memory-admin.repository';
+import { logger } from './logger';
 
 /**
  * Script to create an initial admin user (dev only)
@@ -19,7 +20,7 @@ async function seedAdmin() {
 
         const existingAdmin = await adminRepo.findByEmail(adminEmail);
         if (existingAdmin) {
-            console.error(`Admin with email ${adminEmail} already exists`);
+            logger.warn(`Admin with email ${adminEmail} already exists`);
             return;
         }
 
@@ -30,16 +31,14 @@ async function seedAdmin() {
             lastName: lastName,
         });
 
-        console.log('Email:', admin.email);
-        console.log('Password:', adminPassword);
-        console.log('Name:', `${admin.firstName} ${admin.lastName}`);
+        logger.info({ email: admin.email, name: `${admin.firstName} ${admin.lastName}` }, 'Admin created details');
     } catch (error) {
-        console.error('Error creating admin:', error);
+        logger.error(error, 'Error creating admin');
         process.exit(1);
     }
 }
 
 export async function createDefaultAdmin() {
     await seedAdmin();
-    console.log('Default admin created!');
+    logger.info('Default admin creation check complete');
 }

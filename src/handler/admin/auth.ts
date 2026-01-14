@@ -4,21 +4,24 @@ import { security } from '../../utils/security';
 
 export const createAdminAuthHandlers = (adminRepository: AdminRepository) => {
     // POST /auth/admin/login
-    const adminLogin: AdminLogin = async (params, respond) => {
+    const adminLogin: AdminLogin = async (params, respond, req) => {
         const { email, password } = params.body;
 
         const admin = await adminRepository.findWithPasswordByEmail(email);
 
         if (!admin || !admin.password) {
+            (req as any).log.warn({ email }, 'Admin login failed: admin not found');
             return respond.with401();
         }
 
         if (admin.isActive !== 'true') {
+            (req as any).log.warn({ email }, 'Admin login failed: account inactive');
             return respond.with401();
         }
 
         const isValid = await security.verifyPassword(password, admin.password);
         if (!isValid) {
+            (req as any).log.warn({ email }, 'Admin login failed: invalid password');
             return respond.with401();
         }
 
@@ -28,7 +31,10 @@ export const createAdminAuthHandlers = (adminRepository: AdminRepository) => {
 
         const { password: _, ...adminWithoutPassword } = admin;
 
+        (req as any).log.info({ email, adminId: admin.id }, 'Admin logged in successfully');
+
         return respond.with200().body({
+            // ... (rest of the code)
             success: true,
             message: 'Admin login successful',
             payload: {

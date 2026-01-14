@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import { getDatabase } from '../database/client';
 import { DB_TYPE } from '../database/config';
+import { logger } from './logger';
 
 import { PostgresUserRepository } from '../repository/postgres/postgres-user.repository';
 import { InMemoryUserRepository } from '../repository/memory/in-memory-user.repository';
@@ -71,13 +72,7 @@ function computeAmounts(monthlyInclVat: number): {
 }
 
 function statusForIndex(i: number): InvoiceStatus {
-    const cycle: readonly InvoiceStatus[] = [
-        'PAID',
-        'PAID',
-        'SENT',
-        'PENDING',
-        'FAILED',
-    ];
+    const cycle: readonly InvoiceStatus[] = ['PAID', 'PAID', 'SENT', 'PENDING', 'FAILED'];
 
     return cycle[i % cycle.length] ?? 'PAID';
 }
@@ -89,31 +84,22 @@ function safeUpper(v?: string | null): string {
 export async function seedInvoices(): Promise<void> {
     const db = getDatabase();
 
-    const userRepo =
-        DB_TYPE === 'postgres'
-            ? new PostgresUserRepository(db)
-            : new InMemoryUserRepository(db);
+    const userRepo = DB_TYPE === 'postgres' ? new PostgresUserRepository(db) : new InMemoryUserRepository(db);
 
-    const subRepo =
-        DB_TYPE === 'postgres'
-            ? new PostgresSubscriptionRepository(db)
-            : new InMemorySubscriptionRepository(db);
+    const subRepo = DB_TYPE === 'postgres' ? new PostgresSubscriptionRepository(db) : new InMemorySubscriptionRepository(db);
 
-    const invoiceRepo =
-        DB_TYPE === 'postgres'
-            ? new PostgresInvoiceRepository(db)
-            : new InMemoryInvoiceRepository(db);
+    const invoiceRepo = DB_TYPE === 'postgres' ? new PostgresInvoiceRepository(db) : new InMemoryInvoiceRepository(db);
 
     // On caste en "Like" pour satisfaire TS sans dépendre de tes classes exactes
     const john = (await (userRepo as any).findByEmail('john.doe@example.com')) as UserLike | null;
     if (!john?.id) {
-        console.log('John not found (or no id), run seedUsers first');
+        logger.warn('John not found (or no id), run seedUsers first');
         return;
     }
 
     const subs = (await (subRepo as any).findAll({ userId: john.id })) as SubscriptionLike[];
     if (!subs.length) {
-        console.log('No subscription found for John, run seedSubscriptions first');
+        logger.warn('No subscription found for John, run seedSubscriptions first');
         return;
     }
 
@@ -130,10 +116,7 @@ export async function seedInvoices(): Promise<void> {
         const existing = (await (invoiceRepo as any).findAll({ subscriptionId: sub.id })) as InvoiceLike[];
         const existingBillingDates = new Set<string>(existing.map((i) => i.billingDate));
 
-        const baseInclVat: number =
-            typeof sub.monthlyAmount === 'number'
-                ? Math.round(sub.monthlyAmount * 100) / 100
-                : 15.0;
+        const baseInclVat: number = typeof sub.monthlyAmount === 'number' ? Math.round(sub.monthlyAmount * 100) / 100 : 15.0;
 
         for (let i = 0; i < monthsToCreate; i++) {
             const d = new Date(startYear, startMonth - 1 + i, 1);
@@ -173,13 +156,13 @@ export async function seedInvoices(): Promise<void> {
             existingBillingDates.add(billingDate);
         }
 
-        console.log(`Invoices seeded for subscription ${sub.id}`);
+        logger.info(`Invoices seeded for subscription ${sub.id}`);
     }
 
-    console.log('✅ Invoice seeding done');
+    logger.info('✅ Invoice seeding done');
 }
 
 export async function createDefaultInvoices(): Promise<void> {
     await seedInvoices();
-    console.log('Default invoices created!');
+    logger.info('Default invoices creation check complete');
 }

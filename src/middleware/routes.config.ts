@@ -1,11 +1,12 @@
 /**
- * Centralized Route Configuration
+ * Centralized Route Configuration - GENERATED FROM OPENAPI.YAML
+ * DO NOT EDIT MANUALLY
  */
 
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 export type AccessLevel = 'public' | 'authenticated' | 'admin';
 
-export interface RouteRule {
+export interface Route {
     path: string;
     method: HttpMethod | '*';
     access: AccessLevel;
@@ -14,27 +15,31 @@ export interface RouteRule {
 /**
  * Route rules ordered by specificity (most specific first)
  */
-export const ROUTE_RULES: RouteRule[] = [
+export const ROUTES: Route[] = [
     // ==================== PUBLIC ====================
-    // No authentication required
-    { path: '/auth/login', method: 'POST', access: 'public' },
     { path: '/auth/admin/login', method: 'POST', access: 'public' },
-    { path: '/users', method: 'POST', access: 'public' }, // Registration
+    { path: '/auth/login', method: 'POST', access: 'public' },
+    { path: '/users', method: 'POST', access: 'public' },
 
     // ==================== AUTHENTICATED ====================
-    // Requires valid token (user or admin)
-    { path: '/subscriptions', method: '*', access: 'authenticated' },
-    { path: '/subscriptions/:id', method: '*', access: 'authenticated' },
+    { path: '/subscriptions/:subscriptionId', method: 'GET', access: 'authenticated' },
+    { path: '/subscriptions/:subscriptionId', method: 'PUT', access: 'authenticated' },
+    { path: '/subscriptions/:subscriptionId', method: 'DELETE', access: 'authenticated' },
+    { path: '/subscriptions', method: 'GET', access: 'authenticated' },
+    { path: '/subscriptions', method: 'POST', access: 'authenticated' },
 
     // ==================== ADMIN ONLY ====================
-    // Requires admin token
-    { path: '/users', method: 'GET', access: 'admin' },
-    { path: '/users/:id', method: '*', access: 'admin' },
-    { path: '/users/:id/status', method: 'PATCH', access: 'admin' },
-    { path: '/billing/monthly', method: 'POST', access: 'admin' },
     { path: '/exports/accounting/monthly-invoices', method: 'GET', access: 'admin' },
     { path: '/exports/banking/direct-debits', method: 'GET', access: 'admin' },
     { path: '/reports/revenue/monthly', method: 'GET', access: 'admin' },
+    { path: '/users/:userId/status', method: 'PATCH', access: 'admin' },
+    { path: '/billing/monthly', method: 'POST', access: 'admin' },
+    { path: '/bank/payment-updates', method: 'POST', access: 'admin' },
+    { path: '/users/:userId', method: 'GET', access: 'admin' },
+    { path: '/users/:userId', method: 'PUT', access: 'admin' },
+    { path: '/users/:userId', method: 'DELETE', access: 'admin' },
+    { path: '/users', method: 'GET', access: 'admin' },
+    { path: '/invoices', method: 'GET', access: 'admin' },
 ];
 
 /**
@@ -43,7 +48,7 @@ export const ROUTE_RULES: RouteRule[] = [
  */
 function patternToRegex(pattern: string): RegExp {
     const escaped = pattern
-        .replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // Escape special regex chars
+        .replace(/[.*+?^${}()|[]\]/g, '\\$&') // Escape special regex chars
         .replace(/:[^/]+/g, '[^/]+'); // Replace :param with wildcard
     return new RegExp(`^${escaped}$`);
 }
@@ -61,30 +66,16 @@ function matchPath(pattern: string, path: string): boolean {
  * Returns 'authenticated' as default if no matching rule found
  */
 export function getAccessLevel(path: string, method: string): AccessLevel {
-    const upperMethod = method.toUpperCase() as HttpMethod;
+    const HTTP_METHOD = method.toUpperCase() as HttpMethod;
 
-    for (const rule of ROUTE_RULES) {
-        if (matchPath(rule.path, path)) {
-            if (rule.method === '*' || rule.method === upperMethod) {
-                return rule.access;
+    for (const route of ROUTES) {
+        if (matchPath(route.path, path)) {
+            if (route.method === '*' || route.method === HTTP_METHOD) {
+                return route.access;
             }
         }
     }
 
     // Default: require authentication (safe default)
     return 'authenticated';
-}
-
-/**
- * Check if a route is public (no auth required)
- */
-export function isPublicRoute(path: string, method: string): boolean {
-    return getAccessLevel(path, method) === 'public';
-}
-
-/**
- * Check if a route requires admin access
- */
-export function isAdminRoute(path: string, method: string): boolean {
-    return getAccessLevel(path, method) === 'admin';
 }

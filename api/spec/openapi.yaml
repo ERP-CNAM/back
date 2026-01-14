@@ -35,6 +35,7 @@ paths:
             tags: [Authentification]
             summary: Connexion utilisateur
             description: Authentification par email/mot de passe pour obtenir un token JWT.
+            x-access-level: public
             security: []
             requestBody:
                 required: true
@@ -66,6 +67,7 @@ paths:
             tags: [Authentification]
             summary: Connexion administrateur
             description: Authentification par email/mot de passe pour obtenir un token JWT administrateur.
+            x-access-level: public
             security: []
             requestBody:
                 required: true
@@ -97,6 +99,7 @@ paths:
             tags: [Users]
             summary: Créer un utilisateur
             description: Création d'un joueur / client (généralement issu de la plateforme Gamers).
+            x-access-level: public
             security: []
             requestBody:
                 required: true
@@ -124,6 +127,7 @@ paths:
                 **ADMIN UNIQUEMENT**
 
                 Retourne la liste des joueurs/abonnés.
+            x-access-level: admin
             parameters:
                 - in: query
                   name: status
@@ -156,6 +160,7 @@ paths:
             operationId: getUser
             tags: [Users]
             summary: Récupérer un utilisateur
+            x-access-level: admin
             parameters:
                 - in: path
                   name: userId
@@ -191,6 +196,7 @@ paths:
             operationId: updateUser
             tags: [Users]
             summary: Mettre à jour un utilisateur
+            x-access-level: admin
             parameters:
                 - in: path
                   name: userId
@@ -232,6 +238,7 @@ paths:
             operationId: deleteUser
             tags: [Users]
             summary: Supprimer (logiquement) un utilisateur
+            x-access-level: admin
             description: Marque l'utilisateur comme supprimé/inactif.
             parameters:
                 - in: path
@@ -271,6 +278,7 @@ paths:
             operationId: updateUserStatus
             tags: [Users]
             summary: Mettre à jour le statut financier / d'accès du joueur
+            x-access-level: admin
             description: Permet la mise à jour du statut (OK, SUSPENDED, BLOQUE) en fonction de la situation de paiement, pour conditionner l'accès à la plateforme de jeux.
             parameters:
                 - in: path
@@ -318,6 +326,7 @@ paths:
             operationId: listSubscriptions
             tags: [Subscriptions]
             summary: Lister les abonnements
+            x-access-level: authenticated
             parameters:
                 - in: query
                   name: userId
@@ -347,6 +356,7 @@ paths:
             operationId: createSubscription
             tags: [Subscriptions]
             summary: Créer un abonnement
+            x-access-level: authenticated
             description: Création d'un abonnement mensuel complet (non proratisé) pour un utilisateur.
             requestBody:
                 required: true
@@ -372,6 +382,7 @@ paths:
             operationId: getSubscription
             tags: [Subscriptions]
             summary: Récupérer un abonnement
+            x-access-level: authenticated
             parameters:
                 - in: path
                   name: subscriptionId
@@ -407,6 +418,7 @@ paths:
             operationId: updateSubscription
             tags: [Subscriptions]
             summary: Mettre à jour un abonnement
+            x-access-level: authenticated
             parameters:
                 - in: path
                   name: subscriptionId
@@ -448,6 +460,7 @@ paths:
             operationId: cancelSubscription
             tags: [Subscriptions]
             summary: Résilier un abonnement
+            x-access-level: authenticated
             description: Résiliation de l'abonnement (mise à jour de la date de résiliation et du statut).
             parameters:
                 - in: path
@@ -486,6 +499,7 @@ paths:
             operationId: generateMonthlyBilling
             tags: [Billing]
             summary: Générer les facturations mensuelles
+            x-access-level: admin
             description: >
                 Génère les factures mensuelles pour tous les abonnements actifs
                 à la date de fin de mois indiquée, et prépare les données à
@@ -527,6 +541,7 @@ paths:
             operationId: listInvoices
             tags: [Billing]
             summary: Lister les factures
+            x-access-level: admin
             parameters:
                 - in: query
                   name: userId
@@ -566,6 +581,7 @@ paths:
             operationId: exportMonthlyInvoices
             tags: [Billing]
             summary: Export des factures mensuelles pour le Groupe Money
+            x-access-level: admin
             description: Fournit les écritures de facturation mensuelle à destination de l'application MONEY (Groupe Money).
             parameters:
                 - in: query
@@ -595,6 +611,7 @@ paths:
             operationId: exportDirectDebits
             tags: [BankingExports]
             summary: Export des prélèvements pour le Groupe Bank
+            x-access-level: admin
             description: Liste des prélèvements bancaires à réaliser, à destination de l'application BANK (Groupe Bank). Les prélèvements sont à exécuter le premier jour du mois suivant la facturation.
             parameters:
                 - in: query
@@ -625,6 +642,7 @@ paths:
             operationId: updatePaymentStatus
             tags: [BankingExports]
             summary: Réception des statuts de paiement (Webhook Banque)
+            x-access-level: admin
             description: Permet à la banque de notifier le succès ou le rejet des prélèvements.
             requestBody:
                 required: true
@@ -647,6 +665,7 @@ paths:
             operationId: getMonthlyRevenue
             tags: [Reports]
             summary: Chiffre d'affaires mensuel
+            x-access-level: admin
             description: Retourne le chiffre d'affaires par mois sur la période demandée, calculé à partir des factures générées.
             parameters:
                 - in: query
