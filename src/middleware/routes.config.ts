@@ -16,18 +16,15 @@ export interface RouteRule {
  */
 export const ROUTE_RULES: RouteRule[] = [
     // ==================== PUBLIC ====================
-    // No authentication required
     { path: '/auth/login', method: 'POST', access: 'public' },
     { path: '/auth/admin/login', method: 'POST', access: 'public' },
     { path: '/users', method: 'POST', access: 'public' }, // Registration
 
     // ==================== AUTHENTICATED ====================
-    // Requires valid token (user or admin)
     { path: '/subscriptions', method: '*', access: 'authenticated' },
     { path: '/subscriptions/:id', method: '*', access: 'authenticated' },
 
     // ==================== ADMIN ONLY ====================
-    // Requires admin token
     { path: '/users', method: 'GET', access: 'admin' },
     { path: '/users/:id', method: '*', access: 'admin' },
     { path: '/users/:id/status', method: 'PATCH', access: 'admin' },
@@ -61,11 +58,11 @@ function matchPath(pattern: string, path: string): boolean {
  * Returns 'authenticated' as default if no matching rule found
  */
 export function getAccessLevel(path: string, method: string): AccessLevel {
-    const upperMethod = method.toUpperCase() as HttpMethod;
+    const HTTP_METHOD = method.toUpperCase() as HttpMethod;
 
     for (const rule of ROUTE_RULES) {
         if (matchPath(rule.path, path)) {
-            if (rule.method === '*' || rule.method === upperMethod) {
+            if (rule.method === '*' || rule.method === HTTP_METHOD) {
                 return rule.access;
             }
         }
@@ -73,18 +70,4 @@ export function getAccessLevel(path: string, method: string): AccessLevel {
 
     // Default: require authentication (safe default)
     return 'authenticated';
-}
-
-/**
- * Check if a route is public (no auth required)
- */
-export function isPublicRoute(path: string, method: string): boolean {
-    return getAccessLevel(path, method) === 'public';
-}
-
-/**
- * Check if a route requires admin access
- */
-export function isAdminRoute(path: string, method: string): boolean {
-    return getAccessLevel(path, method) === 'admin';
 }

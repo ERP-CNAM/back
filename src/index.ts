@@ -12,12 +12,13 @@ import { createDefaultAdmin } from './utils/default-admin';
 import { createDefaultUsers } from './utils/default-users';
 import { createDefaultSubscriptions } from './utils/default-subscription';
 import { createDefaultInvoices } from './utils/default-invoice';
+import { registerConnect } from './utils/register-connect';
+import { logger } from './utils/logger';
 
 const swaggerDocument = YAML.load(path.join(__dirname, '../api/spec/openapi.yaml'));
 const PORT = Number(process.env.PORT) || 3000;
 
 async function main() {
-    // ✅ on attend VRAIMENT la création
     await createDefaultAdmin();
     await createDefaultUsers();
 
@@ -30,14 +31,26 @@ async function main() {
 
     app.use('/swagger', swaggerUi.setup(swaggerDocument));
 
+    // Global Error Handler
+    app.use((err: any, req: any, res: any, _next: any) => {
+        const log = req.log || logger;
+        log.error({ err }, 'Unhandled request error');
+
+        res.status(500).json({
+            success: false,
+            message: 'Internal server error',
+        });
+    });
+
     await createDefaultSubscriptions();
     await createDefaultInvoices();
+    await registerConnect();
 
-    console.log(`Server running on http://localhost:${PORT}`);
-    console.log(`Swagger UI: http://localhost:${PORT}/swagger`);
+    logger.info(`Server running on http://localhost:${PORT}`);
+    logger.info(`Swagger UI: http://localhost:${PORT}/swagger`);
 }
 
 main().catch((e) => {
-    console.error(e);
+    logger.error(e);
     process.exit(1);
 });

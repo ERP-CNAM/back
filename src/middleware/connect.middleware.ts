@@ -1,3 +1,5 @@
+import { logger } from '../utils/logger';
+
 /**
  * Middleware to handle Connect request format
  */
@@ -42,7 +44,7 @@ export const connectMiddleware = (req: any, res: any, next: any) => {
     }
 
     if (connectRequest.apiKey !== API_KEY) {
-        console.error('[ERROR] Invalid Connect API key');
+        logger.error('[CONNECT] Invalid API key');
         return res.status(401).json({
             success: false,
             message: 'Invalid Connect API key',
@@ -55,6 +57,6 @@ export const connectMiddleware = (req: any, res: any, next: any) => {
         req.body = {};
     }
 
-    console.log('[INFO] Connect request unwrapped successfully');
+    logger.debug('[CONNECT] Request unwrapped successfully');
     next();
 };
