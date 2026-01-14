@@ -12,7 +12,7 @@ import { createDefaultAdmin } from './utils/default-admin';
 import { createDefaultUsers } from './utils/default-users';
 import { createDefaultSubscriptions } from './utils/default-subscription';
 import { createDefaultInvoices } from './utils/default-invoice';
-import { registerConnect } from './connect/register.connect';
+import { registerConnect } from './adapter/register.connect';
 import { logger } from './utils/logger';
 
 const swaggerDocument = YAML.load(path.join(__dirname, '../api/spec/openapi.yaml'));

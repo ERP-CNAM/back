@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { ROUTE_RULES, AccessLevel, HttpMethod } from '../middleware/routes.config';
+import { ROUTES, AccessLevel, HttpMethod } from '../middleware/routes.config';
 import { logger } from '../utils/logger';
 
 const CONNECT_URL = String(process.env.CONNECT_URL);
@@ -35,15 +35,15 @@ export async function registerConnect() {
 
     const routes: any[] = [];
 
-    for (const rule of ROUTE_RULES) {
-        const methodsToRegister = rule.method === '*' ? HTTP_METHODS : [rule.method as HttpMethod];
-        const path = rule.path.replace(/:([^/]+)/g, '{$1}'); // Convert :param to {param} for Connect
+    for (const route of ROUTES) {
+        const methodsToRegister = route.method === '*' ? HTTP_METHODS : [route.method as HttpMethod];
+        const path = route.path.replace(/:([^/]+)/g, '{$1}'); // Convert :param to {param} for Connect
 
         for (const method of methodsToRegister) {
             routes.push({
                 path,
                 method,
-                permission: accessToBitmask(rule.access),
+                permission: accessToBitmask(route.access),
             });
         }
     }

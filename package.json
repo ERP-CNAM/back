@@ -37,7 +37,8 @@
         "db:studio:sqlite": "drizzle-kit studio --config=drizzle.config.sqlite.ts",
         "db:seed": "npx tsx src/database/postgres/seed.ts",
         "db:seed:memory": "npx tsx src/database/memory/seed.ts",
-        "generate": "openapi-code-generator --input api/spec/openapi.yaml --output api --template typescript-express",
+        "generate": "openapi-code-generator --input api/spec/openapi.yaml --output api --template typescript-express && npm run generate:routes",
+        "generate:routes": "ts-node scripts/generate-routes.ts",
         "generate:clean": "find api -type f -name '*.ts' -delete",
         "format": "prettier --write '**/*.{js,jsx,ts,mts,tsx,json,css,md}'"
     },

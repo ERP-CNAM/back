@@ -4,7 +4,7 @@ import { logger } from '../utils/logger';
  * Middleware to handle Connect request format
  */
 
-const API_KEY = process.env.CONNECT_API_KEY || 'changethis';
+const API_KEY = String(process.env.CONNECT_API_KEY);
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 
 interface ConnectRequest {
