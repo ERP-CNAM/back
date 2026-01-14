@@ -14,11 +14,13 @@ import { createDefaultSubscriptions } from './utils/default-subscription';
 import { createDefaultInvoices } from './utils/default-invoice';
 import { registerConnect } from './adapter/register.connect';
 import { logger } from './utils/logger';
+import { runPostgresMigrations } from './database/postgres/instance';
 
 const swaggerDocument = YAML.load(path.join(__dirname, '../api/spec/openapi.yaml'));
 const PORT = Number(process.env.PORT) || 3000;
 
 async function main() {
+    await runPostgresMigrations();
     await createDefaultAdmin();
     await createDefaultUsers();
 
