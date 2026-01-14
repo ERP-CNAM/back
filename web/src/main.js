@@ -74,5 +74,4 @@ window.addEventListener('load', () => {
     render();
 });
 
-// 🔥 Debug: vérifie que le module est bien exécuté
 console.log('[main] loaded');
