@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { ROUTE_RULES, AccessLevel, HttpMethod } from '../middleware/routes.config';
-import { logger } from './logger';
+import { logger } from '../utils/logger';
 
 const CONNECT_URL = String(process.env.CONNECT_URL);
 const CONNECT_API_KEY = String(process.env.CONNECT_API_KEY);
