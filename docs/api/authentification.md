@@ -22,8 +22,8 @@ Permet à un joueur de se connecter pour gérer ses abonnements.
 
 ```json
 {
-    "email": "john.doe@example.com",
-    "password": "Password123!"
+  "email": "john.doe@example.com",
+  "password": "Password123!"
 }
 ```
 
@@ -31,18 +31,18 @@ Permet à un joueur de se connecter pour gérer ses abonnements.
 
 ```json
 {
-    "success": true,
-    "message": "Connexion réussie",
-    "payload": {
-        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-        "user": {
-            "id": "550e8400-e29b-41d4-a716-446655440000",
-            "firstName": "John",
-            "lastName": "Doe",
-            "email": "john.doe@example.com",
-            "status": "OK"
-        }
+  "success": true,
+  "message": "Connexion réussie",
+  "payload": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "user": {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "john.doe@example.com",
+      "status": "OK"
     }
+  }
 }
 ```
 
@@ -58,8 +58,8 @@ Permet à un administrateur d'accéder aux fonctions de gestion globale, factura
 
 ```json
 {
-    "email": "admin@gamers-erp.com",
-    "password": "AdminPassword123!"
+  "email": "admin@gamers-erp.com",
+  "password": "AdminPassword123!"
 }
 ```
 
@@ -67,17 +67,17 @@ Permet à un administrateur d'accéder aux fonctions de gestion globale, factura
 
 ```json
 {
-    "success": true,
-    "message": "Connexion réussie",
-    "payload": {
-        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-        "admin": {
-            "id": "admin-uuid",
-            "email": "admin@gamers-erp.com",
-            "firstName": "Super",
-            "lastName": "Admin"
-        }
+  "success": true,
+  "message": "Connexion réussie",
+  "payload": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "admin": {
+      "id": "admin-uuid",
+      "email": "admin@gamers-erp.com",
+      "firstName": "Super",
+      "lastName": "Admin"
     }
+  }
 }
 ```
 

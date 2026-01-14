@@ -38,7 +38,7 @@ function generateRoutes() {
             rules.push({
                 path: expressPath,
                 method: method.toUpperCase(),
-                access: access
+                access: access,
             });
         }
     }
@@ -54,19 +54,19 @@ function generateRoutes() {
         return aParams - bParams;
     });
 
-    const publicRules = rules.filter(r => r.access === 'public');
-    const authenticatedRules = rules.filter(r => r.access === 'authenticated');
-    const adminRules = rules.filter(r => r.access === 'admin');
+    const publicRules = rules.filter((r) => r.access === 'public');
+    const authenticatedRules = rules.filter((r) => r.access === 'authenticated');
+    const adminRules = rules.filter((r) => r.access === 'admin');
 
     const rulesCode = [
         '    // ==================== PUBLIC ====================',
-        ...publicRules.map(r => `    { path: '${r.path}', method: '${r.method}', access: 'public' },`),
+        ...publicRules.map((r) => `    { path: '${r.path}', method: '${r.method}', access: 'public' },`),
         '',
         '    // ==================== AUTHENTICATED ====================',
-        ...authenticatedRules.map(r => `    { path: '${r.path}', method: '${r.method}', access: 'authenticated' },`),
+        ...authenticatedRules.map((r) => `    { path: '${r.path}', method: '${r.method}', access: 'authenticated' },`),
         '',
         '    // ==================== ADMIN ONLY ====================',
-        ...adminRules.map(r => `    { path: '${r.path}', method: '${r.method}', access: 'admin' },`),
+        ...adminRules.map((r) => `    { path: '${r.path}', method: '${r.method}', access: 'admin' },`),
     ].join('\n');
 
     const header = `/**
@@ -112,7 +112,7 @@ export const ROUTES: Route[] = [`;
         '',
         '/**',
         ' * Get the access level for a given path and method',
-        ' * Returns \'authenticated\' as default if no matching rule found',
+        " * Returns 'authenticated' as default if no matching rule found",
         ' */',
         'export function getAccessLevel(path: string, method: string): AccessLevel {',
         '    const HTTP_METHOD = method.toUpperCase() as HttpMethod;',
@@ -128,7 +128,7 @@ export const ROUTES: Route[] = [`;
         '    // Default: require authentication (safe default)',
         "    return 'authenticated';",
         '}',
-        ''
+        '',
     ].join('\n');
 
     const content = header + '\n' + rulesCode + '\n' + footer;

@@ -23,9 +23,9 @@ Nous adoptons une architecture en couches pour séparer les responsabilités. Le
 
 - **API Layer (`/api`)** : définition des contrats et routage.
 - **Handler Layer (`/src/handler`)** : orchestration des requêtes HTTP.
-    - `/public` : routes ouvertes (ex: création de compte).
-    - `/authenticated` : routes nécessitant une connexion simple.
-    - `/admin` : routes réservées aux administrateurs.
+  - `/public` : routes ouvertes (ex: création de compte).
+  - `/authenticated` : routes nécessitant une connexion simple.
+  - `/admin` : routes réservées aux administrateurs.
 - **Middleware Layer (`/src/middleware`)** : fonctions transverses (Auth, Logs, Securité des routes).
 - **Repository Layer (`/src/repository`)** : abstraction de l'accès aux données.
 - **Database Layer (`/src/database`)** : implémentations concrètes (Drizzle ORM).
@@ -35,11 +35,11 @@ Nous adoptons une architecture en couches pour séparer les responsabilités. Le
 Nous utilisons des **JSON Web Tokens (JWT)** transmis via l'en-tête `Authorization: Bearer`.
 
 - **Pourquoi** :
-    - **Stateless** : le serveur ne stocke pas de session en mémoire, idéal pour la scalabilité.
-    - **Standard** : compatible avec tout type de client (Web, mobile, tiers).
+  - **Stateless** : le serveur ne stocke pas de session en mémoire, idéal pour la scalabilité.
+  - **Standard** : compatible avec tout type de client (Web, mobile, tiers).
 - **Sécurité** :
-    - les mots de passe sont hachés avec `bcrypt` avant stockage.
-    - les mots de passe ne sont **jamais** renvoyés dans les réponses API.
+  - les mots de passe sont hachés avec `bcrypt` avant stockage.
+  - les mots de passe ne sont **jamais** renvoyés dans les réponses API.
 
 ### 4. Abstraction de la Base de Données
 
@@ -47,8 +47,8 @@ Nous utilisons le pattern Repository pour découpler la logique métier de la ba
 
 - **Interface** : `UserRepository`, `SubscriptionRepository`, etc.
 - **Implémentations** :
-    - `InMemory...Repository` : pour les tests et le développement local (SQLite en mémoire).
-    - `Postgres...Repository` : pour la production (PostgreSQL via Drizzle ORM).
+  - `InMemory...Repository` : pour les tests et le développement local (SQLite en mémoire).
+  - `Postgres...Repository` : pour la production (PostgreSQL via Drizzle ORM).
 
 ### 5. Sécurité Centralisée des Routes
 

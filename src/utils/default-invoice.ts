@@ -86,7 +86,8 @@ export async function seedInvoices(): Promise<void> {
 
     const userRepo = DB_TYPE === 'postgres' ? new PostgresUserRepository(db) : new InMemoryUserRepository(db);
 
-    const subRepo = DB_TYPE === 'postgres' ? new PostgresSubscriptionRepository(db) : new InMemorySubscriptionRepository(db);
+    const subRepo =
+        DB_TYPE === 'postgres' ? new PostgresSubscriptionRepository(db) : new InMemorySubscriptionRepository(db);
 
     const invoiceRepo = DB_TYPE === 'postgres' ? new PostgresInvoiceRepository(db) : new InMemoryInvoiceRepository(db);
 
@@ -116,7 +117,8 @@ export async function seedInvoices(): Promise<void> {
         const existing = (await (invoiceRepo as any).findAll({ subscriptionId: sub.id })) as InvoiceLike[];
         const existingBillingDates = new Set<string>(existing.map((i) => i.billingDate));
 
-        const baseInclVat: number = typeof sub.monthlyAmount === 'number' ? Math.round(sub.monthlyAmount * 100) / 100 : 15.0;
+        const baseInclVat: number =
+            typeof sub.monthlyAmount === 'number' ? Math.round(sub.monthlyAmount * 100) / 100 : 15.0;
 
         for (let i = 0; i < monthsToCreate; i++) {
             const d = new Date(startYear, startMonth - 1 + i, 1);
