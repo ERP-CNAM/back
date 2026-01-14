@@ -4,56 +4,95 @@ import { toastStore } from '../stores/toast.store.js';
 export function RevenueComponent() {
     return `
 <section
-  class="bg-white rounded-xl border shadow-sm p-4 h-full min-h-0 flex flex-col"
+  class="rounded-2xl border border-white/10 bg-white/8 backdrop-blur-xl shadow-[0_20px_60px_-20px_rgba(0,0,0,.7)] p-4 h-full min-h-0 flex flex-col text-slate-100"
   x-data="revenuePage()"
   x-init="init()"
 >
   <!-- Header -->
   <div class="flex items-center justify-between gap-4 mb-4 shrink-0">
     <div>
-      <h2 class="text-lg font-semibold">Chiffre d’affaires</h2>
+      <h2 class="text-lg font-semibold text-white">Chiffre d’affaires</h2>
+      <p class="text-xs text-slate-400">Vue synthèse des paiements, impayés et échecs.</p>
     </div>
 
     <div class="flex gap-2 items-end flex-wrap">
-      <select class="border rounded-lg px-3 py-2" x-model="range" @change="load()">
-        <option value="ALL">Tout</option>
-        <option value="30D">30 derniers jours</option>
-        <option value="THIS_MONTH">Ce mois-ci</option>
-      </select>
+        <div class="relative flex flex-col gap-1" x-data="{ open: false }">
+        <label class="text-[11px] text-slate-400">Période</label>
+
+        <button
+            type="button"
+            class="border border-white/10 bg-white/5 text-slate-100 rounded-lg px-3 py-2 w-44
+                flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-cyan-300/40"
+            @click="open = !open"
+            @click.outside="open = false"
+        >
+            <span x-text="
+            range === 'ALL' ? 'Tout'
+            : range === '30D' ? '30 derniers jours'
+            : range === 'THIS_MONTH' ? 'Ce mois-ci'
+            : range
+            "></span>
+
+            <svg class="h-4 w-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+        </button>
+
+        <div
+            x-show="open"
+            x-transition
+            class="absolute top-full mt-2 left-0 w-44 z-20 overflow-hidden rounded-xl border border-white/10
+                bg-slate-950/95 backdrop-blur shadow-[0_20px_60px_-20px_rgba(0,0,0,.7)]"
+        >
+            <button class="w-full text-left px-3 py-2 hover:bg-white/10"
+            @click="range='ALL'; open=false; load()"
+            >Tout</button>
+
+            <button class="w-full text-left px-3 py-2 hover:bg-white/10"
+            @click="range='30D'; open=false; load()"
+            >30 derniers jours</button>
+
+            <button class="w-full text-left px-3 py-2 hover:bg-white/10"
+            @click="range='THIS_MONTH'; open=false; load()"
+            >Ce mois-ci</button>
+        </div>
+        </div>
+
 
       <button
-        class="px-3 py-2 rounded-lg bg-slate-900 text-white hover:bg-slate-800 disabled:opacity-50"
+        class="px-3 py-2 rounded-lg bg-gradient-to-r from-slate-100 to-white text-slate-950 font-medium hover:opacity-95 disabled:opacity-50"
         :disabled="loading"
         @click="load()"
       >
-        Rafraîchir
+        <span x-show="!loading">Rafraîchir</span>
+        <span x-show="loading">Chargement…</span>
       </button>
     </div>
   </div>
 
   <!-- KPI cards -->
   <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4 shrink-0">
-    <div class="rounded-xl border p-4">
-      <div class="text-sm text-slate-500">CA encaissé</div>
-      <div class="text-2xl font-semibold mt-1" x-text="formatMoney(kpi.paidTotal)"></div>
-      <div class="text-sm text-slate-500 mt-1">
-        <span x-text="kpi.paidCount"></span> facture(s) payée(s)
+    <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+      <div class="text-sm text-slate-400">CA encaissé</div>
+      <div class="text-2xl font-semibold mt-1 text-white" x-text="formatMoney(kpi.paidTotal)"></div>
+      <div class="text-sm text-slate-400 mt-1">
+        <span class="text-slate-200" x-text="kpi.paidCount"></span> facture(s) payée(s)
       </div>
     </div>
 
-    <div class="rounded-xl border p-4">
-      <div class="text-sm text-slate-500">À encaisser</div>
-      <div class="text-2xl font-semibold mt-1" x-text="formatMoney(kpi.unpaidTotal)"></div>
-      <div class="text-sm text-slate-500 mt-1">
-        <span x-text="kpi.unpaidCount"></span> facture(s) (PENDING/SENT)
+    <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+      <div class="text-sm text-slate-400">À encaisser</div>
+      <div class="text-2xl font-semibold mt-1 text-white" x-text="formatMoney(kpi.unpaidTotal)"></div>
+      <div class="text-sm text-slate-400 mt-1">
+        <span class="text-slate-200" x-text="kpi.unpaidCount"></span> facture(s) (PENDING/SENT)
       </div>
     </div>
 
-    <div class="rounded-xl border p-4">
-      <div class="text-sm text-slate-500">Échecs</div>
-      <div class="text-2xl font-semibold mt-1" x-text="formatMoney(kpi.failedTotal)"></div>
-      <div class="text-sm text-slate-500 mt-1">
-        <span x-text="kpi.failedCount"></span> facture(s) FAILED
+    <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+      <div class="text-sm text-slate-400">Échecs</div>
+      <div class="text-2xl font-semibold mt-1 text-white" x-text="formatMoney(kpi.failedTotal)"></div>
+      <div class="text-sm text-slate-400 mt-1">
+        <span class="text-slate-200" x-text="kpi.failedCount"></span> facture(s) FAILED
       </div>
     </div>
   </div>
@@ -61,30 +100,32 @@ export function RevenueComponent() {
   <!-- Body -->
   <div class="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-2 gap-3">
     <!-- Mini chart / breakdown -->
-    <div class="min-h-0 rounded-xl border p-4 flex flex-col">
+    <div class="min-h-0 rounded-2xl border border-white/10 bg-white/5 p-4 flex flex-col">
       <div class="flex items-center justify-between mb-3 shrink-0">
-        <h3 class="font-semibold">CA encaissé par mois</h3>
-        <span class="text-sm text-slate-500" x-text="paidByMonth.length ? (paidByMonth.length + ' mois') : '—'"></span>
+        <h3 class="font-semibold text-white">CA encaissé par mois</h3>
+        <span class="text-sm text-slate-400" x-text="paidByMonth.length ? (paidByMonth.length + ' mois') : '—'"></span>
       </div>
 
       <div class="flex-1 min-h-0 overflow-auto">
         <template x-if="paidByMonth.length === 0 && !loading">
-          <div class="text-slate-500 text-sm">Aucune donnée sur la période.</div>
+          <div class="text-slate-400 text-sm">Aucune donnée sur la période.</div>
         </template>
 
         <div class="space-y-2">
           <template x-for="row in paidByMonth" :key="row.key">
             <div class="flex items-center gap-3">
-              <div class="w-20 text-sm text-slate-700" x-text="row.label"></div>
+              <div class="w-20 text-sm text-slate-300" x-text="row.label"></div>
+
               <div class="flex-1">
-                <div class="h-2 rounded bg-slate-100 overflow-hidden">
+                <div class="h-2 rounded bg-white/10 overflow-hidden border border-white/10">
                   <div
-                    class="h-2 rounded bg-emerald-500"
+                    class="h-2 rounded bg-emerald-400/70"
                     :style="'width:' + (row.pct) + '%'"
                   ></div>
                 </div>
               </div>
-              <div class="w-28 text-right text-sm font-medium" x-text="formatMoney(row.total)"></div>
+
+              <div class="w-28 text-right text-sm font-medium text-slate-100" x-text="formatMoney(row.total)"></div>
             </div>
           </template>
         </div>
@@ -92,11 +133,11 @@ export function RevenueComponent() {
     </div>
 
     <!-- Recent unpaid list -->
-    <div class="min-h-0 rounded-xl border p-4 flex flex-col">
+    <div class="min-h-0 rounded-2xl border border-white/10 bg-white/5 p-4 flex flex-col">
       <div class="flex items-center justify-between mb-3 shrink-0">
-        <h3 class="font-semibold">Factures à encaisser</h3>
+        <h3 class="font-semibold text-white">Factures à encaisser</h3>
         <button
-          class="text-sm px-3 py-1.5 rounded-lg border hover:bg-slate-50 disabled:opacity-50"
+          class="text-sm px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 disabled:opacity-50 text-slate-100"
           :disabled="loading || unpaidTop.length === 0"
           @click="goInvoicesUnpaid()"
         >
@@ -104,25 +145,27 @@ export function RevenueComponent() {
         </button>
       </div>
 
-      <div class="flex-1 min-h-0 overflow-auto border rounded-lg">
+      <div class="flex-1 min-h-0 overflow-auto rounded-xl border border-white/10 bg-white/5">
         <table class="min-w-full text-sm">
-          <thead class="bg-slate-100 sticky top-0 z-10">
-            <tr>
-              <th class="text-left p-2">Réf</th>
-              <th class="text-left p-2">Date</th>
-              <th class="text-right p-2">TTC</th>
-              <th class="text-left p-2">Statut</th>
+          <thead class="sticky top-0 z-10 bg-slate-950/70 backdrop-blur border-b border-white/10">
+            <tr class="text-slate-300">
+              <th class="text-left p-2 font-medium">Réf</th>
+              <th class="text-left p-2 font-medium">Date</th>
+              <th class="text-right p-2 font-medium">TTC</th>
+              <th class="text-left p-2 font-medium">Statut</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody class="text-slate-100">
             <template x-for="inv in unpaidTop" :key="inv.id">
-              <tr class="border-t">
-                <td class="p-2" x-text="inv.invoiceRef ?? inv.id"></td>
-                <td class="p-2" x-text="inv.billingDate ?? '-'"></td>
-                <td class="p-2 text-right" x-text="formatMoney(inv.amountInclVat)"></td>
+              <tr class="border-t border-white/10 hover:bg-white/5">
+                <td class="p-2">
+                  <span class="font-mono text-xs text-slate-200" x-text="inv.invoiceRef ?? inv.id"></span>
+                </td>
+                <td class="p-2 text-slate-200" x-text="inv.billingDate ?? '-'"></td>
+                <td class="p-2 text-right text-slate-100 font-medium" x-text="formatMoney(inv.amountInclVat)"></td>
                 <td class="p-2">
                   <span
-                    class="px-2 py-1 rounded text-xs font-medium"
+                    class="px-2 py-1 rounded text-xs font-medium border border-white/10"
                     :class="statusClass(inv.status)"
                     x-text="inv.status"
                   ></span>
@@ -132,20 +175,20 @@ export function RevenueComponent() {
 
             <template x-if="unpaidTop.length === 0 && !loading">
               <tr>
-                <td class="p-3 text-slate-500 text-center" colspan="4">Rien à encaisser 🎉</td>
+                <td class="p-4 text-slate-400 text-center" colspan="4">Rien à encaisser 🎉</td>
               </tr>
             </template>
 
             <template x-if="loading">
               <tr>
-                <td class="p-3 text-slate-500 text-center" colspan="4">Chargement…</td>
+                <td class="p-4 text-slate-400 text-center" colspan="4">Chargement…</td>
               </tr>
             </template>
           </tbody>
         </table>
       </div>
 
-      <p class="text-xs text-slate-500 mt-2">
+      <p class="text-xs text-slate-400 mt-2">
         Liste limitée aux 20 plus récentes PENDING/SENT (sur la période sélectionnée).
       </p>
     </div>
@@ -158,7 +201,7 @@ export function registerRevenueAlpine(Alpine) {
     Alpine.data('revenuePage', () => ({
         loading: false,
 
-        range: 'ALL', // ALL | 30D | THIS_MONTH
+        range: 'ALL',
 
         // Data
         paid: [],
@@ -187,12 +230,9 @@ export function registerRevenueAlpine(Alpine) {
             try {
                 const { from, to } = this.getDateRange();
 
-                // PAID
                 const paidRes = await this.fetchInvoices({ status: 'PAID', from, to });
-                // Unpaid = PENDING + SENT
                 const pendingRes = await this.fetchInvoices({ status: 'PENDING', from, to });
                 const sentRes = await this.fetchInvoices({ status: 'SENT', from, to });
-                // FAILED
                 const failedRes = await this.fetchInvoices({ status: 'FAILED', from, to });
 
                 this.paid = paidRes;
@@ -210,8 +250,6 @@ export function registerRevenueAlpine(Alpine) {
         async fetchInvoices({ status, from, to }) {
             const params = new URLSearchParams();
             if (status) params.set('status', status);
-
-            // ✅ Si ton API supporte un filtre date (sinon ça sera ignoré côté back => pas grave)
             if (from) params.set('from', from);
             if (to) params.set('to', to);
 
@@ -233,8 +271,7 @@ export function registerRevenueAlpine(Alpine) {
             this.kpi.failedTotal = sum(this.failed);
             this.kpi.failedCount = this.failed.length;
 
-            // paid by month
-            const byMonth = new Map(); // key YYYY-MM
+            const byMonth = new Map();
             for (const inv of this.paid) {
                 const d =
                     this.parseAnyDate(inv?.billingDate) ||
@@ -262,7 +299,6 @@ export function registerRevenueAlpine(Alpine) {
                 pct: Math.round((r.total / max) * 100),
             }));
 
-            // unpaid top (recent first)
             this.unpaidTop = [...this.unpaid]
                 .sort(
                     (a, b) =>
@@ -272,7 +308,6 @@ export function registerRevenueAlpine(Alpine) {
                 .slice(0, 20);
         },
 
-        // Utils
         getDateRange() {
             if (this.range === 'ALL') return { from: '', to: '' };
 
@@ -286,7 +321,6 @@ export function registerRevenueAlpine(Alpine) {
                 start.setHours(0, 0, 0, 0);
             }
 
-            // YYYY-MM-DD
             const fmt = (d) =>
                 `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 
@@ -295,7 +329,6 @@ export function registerRevenueAlpine(Alpine) {
 
         parseAnyDate(v) {
             if (!v) return null;
-            // Support "YYYY-MM-DD" (API typical) or ISO.
             const d = new Date(v);
             return isNaN(d.getTime()) ? null : d;
         },
@@ -303,15 +336,15 @@ export function registerRevenueAlpine(Alpine) {
         statusClass(status) {
             switch (status) {
                 case 'PAID':
-                    return 'bg-emerald-100 text-emerald-800';
+                    return 'bg-emerald-500/15 text-emerald-200 border-emerald-400/20';
                 case 'SENT':
-                    return 'bg-indigo-100 text-indigo-800';
+                    return 'bg-indigo-500/15 text-indigo-200 border-indigo-400/20';
                 case 'PENDING':
-                    return 'bg-amber-100 text-amber-800';
+                    return 'bg-amber-500/15 text-amber-200 border-amber-400/20';
                 case 'FAILED':
-                    return 'bg-red-100 text-red-800';
+                    return 'bg-red-500/15 text-red-200 border-red-400/20';
                 default:
-                    return 'bg-slate-100 text-slate-700';
+                    return 'bg-white/10 text-slate-200 border-white/10';
             }
         },
 
@@ -321,8 +354,6 @@ export function registerRevenueAlpine(Alpine) {
         },
 
         goInvoicesUnpaid() {
-            // ton écran Factures filtre déjà par status unique, donc on envoie PENDING par défaut
-            // (tu peux faire un bouton "SENT" à côté si tu veux)
             location.hash = `#/invoices?status=PENDING`;
         },
     }));
