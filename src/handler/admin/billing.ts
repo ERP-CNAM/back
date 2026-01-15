@@ -4,12 +4,31 @@ import type { SubscriptionRepository } from '../../repository/subscription.repos
 import type { UserRepository } from '../../repository/user.repository';
 import type { t_AccountingExportLine } from '../../../api/models';
 
+
+/**
+ * Creates the billing handlers
+ * 
+ * @param invoiceRepository The invoice repository
+ * @param subscriptionRepository The subscription repository
+ * @param userRepository The user repository
+ * 
+ * @returns The billing handlers
+ */
 export function createBillingHandlers(
     invoiceRepository: InvoiceRepository,
     subscriptionRepository: SubscriptionRepository,
     userRepository: UserRepository,
 ) {
-    // POST /billing/monthly
+    /**
+     * Generates the monthly billing
+     * 
+     * @route POST /billing/monthly
+     * 
+     * @param params The request parameters
+     * @param respond The response handler
+     * 
+     * @returns The response object
+     */
     const generateMonthlyBilling: GenerateMonthlyBilling = async (params, respond) => {
         const { body } = params;
         const billingDate = body.billingDate || new Date().toISOString().slice(0, 10);
@@ -66,7 +85,16 @@ export function createBillingHandlers(
         });
     };
 
-    // GET /exports/accounting/monthly-invoices
+    /**
+     * Exports the monthly invoices
+     * 
+     * @route GET /exports/accounting/monthly-invoices
+     * 
+     * @param params The request parameters
+     * @param respond The response handler
+     * 
+     * @returns The response object
+     */
     const exportMonthlyInvoices: ExportMonthlyInvoices = async (params, respond) => {
         const { billingMonth } = params.query;
 
