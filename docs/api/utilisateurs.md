@@ -60,6 +60,35 @@ Récupère la liste de tous les joueurs inscrits.
 - **Paramètres (Query)** :
   - `status` : Filtrer par statut (`OK`, `SUSPENDED`, `BLOCKED`, `DELETED`).
 
+#### Exemple de Réponse (200 OK)
+
+```json
+{
+  "success": true,
+  "message": "Users retrieved successfully",
+  "payload": [
+    {
+      "id": "a1b2c3d4-e5f6-4g7h-8i9j-k1l2m3n4o5p6",
+      "firstName": "Alice",
+      "lastName": "Smith",
+      "email": "alice.smith@example.com",
+      "phone": "+33600000000",
+      "status": "OK",
+      "createdAt": "2026-01-13T20:00:00Z"
+    },
+    {
+      "id": "b2c3d4e5-f6g7-5h8i-9j0k-l1m2n3o4p5q6",
+      "firstName": "Bob",
+      "lastName": "Martin",
+      "email": "bob.martin@example.com",
+      "phone": "+33611111111",
+      "status": "OK",
+      "createdAt": "2026-01-14T10:00:00Z"
+    }
+  ]
+}
+```
+
 ### Consulter un utilisateur
 
 Détails complets d'un joueur par son ID.
@@ -67,6 +96,34 @@ Détails complets d'un joueur par son ID.
 - **Méthode** : `GET`
 - **Chemin** : `/users/{userId}`
 - **Accès** : Admin
+
+#### Exemple de Réponse (200 OK)
+
+```json
+{
+  "success": true,
+  "message": "User details retrieved successfully",
+  "payload": {
+    "id": "a1b2c3d4-e5f6-4g7h-8i9j-k1l2m3n4o5p6",
+    "firstName": "Alice",
+    "lastName": "Smith",
+    "email": "alice.smith@example.com",
+    "phone": "+33600000000",
+    "address": "10 Rue de Rivoli",
+    "city": "Paris",
+    "postalCode": "75004",
+    "country": "FR",
+    "dateOfBirth": "1992-08-24",
+    "status": "OK",
+    "paymentMethod": {
+      "type": "SEPA",
+      "iban": "FR76****************1234"
+    },
+    "createdAt": "2026-01-13T20:00:00Z",
+    "updatedAt": "2026-01-13T20:00:00Z"
+  }
+}
+```
 
 ### Modifier un statut financier/accès
 
@@ -76,11 +133,27 @@ Permet de suspendre ou bloquer un utilisateur (souvent suite à un incident de p
 - **Chemin** : `/users/{userId}/status`
 - **Accès** : Admin
 
-**Exemple de Requête :**
+#### Exemple de Requête
 
 ```json
 {
   "status": "BLOCKED"
+}
+```
+
+#### Exemple de Réponse (200 OK)
+
+```json
+{
+  "success": true,
+  "message": "User status updated successfully",
+  "payload": {
+    "id": "a1b2c3d4-e5f6-4g7h-8i9j-k1l2m3n4o5p6",
+    "firstName": "Alice",
+    "lastName": "Smith",
+    "email": "alice.smith@example.com",
+    "status": "BLOCKED"
+  }
 }
 ```
 
@@ -91,3 +164,13 @@ Désactive le compte d'un utilisateur sans supprimer les données historiques.
 - **Méthode** : `DELETE`
 - **Chemin** : `/users/{userId}`
 - **Accès** : Admin
+
+#### Exemple de Réponse (200 OK)
+
+```json
+{
+  "success": true,
+  "message": "User deleted successfully",
+  "payload": null
+}
+```

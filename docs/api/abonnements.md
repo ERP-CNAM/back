@@ -22,7 +22,7 @@ Active un nouvel abonnement pour un joueur.
 - **Chemin** : `/subscriptions`
 - **Accès** : Authentifié
 
-### Exemple de Requête
+#### Exemple de Requête
 
 ```json
 {
@@ -34,18 +34,20 @@ Active un nouvel abonnement pour un joueur.
 }
 ```
 
-### Exemple de Réponse (201 Created)
+#### Exemple de Réponse (201 Created)
 
 ```json
 {
   "success": true,
-  "message": "Abonnement créé",
+  "message": "Subscription created successfully",
   "payload": {
     "id": "sub-uuid-123",
+    "userId": "a1b2c3d4-e5f6-4g7h-8i9j-k1l2m3n4o5p6",
     "contractCode": "GAMER_GOLD_2026",
     "status": "ACTIVE",
     "monthlyAmount": 19.99,
-    "startDate": "2026-02-01"
+    "startDate": "2026-02-01",
+    "promoCode": "WELCOME2026"
   }
 }
 ```
@@ -61,6 +63,32 @@ Liste les abonnements actifs ou passés.
   - `userId` : (Optionnel) Filtrer par utilisateur.
   - `status` : (Optionnel) Filtrer par statut (`ACTIVE`, `CANCELLED`).
 
+#### Exemple de Réponse (200 OK)
+
+```json
+{
+  "success": true,
+  "message": "Subscriptions retrieved successfully",
+  "payload": [
+    {
+      "id": "sub-uuid-123",
+      "userId": "a1b2c3d4-e5f6-4g7h-8i9j-k1l2m3n4o5p6",
+      "contractCode": "GAMER_GOLD_2026",
+      "status": "ACTIVE",
+      "monthlyAmount": 19.99,
+      "startDate": "2026-02-01",
+      "endDate": null,
+      "user": {
+        "id": "a1b2c3d4-e5f6-4g7h-8i9j-k1l2m3n4o5p6",
+        "firstName": "Alice",
+        "lastName": "Smith",
+        "email": "alice.smith@example.com"
+      }
+    }
+  ]
+}
+```
+
 ### Consulter un abonnement
 
 Récupère les détails d'un abonnement spécifique, incluant les informations de l'utilisateur rattaché.
@@ -69,6 +97,66 @@ Récupère les détails d'un abonnement spécifique, incluant les informations d
 - **Chemin** : `/subscriptions/{subscriptionId}`
 - **Accès** : Authentifié
 
+#### Exemple de Réponse (200 OK)
+
+```json
+{
+  "success": true,
+  "message": "Subscription retrieved successfully",
+  "payload": {
+    "id": "sub-uuid-123",
+    "userId": "a1b2c3d4-e5f6-4g7h-8i9j-k1l2m3n4o5p6",
+    "contractCode": "GAMER_GOLD_2026",
+    "status": "ACTIVE",
+    "monthlyAmount": 19.99,
+    "startDate": "2026-02-01",
+    "endDate": null,
+    "promoCode": "WELCOME2026",
+    "user": {
+      "id": "a1b2c3d4-e5f6-4g7h-8i9j-k1l2m3n4o5p6",
+      "firstName": "Alice",
+      "lastName": "Smith",
+      "email": "alice.smith@example.com",
+      "status": "OK"
+    }
+  }
+}
+```
+
+### Mettre à jour un abonnement
+
+Modifie les détails d'un abonnement existant.
+
+- **Méthode** : `PUT`
+- **Chemin** : `/subscriptions/{subscriptionId}`
+- **Accès** : Authentifié
+
+#### Exemple de Requête
+
+```json
+{
+  "monthlyAmount": 24.99,
+  "promoCode": null
+}
+```
+
+#### Exemple de Réponse (200 OK)
+
+```json
+{
+  "success": true,
+  "message": "Subscription updated successfully",
+  "payload": {
+    "id": "sub-uuid-123",
+    "contractCode": "GAMER_GOLD_2026",
+    "status": "ACTIVE",
+    "monthlyAmount": 24.99,
+    "startDate": "2026-02-01",
+    "promoCode": null
+  }
+}
+```
+
 ### Résilier un abonnement
 
 Met fin à un abonnement à la fin de la période en cours.
@@ -76,3 +164,20 @@ Met fin à un abonnement à la fin de la période en cours.
 - **Méthode** : `DELETE`
 - **Chemin** : `/subscriptions/{subscriptionId}`
 - **Accès** : Authentifié
+
+#### Exemple de Réponse (200 OK)
+
+```json
+{
+  "success": true,
+  "message": "Subscription cancelled successfully",
+  "payload": {
+    "id": "sub-uuid-123",
+    "contractCode": "GAMER_GOLD_2026",
+    "status": "CANCELLED",
+    "monthlyAmount": 19.99,
+    "startDate": "2026-02-01",
+    "endDate": "2026-02-28"
+  }
+}
+```
