@@ -75,7 +75,11 @@ export type LoginResponder = {
             payload?: t_LoginResponse;
         }
     >;
-    with401(): ExpressRuntimeResponse<t_BaseAPIResponse>;
+    with401(): ExpressRuntimeResponse<
+        t_BaseAPIResponse & {
+            payload?: EmptyObject | null;
+        }
+    >;
 } & ExpressRuntimeResponder;
 
 export type Login = (
@@ -92,7 +96,11 @@ export type AdminLoginResponder = {
             payload?: t_AdminLoginResponse;
         }
     >;
-    with401(): ExpressRuntimeResponse<t_BaseAPIResponse>;
+    with401(): ExpressRuntimeResponse<
+        t_BaseAPIResponse & {
+            payload?: EmptyObject | null;
+        }
+    >;
 } & ExpressRuntimeResponder;
 
 export type AdminLogin = (
@@ -383,7 +391,13 @@ export type ExportDirectDebits = (
 ) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>;
 
 export type UpdatePaymentStatusResponder = {
-    with200(): ExpressRuntimeResponse<t_BaseAPIResponse>;
+    with200(): ExpressRuntimeResponse<
+        t_BaseAPIResponse & {
+            payload?: {
+                updatedCount?: number;
+            };
+        }
+    >;
 } & ExpressRuntimeResponder;
 
 export type UpdatePaymentStatus = (
@@ -445,7 +459,7 @@ export function createRouter(implementation: Implementation): Router {
     const loginResponseBodyValidator = responseValidationFactory(
         [
             ['200', s_BaseAPIResponse.merge(z.object({ payload: s_LoginResponse.optional() }))],
-            ['401', s_BaseAPIResponse],
+            ['401', s_BaseAPIResponse.merge(z.object({ payload: z.object({}).nullable().optional() }))],
         ],
         undefined,
     );
@@ -469,7 +483,11 @@ export function createRouter(implementation: Implementation): Router {
                     >(200);
                 },
                 with401() {
-                    return new ExpressRuntimeResponse<t_BaseAPIResponse>(401);
+                    return new ExpressRuntimeResponse<
+                        t_BaseAPIResponse & {
+                            payload?: EmptyObject | null;
+                        }
+                    >(401);
                 },
                 withStatus(status: StatusCode) {
                     return new ExpressRuntimeResponse(status);
@@ -504,7 +522,7 @@ export function createRouter(implementation: Implementation): Router {
     const adminLoginResponseBodyValidator = responseValidationFactory(
         [
             ['200', s_BaseAPIResponse.merge(z.object({ payload: s_AdminLoginResponse.optional() }))],
-            ['401', s_BaseAPIResponse],
+            ['401', s_BaseAPIResponse.merge(z.object({ payload: z.object({}).nullable().optional() }))],
         ],
         undefined,
     );
@@ -528,7 +546,11 @@ export function createRouter(implementation: Implementation): Router {
                     >(200);
                 },
                 with401() {
-                    return new ExpressRuntimeResponse<t_BaseAPIResponse>(401);
+                    return new ExpressRuntimeResponse<
+                        t_BaseAPIResponse & {
+                            payload?: EmptyObject | null;
+                        }
+                    >(401);
                 },
                 withStatus(status: StatusCode) {
                     return new ExpressRuntimeResponse(status);
@@ -1475,7 +1497,19 @@ export function createRouter(implementation: Implementation): Router {
 
     const updatePaymentStatusRequestBodySchema = z.array(s_PaymentUpdate);
 
-    const updatePaymentStatusResponseBodyValidator = responseValidationFactory([['200', s_BaseAPIResponse]], undefined);
+    const updatePaymentStatusResponseBodyValidator = responseValidationFactory(
+        [
+            [
+                '200',
+                s_BaseAPIResponse.merge(
+                    z.object({
+                        payload: z.object({ updatedCount: z.coerce.number().optional() }).optional(),
+                    }),
+                ),
+            ],
+        ],
+        undefined,
+    );
 
     // updatePaymentStatus
     router.post(`/bank/payment-updates`, async (req: Request, res: Response, next: NextFunction) => {
@@ -1489,7 +1523,13 @@ export function createRouter(implementation: Implementation): Router {
 
             const responder = {
                 with200() {
-                    return new ExpressRuntimeResponse<t_BaseAPIResponse>(200);
+                    return new ExpressRuntimeResponse<
+                        t_BaseAPIResponse & {
+                            payload?: {
+                                updatedCount?: number;
+                            };
+                        }
+                    >(200);
                 },
                 withStatus(status: StatusCode) {
                     return new ExpressRuntimeResponse(status);

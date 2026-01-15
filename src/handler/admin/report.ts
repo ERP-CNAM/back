@@ -121,6 +121,7 @@ export function createReportHandlers(invoiceRepository: InvoiceRepository, userR
         return respond.with200().body({
             success: true,
             message: 'Payment statuses updated',
+            payload: { updatedCount: updates.length },
         });
     };
 
