@@ -658,7 +658,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BaseAPIResponse'
+                allOf:
+                  - $ref: '#/components/schemas/BaseAPIResponse'
+                  - type: object
+                    properties:
+                      payload:
+                        type: object
+                        properties:
+                          updatedCount:
+                            type: integer
 
   /reports/revenue/monthly:
     get:

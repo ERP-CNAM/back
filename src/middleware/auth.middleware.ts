@@ -52,7 +52,51 @@ const shouldBypassAuth = (path: string): boolean => {
 };
 
 /**
- * Checks if the user has sufficient permissions for the route.
+ * Permission bitmask values (must match Connect Gateway)
+ *
+ * ADMIN = 3 (binary: 11) allows access to both authenticated (1) and admin (2) routes
+ */
+export const PERMISSION = {
+    PUBLIC: 0,
+    AUTHENTICATED: 1,
+    ADMIN: 3, // 3 = 1 | 2 (has both authenticated and admin bits)
+} as const;
+
+/**
+ * Converts accessLevel string to permission bitmask.
+ *
+ * @param accessLevel - Access level from routes.config.ts
+ * @returns Permission bitmask value
+ */
+export const accessLevelToPermission = (accessLevel: string): number => {
+    switch (accessLevel) {
+        case 'public':
+            return PERMISSION.PUBLIC;
+        case 'authenticated':
+            return PERMISSION.AUTHENTICATED;
+        case 'admin':
+            return PERMISSION.ADMIN;
+        default:
+            return PERMISSION.ADMIN; // Default to most restrictive
+    }
+};
+
+/**
+ * Checks if a user has sufficient permissions using bitmask comparison.
+ * Uses same logic as Connect Gateway: (userPerm & routePerm) === routePerm
+ *
+ * @param userPermission - The user's permission level
+ * @param routePermission - The required permission for the route
+ * @returns true if user has access, false otherwise
+ */
+export const hasPermission = (userPermission: number, routePermission: number): boolean => {
+    if (routePermission === 0) return true; // Public routes always pass
+    return (userPermission & routePermission) === routePermission;
+};
+
+/**
+ * Checks if the user has sufficient permissions using bitmask comparison.
+ * Uses same logic as Connect Gateway: (userPerm & routePerm) === routePerm
  *
  * @param user - The authenticated user payload
  * @param accessLevel - Required access level ('public', 'authenticated', 'admin')
@@ -61,7 +105,11 @@ const shouldBypassAuth = (path: string): boolean => {
  * @returns Response with 403 if access denied, otherwise calls next()
  */
 const authorizeAndProceed = (user: any, accessLevel: string, res: any, next: any) => {
-    if (accessLevel === 'admin' && user.userType !== 'admin') {
+    const routePermission = accessLevelToPermission(accessLevel);
+    const userPermission = user.permission || 0;
+
+    // Bitmask check: user must have at least the route's required permission
+    if ((userPermission & routePermission) !== routePermission) {
         return res.status(403).json({
             success: false,
             message: 'Access denied',

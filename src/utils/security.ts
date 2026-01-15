@@ -78,7 +78,8 @@ export const security = {
     /**
      * Generates a JWT token for an authenticated admin.
      *
-     * Creates a token with `permission: 2` (admin level).
+     * Creates a token with `permission: 3` (admin level = 1 | 2).
+     * This gives access to both authenticated and admin routes.
      *
      * @param admin - The authenticated admin object from the database
      * @returns Signed JWT token string
@@ -86,7 +87,7 @@ export const security = {
     generateAdminToken(admin: t_Admin): string {
         const payload: ConnectJwtPayload = {
             userId: admin.id || '',
-            permission: 2,
+            permission: 3, // 3 = authenticated (1) + admin (2)
         };
         return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
     },
