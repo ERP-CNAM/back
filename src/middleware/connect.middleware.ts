@@ -1,16 +1,7 @@
 import { logger } from '../utils/logger';
 import { UserPayload } from '../utils/security';
 
-/**
- * Middleware to handle Connect request format
- *
- * Connect validates JWT and sends decoded userData in the request body.
- * This middleware extracts userData and attaches it to req.user for
- * the auth middleware to use.
- */
-
 const API_KEY = String(process.env.CONNECT_API_KEY);
-const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 
 interface ConnectUserData {
     userId: string;
@@ -25,6 +16,17 @@ interface ConnectRequest {
     payload?: any;
 }
 
+/**
+ * Middleware for processing requests from Connect Gateway or S2S services.
+ *
+ * Validates the API key, extracts user context from `userData`, and unwraps
+ * the payload for downstream handlers. Requests without an `apiKey` are
+ * bypassed and handled by `auth.middleware` for direct SPA access.
+ *
+ * @param req - Express request object
+ * @param res - Express response object
+ * @param next - Express next function
+ */
 export const connectMiddleware = (req: any, res: any, next: any) => {
     if (shouldBypassConnect(req)) {
         return next();
@@ -47,6 +49,9 @@ export const connectMiddleware = (req: any, res: any, next: any) => {
         });
     }
 
+    // Request is from Connect API Gateway
+    req.isConnectRequest = true;
+
     processConnectUser(req, connectRequest);
     unwrapPayload(req, connectRequest);
 
@@ -54,36 +59,54 @@ export const connectMiddleware = (req: any, res: any, next: any) => {
     next();
 };
 
-// --- Helper Functions ---
-
+/**
+ * Determines if the request should bypass Connect processing.
+ *
+ * Bypasses Swagger docs and requests without an `apiKey` (direct SPA access).
+ *
+ * @param req - Express request object
+ * @returns `true` if Connect processing should be skipped
+ */
 function shouldBypassConnect(req: any): boolean {
     if (req.path.startsWith('/swagger')) {
         return true;
     }
-
-    // Dev: bypass Connect
-    // Production: bypass only backoffice (localhost)
-    return !IS_PRODUCTION || isLocalRequest(req);
+    if (req.body?.apiKey) {
+        return false;
+    }
+    return true;
 }
 
-function isLocalRequest(req: any): boolean {
-    const ip = req.ip || req.connection?.remoteAddress || '';
-    const isLocalIp = ip === '127.0.0.1' || ip === '::1' || ip === '::ffff:127.0.0.1';
-
-    const origin = req.get('Origin') || '';
-    const isLocalOrigin = origin.includes('localhost') || origin.includes('127.0.0.1');
-
-    return isLocalIp || isLocalOrigin;
-}
-
+/**
+ * Validates that the request body is a valid object.
+ *
+ * @param body - Request body to validate
+ * @returns `true` if the body is a non-null object
+ */
 function isValidRequestFormat(body: any): boolean {
     return body && typeof body === 'object';
 }
 
+/**
+ * Validates the API key against the configured `CONNECT_API_KEY`.
+ *
+ * This establishes the trust boundary between Connect/S2S and the backend.
+ *
+ * @param apiKey - The API key from the request body
+ * @returns `true` if the API key matches the configured secret
+ */
 function isValidApiKey(apiKey?: string): boolean {
     return apiKey === API_KEY;
 }
 
+/**
+ * Extracts user information from Connect's `userData` and attaches it to `req.user`.
+ *
+ * If `userData` is empty (S2S call without user context), `req.user` remains undefined.
+ *
+ * @param req - Express request object
+ * @param connectRequest - The parsed Connect request body containing `userData`
+ */
 function processConnectUser(req: any, connectRequest: ConnectRequest): void {
     if (connectRequest.userData && connectRequest.userData.userId) {
         const userPayload: UserPayload = {
@@ -104,6 +127,15 @@ function processConnectUser(req: any, connectRequest: ConnectRequest): void {
     }
 }
 
+/**
+ * Unwraps the original request body from Connect's `payload` field.
+ *
+ * Connect wraps the client's body as `{ apiKey, userData, payload }`.
+ * This extracts `payload` and sets it as `req.body` for handlers.
+ *
+ * @param req - Express request object
+ * @param connectRequest - The parsed Connect request body containing `payload`
+ */
 function unwrapPayload(req: any, connectRequest: ConnectRequest): void {
     if (connectRequest.payload !== undefined && connectRequest.payload !== null) {
         req.body = connectRequest.payload;
