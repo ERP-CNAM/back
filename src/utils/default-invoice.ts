@@ -12,7 +12,6 @@ import { InMemorySubscriptionRepository } from '../repository/memory/in-memory-s
 import { PostgresInvoiceRepository } from '../repository/postgres/postgres-invoice.repository';
 import { InMemoryInvoiceRepository } from '../repository/memory/in-memory-invoice.repository';
 
-// ---- Types (minimal, sans dépendre de tes entités internes) ----
 type InvoiceStatus = 'PAID' | 'SENT' | 'PENDING' | 'FAILED';
 
 type UserLike = {

@@ -19,6 +19,16 @@ import { runPostgresMigrations } from './database/postgres/instance';
 const swaggerDocument = YAML.load(path.join(__dirname, '../api/spec/openapi.yaml'));
 const PORT = Number(process.env.PORT) || 3000;
 
+/**
+ * Main function
+ * - Runs migrations
+ * - Creates default admin
+ * - Creates default users
+ * - Creates default subscriptions
+ * - Creates default invoices
+ * - Registers Connect
+ * - Starts the server
+ */
 async function main() {
     await runPostgresMigrations();
     await createDefaultAdmin();

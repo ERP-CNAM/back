@@ -2,8 +2,25 @@ import type { Login } from '../../../api/generated';
 import type { UserRepository } from '../../repository/user.repository';
 import { security } from '../../utils/security';
 
+/**
+ * Creates the authentication handlers
+ * 
+ * @param userRepository The user repository
+ * 
+ * @returns The authentication handlers
+ */
 export const createAuthHandlers = (userRepository: UserRepository) => {
-    // POST /auth/login
+    /**
+     * Logs in a user
+     * 
+     * @route POST /auth/login
+     * 
+     * @param params The request parameters
+     * @param respond The response handler
+     * @param req The request object
+     * 
+     * @returns The response object
+     */
     const login: Login = async (params, respond, req) => {
         const { email, password } = params.body;
 

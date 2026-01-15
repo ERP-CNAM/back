@@ -6,6 +6,12 @@ import path from 'path';
 import { users } from './schema';
 import { t_User, t_UserStatus } from '../../../api/models';
 
+/**
+ * Creates a test database with optional seed data
+ * 
+ * @param seedData Optional seed data for the user table
+ * @returns The test database instance
+ */
 export function createTestDatabase(seedData?: (t_User & { password: string })[]): BetterSQLite3Database {
     const sqlite = new Database(':memory:');
     const db = drizzle(sqlite);
@@ -20,6 +26,12 @@ export function createTestDatabase(seedData?: (t_User & { password: string })[])
     return db;
 }
 
+/**
+ * Seeds the user table with test data
+ * 
+ * @param db The database instance
+ * @param userData The user data to seed
+ */
 function seedUserTable(db: BetterSQLite3Database, userData: (t_User & { password: string })[]): void {
     const counted = db.select({ value: count() }).from(users).get();
     if (counted && counted.value > 0) return;

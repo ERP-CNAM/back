@@ -1,8 +1,24 @@
 import type { ListUsers, GetUser, UpdateUser, DeleteUser, UpdateUserStatus } from '../../../api/generated';
 import type { UserRepository } from '../../repository/user.repository';
 
+/**
+ * Creates the user handlers
+ * 
+ * @param repository The user repository
+ * 
+ * @returns The user handlers
+ */
 export function createUserHandlers(repository: UserRepository) {
-    // GET /users
+    /**
+     * Lists the users
+     * 
+     * @route GET /users
+     * 
+     * @param params The request parameters
+     * @param respond The response handler
+     * 
+     * @returns The response object
+     */
     const listUsers: ListUsers = async (params, respond) => {
         // Admin check is handled by auth middleware via routes.config.ts
         const queryOptions = params.query || {};
@@ -16,7 +32,16 @@ export function createUserHandlers(repository: UserRepository) {
         });
     };
 
-    // GET /users/{userId}
+    /**
+     * Gets the user
+     * 
+     * @route GET /users/{userId}
+     * 
+     * @param params The request parameters
+     * @param respond The response handler
+     * 
+     * @returns The response object
+     */
     const getUser: GetUser = async (params, respond) => {
         const { userId } = params.params;
 
@@ -37,7 +62,16 @@ export function createUserHandlers(repository: UserRepository) {
         });
     };
 
-    // PUT /users/{userId}
+    /**
+     * Updates the user
+     * 
+     * @route PUT /users/{userId}
+     * 
+     * @param params The request parameters
+     * @param respond The response handler
+     * 
+     * @returns The response object
+     */
     const updateUser: UpdateUser = async (params, respond) => {
         const { userId } = params.params;
         const updates = params.body;
@@ -59,7 +93,16 @@ export function createUserHandlers(repository: UserRepository) {
         });
     };
 
-    // DELETE /users/{userId}
+    /**
+     * Deletes the user
+     * 
+     * @route DELETE /users/{userId}
+     * 
+     * @param params The request parameters
+     * @param respond The response handler
+     * 
+     * @returns The response object
+     */
     const deleteUser: DeleteUser = async (params, respond) => {
         const { userId } = params.params;
 
@@ -80,7 +123,16 @@ export function createUserHandlers(repository: UserRepository) {
         });
     };
 
-    // PATCH /users/{userId}/status
+    /**
+     * Updates the user status
+     * 
+     * @route PATCH /users/{userId}/status
+     * 
+     * @param params The request parameters
+     * @param respond The response handler
+     * 
+     * @returns The response object
+     */
     const updateUserStatus: UpdateUserStatus = async (params, respond) => {
         const { userId } = params.params;
         const { status } = params.body;

@@ -7,6 +7,9 @@ import { PostgresSubscriptionRepository } from '../repository/postgres/postgres-
 import { InMemorySubscriptionRepository } from '../repository/memory/in-memory-subscription.repository';
 import { logger } from './logger';
 
+/**
+ * Seeds the subscription table with default subscription if it doesn't exist
+ */
 export async function seedSubscriptions() {
     const db = getDatabase();
 
@@ -37,6 +40,10 @@ export async function seedSubscriptions() {
 
     logger.info('Subscription created for John');
 }
+
+/**
+ * Creates default subscriptions
+ */
 export async function createDefaultSubscriptions() {
     await seedSubscriptions();
     logger.info('Default subscriptions creation check complete');

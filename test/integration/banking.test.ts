@@ -1,23 +1,19 @@
 import { describe, it, expect, beforeEach } from 'vitest';
+import { ExpressRuntimeResponse, SkipResponse } from '@nahkies/typescript-express-runtime/server';
 import { InMemoryInvoiceRepository } from '../../src/repository/memory/in-memory-invoice.repository';
 import { InMemoryUserRepository } from '../../src/repository/memory/in-memory-user.repository';
 import { createReportHandlers } from '../../src/handler/admin/report';
 import { createTestDatabase } from '../../src/database/memory/test-instance';
 import type { InvoiceRepository } from '../../src/repository/invoice.repository';
 import type { UserRepository } from '../../src/repository/user.repository';
+import type { t_BaseAPIResponse, t_DirectDebitOrder } from '../../api/models';
 
 // Mock response object
 const createMockResponse = () => {
     return {
-        with200: () => ({
-            body: (payload: any) => ({ status: 200, body: payload }),
-        }),
-        with400: () => ({
-            body: (payload: any) => ({ status: 400, body: payload }),
-        }),
-        with500: () => ({
-            body: (payload: any) => ({ status: 500, body: payload }),
-        }),
+        with200: () => new ExpressRuntimeResponse(200),
+        with400: () => new ExpressRuntimeResponse(400),
+        with500: () => new ExpressRuntimeResponse(500),
     } as any;
 };
 
@@ -42,6 +38,11 @@ describe('Banking Integration', () => {
                 lastName: 'Sepa',
                 email: 'alice@example.com',
                 password: 'pass',
+                address: '123 Test St',
+                city: 'Paris',
+                country: 'FR',
+                phone: '+33123456789',
+                postalCode: '75001',
                 paymentMethod: { type: 'SEPA', iban: 'FR76...' },
             });
 
@@ -50,6 +51,11 @@ describe('Banking Integration', () => {
                 lastName: 'NoPay',
                 email: 'bob@example.com',
                 password: 'pass',
+                address: '456 Test Ave',
+                city: 'Lyon',
+                country: 'FR',
+                phone: '+33987654321',
+                postalCode: '69001',
                 // No payment method
             });
 
@@ -104,11 +110,17 @@ describe('Banking Integration', () => {
             const params = { query: { executionDate } } as any;
             const respond = createMockResponse();
 
-            const result = await reportHandlers.exportDirectDebits(params, respond, {} as any, {} as any, {} as any);
+            const response = await reportHandlers.exportDirectDebits(params, respond, {} as any, {} as any, {} as any);
 
             // 4. Verify
+            if (response === SkipResponse) throw new Error('Response skipped');
+            const result = response.unpack() as {
+                status: number;
+                body: t_BaseAPIResponse & { payload: t_DirectDebitOrder[] };
+            };
+
             expect(result.status).toBe(200);
-            const orders = result.body.payload;
+            const orders = result.body.payload!;
 
             // Should verify that we have exactly 1 order (Alice's June invoice)
             expect(orders).toHaveLength(1);
@@ -130,6 +142,11 @@ describe('Banking Integration', () => {
                 lastName: 'Payer',
                 email: 'good@example.com',
                 password: 'pass',
+                address: '789 Test Blvd',
+                city: 'Marseille',
+                country: 'FR',
+                phone: '+33111222333',
+                postalCode: '13001',
             });
             const invoice = await invoiceRepo.create({
                 invoiceRef: 'INV-GOOD',
@@ -166,7 +183,11 @@ describe('Banking Integration', () => {
                 lastName: 'Payer',
                 email: 'bad@example.com',
                 password: 'pass',
-                status: 'OK',
+                address: '321 Test Rd',
+                city: 'Toulouse',
+                country: 'FR',
+                phone: '+33444555666',
+                postalCode: '31000',
             });
             const invoice = await invoiceRepo.create({
                 invoiceRef: 'INV-BAD',

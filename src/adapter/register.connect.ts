@@ -12,10 +12,10 @@ const PORT = Number(process.env.PORT) || 3000;
 const HTTP_METHODS: HttpMethod[] = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
 
 /**
- * Maps AccessLevel to Connect's permission bitmask.
- * 0: public
- * 1: authenticated
- * 2: admin
+ * Converts an AccessLevel to a bitmask for Connect
+ * 
+ * @param access The access level to convert
+ * @returns The bitmask for the given access level
  */
 function accessToBitmask(access: AccessLevel): number {
     switch (access) {
@@ -30,6 +30,11 @@ function accessToBitmask(access: AccessLevel): number {
     }
 }
 
+/**
+ * Registers the service with Connect
+ * 
+ * @returns Promise<void>
+ */
 export async function registerConnect() {
     logger.info(`[CONNECT] Attempting to register service "${SERVICE_NAME}"...`);
 

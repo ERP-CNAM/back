@@ -8,6 +8,11 @@ import * as schema from './schema';
 let pool: Pool;
 let db: ReturnType<typeof drizzle>;
 
+/**
+ * Get the postgres database instance with drizzle and migrations
+ * 
+ * @returns The postgres database instance
+ */
 export function getPostgresDatabase() {
     if (db) return db;
 
@@ -23,6 +28,11 @@ export function getPostgresDatabase() {
     return db;
 }
 
+/**
+ * Runs the postgres migrations
+ * 
+ * @returns Promise<void>
+ */
 export async function runPostgresMigrations() {
     if (DB_TYPE !== 'postgres') return;
 

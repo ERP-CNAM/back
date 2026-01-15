@@ -4,8 +4,25 @@ import type { UserRepository } from '../../repository/user.repository';
 import type { t_DirectDebitOrder } from '../../../api/models';
 import { generateUUID } from '../../utils/uuid';
 
+/**
+ * Creates the report handlers
+ * 
+ * @param invoiceRepository The invoice repository
+ * @param userRepository The user repository
+ * 
+ * @returns The report handlers
+ */
 export function createReportHandlers(invoiceRepository: InvoiceRepository, userRepository: UserRepository) {
-    // GET /exports/banking/direct-debits
+    /**
+     * Exports the direct debits
+     * 
+     * @route GET /exports/banking/direct-debits
+     * 
+     * @param params The request parameters
+     * @param respond The response handler
+     * 
+     * @returns The response object
+     */
     const exportDirectDebits: ExportDirectDebits = async (params, respond) => {
         const { executionDate } = params.query; // YYYY-MM-DD
 
@@ -50,7 +67,16 @@ export function createReportHandlers(invoiceRepository: InvoiceRepository, userR
         });
     };
 
-    // GET /reports/revenue/monthly
+    /**
+     * Gets the monthly revenue
+     * 
+     * @route GET /reports/revenue/monthly
+     * 
+     * @param params The request parameters
+     * @param respond The response handler
+     * 
+     * @returns The response object
+     */
     const getMonthlyRevenue: GetMonthlyRevenue = async (params, respond) => {
         const { from, to } = params.query;
 
@@ -101,7 +127,16 @@ export function createReportHandlers(invoiceRepository: InvoiceRepository, userR
         });
     };
 
-    // POST /bank/payment-updates
+    /**
+     * Updates the payment status
+     * 
+     * @route POST /bank/payment-updates
+     * 
+     * @param params The request parameters
+     * @param respond The response handler
+     * 
+     * @returns The response object
+     */
     const updatePaymentStatus: UpdatePaymentStatus = async (params, respond) => {
         const updates = params.body;
 

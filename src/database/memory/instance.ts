@@ -7,6 +7,11 @@ import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 let sqliteInstance: Database.Database;
 let dbInstance: ReturnType<typeof drizzle>;
 
+/**
+ * Get the in-memory database instance with drizzle and migrations
+ * 
+ * @returns The in-memory database instance
+ */
 export function getInMemoryDatabase() {
     if (dbInstance) return dbInstance;
 

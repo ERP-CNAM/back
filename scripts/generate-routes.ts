@@ -1,5 +1,6 @@
 /**
- * Générateur automatique des routes pour rester conforme à ce qui est déclaré dans le spec OpenAPI.
+ * Route generator based on OpenAPI spec
+ * This script is used to generate the routes.config.ts file
  */
 
 import * as fs from 'fs';
@@ -15,6 +16,9 @@ interface Route {
     access: string;
 }
 
+/**
+ * Generate routes from OpenAPI spec
+ */
 function generateRoutes() {
     console.log('Generating routes from OpenAPI...');
 
@@ -93,7 +97,9 @@ export const ROUTES: Route[] = [`;
         '',
         '/**',
         ' * Converts a route pattern to a regex',
-        ' * Supports :param placeholders (e.g., /users/:id -> /users/[^/]+)',
+        '',
+        ' * @param pattern The route pattern to convert',
+        ' * @returns The regex pattern',
         ' */',
         'function patternToRegex(pattern: string): RegExp {',
         '    const escaped = pattern',
@@ -104,6 +110,10 @@ export const ROUTES: Route[] = [`;
         '',
         '/**',
         ' * Check if a path matches a pattern',
+        '',
+        ' * @param pattern The route pattern to check',
+        ' * @param path The path to check',
+        ' * @returns True if the path matches the pattern, false otherwise',
         ' */',
         'function matchPath(pattern: string, path: string): boolean {',
         '    const regex = patternToRegex(pattern);',
@@ -112,7 +122,10 @@ export const ROUTES: Route[] = [`;
         '',
         '/**',
         ' * Get the access level for a given path and method',
-        " * Returns 'authenticated' as default if no matching rule found",
+        '',
+        " * @param path The path to check",
+        " * @param method The method to check",
+        " * @returns The access level for the given path and method",
         ' */',
         'export function getAccessLevel(path: string, method: string): AccessLevel {',
         '    const HTTP_METHOD = method.toUpperCase() as HttpMethod;',
