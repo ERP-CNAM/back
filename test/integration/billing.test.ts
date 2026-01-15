@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
+import { ExpressRuntimeResponse, SkipResponse } from '@nahkies/typescript-express-runtime/server';
 import { InMemoryInvoiceRepository } from '../../src/repository/memory/in-memory-invoice.repository';
 import { InMemorySubscriptionRepository } from '../../src/repository/memory/in-memory-subscription.repository';
 import { InMemoryUserRepository } from '../../src/repository/memory/in-memory-user.repository';
@@ -7,19 +8,14 @@ import { createTestDatabase } from '../../src/database/memory/test-instance';
 import type { SubscriptionRepository } from '../../src/repository/subscription.repository';
 import type { InvoiceRepository } from '../../src/repository/invoice.repository';
 import type { UserRepository } from '../../src/repository/user.repository';
+import type { t_BaseAPIResponse, t_InvoiceDetailed, t_AccountingExportLine } from '../../api/models';
 
 // Mock response object
 const createMockResponse = () => {
     return {
-        with200: () => ({
-            body: (payload: any) => ({ status: 200, body: payload }),
-        }),
-        with400: () => ({
-            body: (payload: any) => ({ status: 400, body: payload }),
-        }),
-        with500: () => ({
-            body: (payload: any) => ({ status: 500, body: payload }),
-        }),
+        with200: () => new ExpressRuntimeResponse(200),
+        with400: () => new ExpressRuntimeResponse(400),
+        with500: () => new ExpressRuntimeResponse(500),
     } as any;
 };
 
@@ -47,18 +43,33 @@ describe('Billing Integration', () => {
                 lastName: 'One',
                 email: 'user1@example.com',
                 password: 'pass123',
+                address: '123 Test St',
+                city: 'Test City',
+                country: 'France',
+                phone: '+33123456789',
+                postalCode: '75001',
             });
             const user2 = await userRepo.create({
                 firstName: 'User',
                 lastName: 'Two',
                 email: 'user2@example.com',
                 password: 'pass123',
+                address: '456 Test Ave',
+                city: 'Test City',
+                country: 'France',
+                phone: '+33123456790',
+                postalCode: '75002',
             });
             const user3 = await userRepo.create({
                 firstName: 'User',
                 lastName: 'Three',
                 email: 'user3@example.com',
                 password: 'pass123',
+                address: '789 Test Blvd',
+                city: 'Test City',
+                country: 'France',
+                phone: '+33123456791',
+                postalCode: '75003',
             });
 
             // Create active and inactive subscriptions
@@ -92,7 +103,7 @@ describe('Billing Integration', () => {
             const params = { body: { billingDate } } as any;
             const respond = createMockResponse();
 
-            const result = await billingHandlers.generateMonthlyBilling(
+            const response = await billingHandlers.generateMonthlyBilling(
                 params,
                 respond,
                 {} as any,
@@ -101,26 +112,34 @@ describe('Billing Integration', () => {
             );
 
             // 3. Verify Response
-            expect(result.status).toBe(200);
-            expect(result.body.success).toBe(true);
+            if (response === SkipResponse) {
+                throw new Error('Response was skipped');
+            }
+            const { status, body } = response.unpack() as {
+                status: number;
+                body: t_BaseAPIResponse & { payload: { billingDate: string; invoices: t_InvoiceDetailed[] } };
+            };
 
-            const payload = result.body.payload;
+            expect(status).toBe(200);
+            expect(body.success).toBe(true);
+
+            const payload = body.payload;
             expect(payload.billingDate).toBe(billingDate);
             expect(payload.invoices).toHaveLength(2); // Only active subscriptions
 
             // 4. Verify Calculations
             const inv1 = payload.invoices.find((i: any) => i.subscriptionId === activeSub1.id);
             expect(inv1).toBeDefined();
-            expect(inv1.amountExclVat).toBe(100);
-            expect(inv1.vatAmount).toBe(20); // 20% of 100
-            expect(inv1.amountInclVat).toBe(120);
-            expect(inv1.invoiceRef).toMatch(/^INV-2026-03-C001$/); // Verify Ref format
+            expect(inv1!.amountExclVat).toBe(100);
+            expect(inv1!.vatAmount).toBe(20); // 20% of 100
+            expect(inv1!.amountInclVat).toBe(120);
+            expect(inv1!.invoiceRef).toMatch(/^INV-2026-03-C001$/); // Verify Ref format
 
             const inv2 = payload.invoices.find((i: any) => i.subscriptionId === activeSub2.id);
             expect(inv2).toBeDefined();
-            expect(inv2.amountExclVat).toBe(100); // 200 * 0.5 (First month promo)
-            expect(inv2.vatAmount).toBe(20);
-            expect(inv2.amountInclVat).toBe(120);
+            expect(inv2!.amountExclVat).toBe(100); // 200 * 0.5 (First month promo)
+            expect(inv2!.vatAmount).toBe(20);
+            expect(inv2!.amountInclVat).toBe(120);
 
             // 5. Verify Persistence
             const storedInvoices = await invoiceRepo.findAllByDate(billingDate);
@@ -134,6 +153,11 @@ describe('Billing Integration', () => {
                 lastName: 'User',
                 email: 'promo@example.com',
                 password: 'pass123',
+                address: '100 Promo St',
+                city: 'Promo City',
+                country: 'France',
+                phone: '+33198765432',
+                postalCode: '69001',
             });
 
             // Create subscription with promo code
@@ -150,13 +174,19 @@ describe('Billing Integration', () => {
             const respond = createMockResponse();
 
             // 1st Billing Run
-            const result1 = await billingHandlers.generateMonthlyBilling(
+            const response1 = await billingHandlers.generateMonthlyBilling(
                 params,
                 respond,
                 {} as any,
                 {} as any,
                 {} as any,
             );
+
+            if (response1 === SkipResponse) throw new Error('Response skipped');
+            const result1 = response1.unpack() as {
+                status: number;
+                body: t_BaseAPIResponse & { payload: { invoices: t_InvoiceDetailed[] } };
+            };
 
             const invoice1 = result1.body.payload.invoices[0];
             expect(invoice1.amountExclVat).toBe(50); // 100 * 0.5
@@ -166,7 +196,7 @@ describe('Billing Integration', () => {
             const billingDate2 = '2026-02-28';
             const params2 = { body: { billingDate: billingDate2 } } as any;
 
-            const result2 = await billingHandlers.generateMonthlyBilling(
+            const response2 = await billingHandlers.generateMonthlyBilling(
                 params2,
                 respond,
                 {} as any,
@@ -174,9 +204,16 @@ describe('Billing Integration', () => {
                 {} as any,
             );
 
+            if (response2 === SkipResponse) throw new Error('Response skipped');
+            const result2 = response2.unpack() as {
+                status: number;
+                body: t_BaseAPIResponse & { payload: { invoices: t_InvoiceDetailed[] } };
+            };
+
             const invoice2 = result2.body.payload.invoices.find((i: any) => i.subscriptionId === subWithPromo.id);
-            expect(invoice2.amountExclVat).toBe(100); // Full price
-            expect(invoice2.amountInclVat).toBe(120);
+            expect(invoice2).toBeDefined();
+            expect(invoice2!.amountExclVat).toBe(100); // Full price
+            expect(invoice2!.amountInclVat).toBe(120);
         });
 
         it('should handle no active subscriptions gracefully', async () => {
@@ -184,13 +221,19 @@ describe('Billing Integration', () => {
             const params = { body: { billingDate } } as any;
             const respond = createMockResponse();
 
-            const result = await billingHandlers.generateMonthlyBilling(
+            const response = await billingHandlers.generateMonthlyBilling(
                 params,
                 respond,
                 {} as any,
                 {} as any,
                 {} as any,
             );
+
+            if (response === SkipResponse) throw new Error('Response skipped');
+            const result = response.unpack() as {
+                status: number;
+                body: t_BaseAPIResponse & { payload: { invoices: t_InvoiceDetailed[] } };
+            };
 
             expect(result.status).toBe(200);
             expect(result.body.payload.invoices).toHaveLength(0);
@@ -205,6 +248,11 @@ describe('Billing Integration', () => {
                 lastName: 'Doe',
                 email: 'john@example.com',
                 password: 'pass',
+                address: '1 Main Street',
+                city: 'Paris',
+                country: 'France',
+                phone: '+33111222333',
+                postalCode: '75000',
             });
 
             await invoiceRepo.create({
@@ -223,7 +271,7 @@ describe('Billing Integration', () => {
             // 2. Execute
             const params = { query: { billingMonth: '2026-06' } } as any;
             const respond = createMockResponse();
-            const result = await billingHandlers.exportMonthlyInvoices(
+            const response = await billingHandlers.exportMonthlyInvoices(
                 params,
                 respond,
                 {} as any,
@@ -232,6 +280,12 @@ describe('Billing Integration', () => {
             );
 
             // 3. Verify
+            if (response === SkipResponse) throw new Error('Response skipped');
+            const result = response.unpack() as {
+                status: number;
+                body: t_BaseAPIResponse & { payload: t_AccountingExportLine[] };
+            };
+
             expect(result.status).toBe(200);
             const lines = result.body.payload;
             expect(lines).toHaveLength(3);
@@ -239,17 +293,19 @@ describe('Billing Integration', () => {
             // Verify Client Line
             const clientLine = lines.find((l: any) => l.generalAccount === '411');
             expect(clientLine).toBeDefined();
-            expect(clientLine.debit).toBe(120);
-            expect(clientLine.clientAccount).toBe('AUX_DOE');
-            expect(clientLine.customerName).toBe('John Doe');
+            expect(clientLine!.debit).toBe(120);
+            expect(clientLine!.clientAccount).toBe('AUX_DOE');
+            expect(clientLine!.customerName).toBe('John Doe');
 
             // Verify Product Line
             const productLine = lines.find((l: any) => l.generalAccount === '700');
-            expect(productLine.credit).toBe(100);
+            expect(productLine).toBeDefined();
+            expect(productLine!.credit).toBe(100);
 
             // Verify VAT Line
             const vatLine = lines.find((l: any) => l.generalAccount === '445');
-            expect(vatLine.credit).toBe(20);
+            expect(vatLine).toBeDefined();
+            expect(vatLine!.credit).toBe(20);
         });
     });
 });

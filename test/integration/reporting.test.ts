@@ -1,23 +1,19 @@
 import { describe, it, expect, beforeEach } from 'vitest';
+import { ExpressRuntimeResponse, SkipResponse } from '@nahkies/typescript-express-runtime/server';
 import { InMemoryInvoiceRepository } from '../../src/repository/memory/in-memory-invoice.repository';
 import { InMemoryUserRepository } from '../../src/repository/memory/in-memory-user.repository';
 import { createReportHandlers } from '../../src/handler/admin/report';
 import { createTestDatabase } from '../../src/database/memory/test-instance';
 import type { InvoiceRepository } from '../../src/repository/invoice.repository';
 import type { UserRepository } from '../../src/repository/user.repository';
+import type { t_BaseAPIResponse } from '../../api/models';
 
 // Mock response object
 const createMockResponse = () => {
     return {
-        with200: () => ({
-            body: (payload: any) => ({ status: 200, body: payload }),
-        }),
-        with400: () => ({
-            body: (payload: any) => ({ status: 400, body: payload }),
-        }),
-        with500: () => ({
-            body: (payload: any) => ({ status: 500, body: payload }),
-        }),
+        with200: () => new ExpressRuntimeResponse(200),
+        with400: () => new ExpressRuntimeResponse(400),
+        with500: () => new ExpressRuntimeResponse(500),
     } as any;
 };
 
@@ -97,9 +93,22 @@ describe('Reporting Integration', () => {
             const params = { query: { from: '2026-01', to: '2026-02' } } as any;
             const respond = createMockResponse();
 
-            const result = await reportHandlers.getMonthlyRevenue(params, respond, {} as any, {} as any, {} as any);
+            const response = await reportHandlers.getMonthlyRevenue(params, respond, {} as any, {} as any, {} as any);
 
             // Verify
+            if (response === SkipResponse) throw new Error('Response skipped');
+            const result = response.unpack() as {
+                status: number;
+                body: t_BaseAPIResponse & {
+                    payload: {
+                        month: string;
+                        revenueExclVat: number;
+                        revenueInclVat: number;
+                        vatAmount: number;
+                    }[];
+                };
+            };
+
             expect(result.status).toBe(200);
             const payload = result.body.payload;
 
@@ -108,14 +117,14 @@ describe('Reporting Integration', () => {
             // Verify Jan (Total 150 HT)
             const janStats = payload.find((s: any) => s.month === '2026-01');
             expect(janStats).toBeDefined();
-            expect(janStats.revenueExclVat).toBe(150);
-            expect(janStats.vatAmount).toBe(30);
-            expect(janStats.revenueInclVat).toBe(180);
+            expect(janStats!.revenueExclVat).toBe(150);
+            expect(janStats!.vatAmount).toBe(30);
+            expect(janStats!.revenueInclVat).toBe(180);
 
             // Verify Feb (Total 200 HT)
             const febStats = payload.find((s: any) => s.month === '2026-02');
             expect(febStats).toBeDefined();
-            expect(febStats.revenueExclVat).toBe(200);
+            expect(febStats!.revenueExclVat).toBe(200);
 
             // Verify Mar is missing
             const marStats = payload.find((s: any) => s.month === '2026-03');
