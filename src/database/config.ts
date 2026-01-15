@@ -1,5 +1,7 @@
 /**
- * Change DB_TYPE to switch between different database implementations
+ * Set the default repository type
+ * 
+ * @default 'in-memory' if NODE_ENV is not 'production', otherwise 'postgres'
  */
 
 export type RepositoryType = 'in-memory' | 'postgres';

@@ -3,12 +3,30 @@ import type { InvoiceRepository } from '../../repository/invoice.repository';
 import type { SubscriptionRepository } from '../../repository/subscription.repository';
 import type { UserRepository } from '../../repository/user.repository';
 
+/**
+ * Creates the invoice handlers
+ * 
+ * @param invoiceRepo The invoice repository
+ * @param subscriptionRepo The subscription repository
+ * @param userRepo The user repository
+ * 
+ * @returns The invoice handlers
+ */
 export function createInvoiceHandlers(
     invoiceRepo: InvoiceRepository,
     subscriptionRepo: SubscriptionRepository,
     userRepo: UserRepository,
 ) {
-    // GET /invoices?userId=&subscriptionId=&status=
+    /**
+     * Lists the invoices
+     * 
+     * @route GET /invoices?userId=&subscriptionId=&status=
+     * 
+     * @param params The request parameters
+     * @param respond The response handler
+     * 
+     * @returns The response object
+     */
     const listInvoices: ListInvoices = async (params, respond) => {
         const { userId, subscriptionId, status } = params.query || {};
 

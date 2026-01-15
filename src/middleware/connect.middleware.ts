@@ -73,10 +73,8 @@ function shouldBypassConnect(req: any): boolean {
     if (req.path.startsWith('/swagger')) {
         return true;
     }
-    if (req.body?.apiKey) {
-        return false;
-    }
-    return true;
+
+    return !req.body?.apiKey;
 }
 
 /**

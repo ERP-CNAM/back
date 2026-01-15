@@ -4,6 +4,11 @@ import { getInMemoryDatabase } from './memory/instance';
 
 let dbInstance: any;
 
+/**
+ * Get the database instance
+ * 
+ * @returns The database instance
+ */
 export function getDatabase(): any {
     if (dbInstance) return dbInstance;
 

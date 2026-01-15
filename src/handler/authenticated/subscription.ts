@@ -8,24 +8,25 @@ import type {
 import type { SubscriptionRepository } from '../../repository/subscription.repository';
 import type { UserPayload } from '../../utils/security';
 
-function getUserPayload(req: any): UserPayload | undefined {
-    return (req as any).user as UserPayload | undefined;
-}
-
-function hasAccessToSubscription(user: UserPayload | undefined, subscriptionUserId?: string) {
-    if (!user || !subscriptionUserId) {
-        return true;
-    }
-
-    if (user.userType === 'admin') {
-        return true;
-    }
-
-    return user.userId === subscriptionUserId;
-}
-
+/**
+ * Creates the subscription handlers
+ * 
+ * @param repository The subscription repository
+ * 
+ * @returns The subscription handlers
+ */
 export const createSubscriptionHandlers = (repository: SubscriptionRepository) => {
-    // GET /subscriptions
+    /**
+     * Lists the subscriptions
+     * 
+     * @route GET /subscriptions
+     * 
+     * @param params The request parameters
+     * @param respond The response handler
+     * @param req The request object
+     * 
+     * @returns The response object
+     */
     const listSubscriptions: ListSubscriptions = async (params, respond, req) => {
         const user = getUserPayload(req);
         const queryOptions = params.query ? { ...params.query } : {};
@@ -44,7 +45,17 @@ export const createSubscriptionHandlers = (repository: SubscriptionRepository) =
         });
     };
 
-    // POST /subscriptions
+    /**
+     * Creates a subscription
+     * 
+     * @route POST /subscriptions
+     * 
+     * @param params The request parameters
+     * @param respond The response handler
+     * @param req The request object
+     * 
+     * @returns The response object
+     */
     const createSubscription: CreateSubscription = async (params, respond, req) => {
         const user = getUserPayload(req);
         const body = params.body;
@@ -64,7 +75,17 @@ export const createSubscriptionHandlers = (repository: SubscriptionRepository) =
         });
     };
 
-    // GET /subscriptions/{subscriptionId}
+    /**
+     * Gets a subscription
+     * 
+     * @route GET /subscriptions/{subscriptionId}
+     * 
+     * @param params The request parameters
+     * @param respond The response handler
+     * @param req The request object
+     * 
+     * @returns The response object
+     */
     const getSubscription: GetSubscription = async (params, respond, req) => {
         const { subscriptionId } = params.params;
         const user = getUserPayload(req);
@@ -86,7 +107,17 @@ export const createSubscriptionHandlers = (repository: SubscriptionRepository) =
         });
     };
 
-    // PUT /subscriptions/{subscriptionId}
+    /**
+     * Updates a subscription
+     * 
+     * @route PUT /subscriptions/{subscriptionId}
+     * 
+     * @param params The request parameters
+     * @param respond The response handler
+     * @param req The request object
+     * 
+     * @returns The response object
+     */
     const updateSubscription: UpdateSubscription = async (params, respond, req) => {
         const { subscriptionId } = params.params;
         const user = getUserPayload(req);
@@ -117,7 +148,17 @@ export const createSubscriptionHandlers = (repository: SubscriptionRepository) =
         });
     };
 
-    // DELETE /subscriptions/{subscriptionId}
+    /**
+     * Cancels a subscription
+     * 
+     * @route DELETE /subscriptions/{subscriptionId}
+     * 
+     * @param params The request parameters
+     * @param respond The response handler
+     * @param req The request object
+     * 
+     * @returns The response object
+     */
     const cancelSubscription: CancelSubscription = async (params, respond, req) => {
         const { subscriptionId } = params.params;
         const user = getUserPayload(req);
@@ -156,3 +197,34 @@ export const createSubscriptionHandlers = (repository: SubscriptionRepository) =
         cancelSubscription,
     };
 };
+
+/**
+ * Gets the user payload from the request
+ * 
+ * @param req The request object
+ * 
+ * @returns The user payload
+ */
+function getUserPayload(req: any): UserPayload | undefined {
+    return (req as any).user as UserPayload | undefined;
+}
+
+/**
+ * Checks if the user has access to the subscription
+ * 
+ * @param user The user payload
+ * @param subscriptionUserId The subscription user id
+ * 
+ * @returns True if the user has access to the subscription, false otherwise
+ */
+function hasAccessToSubscription(user: UserPayload | undefined, subscriptionUserId?: string) {
+    if (!user || !subscriptionUserId) {
+        return true;
+    }
+
+    if (user.userType === 'admin') {
+        return true;
+    }
+
+    return user.userId === subscriptionUserId;
+}
