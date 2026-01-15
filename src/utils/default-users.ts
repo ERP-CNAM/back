@@ -6,6 +6,9 @@ import { InMemoryUserRepository } from '../repository/memory/in-memory-user.repo
 
 import { logger } from './logger';
 
+/**
+ * Seeds the user table with default users if they don't exist
+ */
 export async function seedUsers() {
     const db = getDatabase();
     const userRepo = DB_TYPE === 'postgres' ? new PostgresUserRepository(db) : new InMemoryUserRepository(db);
@@ -64,6 +67,9 @@ export async function seedUsers() {
     }
 }
 
+/**
+ * Creates default users
+ */
 export async function createDefaultUsers() {
     await seedUsers();
     logger.info('Default users creation check complete');

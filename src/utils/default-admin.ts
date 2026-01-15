@@ -6,7 +6,7 @@ import { InMemoryAdminRepository } from '../repository/memory/in-memory-admin.re
 import { logger } from './logger';
 
 /**
- * Script to create an initial admin user
+ * Seeds the admin table with default admin user if it doesn't exist
  */
 async function seedAdmin() {
     try {
@@ -38,6 +38,9 @@ async function seedAdmin() {
     }
 }
 
+/**
+ * Creates an admin user if it doesn't exist
+ */
 export async function createDefaultAdmin() {
     await seedAdmin();
     logger.info('Default admin creation check complete');
