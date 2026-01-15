@@ -4,7 +4,6 @@ import type { SubscriptionRepository } from '../../repository/subscription.repos
 import type { UserRepository } from '../../repository/user.repository';
 import type { t_AccountingExportLine } from '../../../api/models';
 
-
 /**
  * Creates the billing handlers
  * 
