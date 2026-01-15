@@ -1,12 +1,15 @@
 import { logger } from '../utils/logger';
 
-/**
- * Debug middleware to log raw request data BEFORE Zod parsing
- */
-
 const DEBUG_ENABLED = process.env.DEBUG_ENABLED === 'true';
 const PRODUCTION_ENABLED = process.env.NODE_ENV === 'production';
 
+/**
+ * Middleware to log raw request data before Zod parsing for validation
+ * 
+ * @param req - Express request object
+ * @param _res - Express response object
+ * @param next - Express next function
+ */
 export const debugRequestMiddleware = (req: any, _res: any, next: any) => {
     if (!DEBUG_ENABLED && PRODUCTION_ENABLED) {
         return next();
