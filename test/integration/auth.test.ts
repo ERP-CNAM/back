@@ -74,9 +74,7 @@ describe('Permission Matrix', () => {
                     const accessResult = shouldHaveAccess ? 'ALLOW' : 'DENY';
 
                     it(`should ${accessResult} ${user.name}`, () => {
-                        expect(hasPermission(user.permission, route.routePerm)).toBe(
-                            shouldHaveAccess,
-                        );
+                        expect(hasPermission(user.permission, route.routePerm)).toBe(shouldHaveAccess);
                     });
                 });
             });

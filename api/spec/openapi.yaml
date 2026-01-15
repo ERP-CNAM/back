@@ -60,7 +60,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BaseAPIResponse'
+                allOf:
+                  - $ref: '#/components/schemas/BaseAPIResponse'
+                  - type: object
+                    properties:
+                      payload:
+                        type: object
+                        nullable: true
   /auth/admin/login:
     post:
       operationId: adminLogin
@@ -92,7 +98,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BaseAPIResponse'
+                allOf:
+                  - $ref: '#/components/schemas/BaseAPIResponse'
+                  - type: object
+                    properties:
+                      payload:
+                        type: object
+                        nullable: true
   /users:
     post:
       operationId: createUser

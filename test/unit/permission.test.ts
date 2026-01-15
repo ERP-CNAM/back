@@ -1,9 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import {
-    PERMISSION,
-    accessLevelToPermission,
-    hasPermission,
-} from '../../src/middleware/auth.middleware';
+import { PERMISSION, accessLevelToPermission, hasPermission } from '../../src/middleware/auth.middleware';
 
 /**
  * Permission Bitmask Unit Tests
@@ -86,9 +82,7 @@ describe('Permission Bitmask Logic', () => {
         });
 
         it('admin should access authenticated routes', () => {
-            expect(hasPermission(PERMISSION.ADMIN, accessLevelToPermission('authenticated'))).toBe(
-                true,
-            );
+            expect(hasPermission(PERMISSION.ADMIN, accessLevelToPermission('authenticated'))).toBe(true);
         });
 
         it('admin should access admin routes', () => {

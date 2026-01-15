@@ -38,6 +38,7 @@ export const connectMiddleware = (req: any, res: any, next: any) => {
         return res.status(400).json({
             success: false,
             message: 'Invalid format, Connect request expected',
+            payload: null,
         });
     }
 
@@ -46,6 +47,7 @@ export const connectMiddleware = (req: any, res: any, next: any) => {
         return res.status(401).json({
             success: false,
             message: 'Invalid Connect API key',
+            payload: null,
         });
     }
 

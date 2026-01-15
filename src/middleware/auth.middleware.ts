@@ -113,6 +113,7 @@ const authorizeAndProceed = (user: any, accessLevel: string, res: any, next: any
         return res.status(403).json({
             success: false,
             message: 'Access denied',
+            payload: null,
         });
     }
     return next();
@@ -136,6 +137,7 @@ const authenticateWithToken = (req: any, res: any, next: any, accessLevel: strin
         return res.status(401).json({
             success: false,
             message: 'Authentication required',
+            payload: null,
         });
     }
 
@@ -147,6 +149,7 @@ const authenticateWithToken = (req: any, res: any, next: any, accessLevel: strin
         return res.status(401).json({
             success: false,
             message: 'Invalid or expired token',
+            payload: null,
         });
     }
 };
