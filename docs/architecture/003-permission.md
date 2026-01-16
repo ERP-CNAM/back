@@ -1,13 +1,13 @@
-# Permissions & Autorisations
+# Permissions & autorisations
 
-## Vue d'Ensemble
+## Vue d'ensemble
 
 Le Backend applique les permissions à deux niveaux :
 
 1. **Connect (Gateway)** - Vérifie l'accès AVANT de transférer au Backend
 2. **Backend** - Vérifie à nouveau en backup (défense en profondeur)
 
-## Niveaux de Permission (Bitmask)
+## Niveaux de permission (bitmask)
 
 | Permission  | Valeur | Binaire | Description                     |
 | ----------- | ------ | ------- | ------------------------------- |
@@ -17,7 +17,7 @@ Le Backend applique les permissions à deux niveaux :
 
 > **Note :** Admin = 3 (pas 2) pour avoir accès aux routes authenticated ET admin.
 
-## Vérification des Permissions
+## Vérification des permissions
 
 Connect et Backend utilisent le même check bitmask :
 
@@ -34,37 +34,36 @@ Connect et Backend utilisent le même check bitmask :
 | 3 (admin) | 2 (admin)  | 3 & 2 = 2 | Autorisé |
 | 1 (user)  | 2 (admin)  | 1 & 2 = 0 | Refusé   |
 
-## Flux : Requête vers Route Protégée
+## Flux : Requête vers route protégée
 
-```
-Utilisateur (permission=1) demande GET /users (route admin, permission=2)
-              │
-              ▼
-┌────────────────────────────────────────────────────────────────┐
-│                       CONNECT GATEWAY                          │
-│  1. Décode JWT → permission: 1                                 │
-│  2. Route /users GET requiert permission: 2                    │
-│  3. Vérifie : (1 & 2) === 2 ? → 0 !== 2 → NON                  │
-│  4. REFUSÉ - Retourne 403                                      │
-└────────────────────────────────────────────────────────────────┘
+```mermaid
+sequenceDiagram
+    participant U as Utilisateur (Perm=1)
+    participant C as Connect Gateway
+    participant B as Backend
+    U->>C: GET /users (Admin Only)
+    Note over C: Décode JWT : permission: 1
+    Note over C: Route /users requiert: 2
+    Note over C: Check: (1 & 2) == 2 ? result 0 != 2
+    C-->>U: 403 Forbidden
 ```
 
 Admin (permission=3) accède à la même route :
 
-```
-Admin (permission=3) demande GET /users (route admin, permission=2)
-              │
-              ▼
-┌────────────────────────────────────────────────────────────────┐
-│                       CONNECT GATEWAY                          │
-│  1. Décode JWT → permission: 3                                 │
-│  2. Route /users GET requiert permission: 2                    │
-│  3. Vérifie : (3 & 2) === 2 ? → 2 === 2 → OUI                  │
-│  4. AUTORISÉ - Transfère au Backend                            │
-└────────────────────────────────────────────────────────────────┘
+```mermaid
+sequenceDiagram
+    participant A as Admin (Perm=3)
+    participant C as Connect Gateway
+    participant B as Backend
+    A->>C: GET /users (Admin Only)
+    Note over C: Décode JWT : permission: 3
+    Note over C: Route /users requiert: 2
+    Note over C: Check: (3 & 2) == 2 ? result 2 == 2
+    C->>B: Transfère la requête
+    B-->>A: 200 OK
 ```
 
-## Configuration des Routes
+## Configuration des routes
 
 Définie dans `src/middleware/routes.config.ts` :
 
@@ -81,7 +80,7 @@ export const ROUTES: Route[] = [
 ];
 ```
 
-## Fichiers Concernés
+## Fichiers concernés
 
 - `src/middleware/routes.config.ts` - Définitions d'accès aux routes
 - `src/middleware/auth.middleware.ts` - Logique d'autorisation (bitmask)

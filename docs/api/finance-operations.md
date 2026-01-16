@@ -1,12 +1,12 @@
-# Finance et Opérations
+# Finance et opérations
 
 Cette section décrit les fonctions critiques liées à la facturation, aux exports vers les systèmes tiers et aux rapports financiers.
 
-_Note : Tous les endpoints de cette section nécessitent un token **Administrateur**._
+_Note : Tous les endpoints de cette section nécessitent un token **Administrateur** ou une clé API valide de Connect._
 
 ---
 
-## Facturation Mensuelle
+## Facturation mensuelle
 
 Déclenche la génération des factures pour tous les abonnements actifs. Cette opération doit être effectuée une fois par mois.
 
@@ -14,7 +14,7 @@ Déclenche la génération des factures pour tous les abonnements actifs. Cette 
 - **Chemin** : `/billing/monthly`
 - **Accès** : Admin
 
-### Exemple de Requête
+### Exemple de requête
 
 ```json
 {
@@ -22,7 +22,7 @@ Déclenche la génération des factures pour tous les abonnements actifs. Cette 
 }
 ```
 
-### Exemple de Réponse (200 OK)
+### Exemple de réponse (200 OK)
 
 ```json
 {
@@ -48,7 +48,7 @@ Déclenche la génération des factures pour tous les abonnements actifs. Cette 
 
 ---
 
-## Liste des Factures
+## Liste des factures
 
 Récupère toutes les factures avec filtres optionnels.
 
@@ -60,7 +60,7 @@ Récupère toutes les factures avec filtres optionnels.
   - `subscriptionId` : Filtrer par abonnement.
   - `status` : Filtrer par statut (`PENDING`, `SENT`, `PAID`, `FAILED`).
 
-### Exemple de Réponse (200 OK)
+### Exemple de réponse (200 OK)
 
 ```json
 {

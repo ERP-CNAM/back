@@ -1,8 +1,8 @@
-# Documentation de l'API
+# API Reference
 
 Bienvenue dans la documentation détaillée de l'API Gamers ERP. Cette documentation est organisée par domaine métier pour faciliter son exploitation par les consommateurs et les développeurs.
 
-## Domaines Métiers
+## Domaines métiers
 
 L'API est divisée en quatre piliers principaux :
 
@@ -24,7 +24,7 @@ Processus de facturation mensuelle, exports vers les logiciels **MONEY** (Compta
 
 ---
 
-## Niveaux de Sécurité
+## Niveaux de sécurité
 
 Chaque endpoint de l'API appartient à l'un des trois niveaux suivants :
 
@@ -34,7 +34,7 @@ Chaque endpoint de l'API appartient à l'un des trois niveaux suivants :
 
 ---
 
-## Format des Réponses
+## Format des réponses
 
 Toutes les réponses de l'API suivent un format standardisé :
 

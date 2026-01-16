@@ -2,7 +2,7 @@
 
 Cette section décrit comment s'authentifier auprès de l'API Gamers ERP pour obtenir un jeton d'accès (JWT).
 
-## Niveaux d'Accès
+## Niveaux d'accès
 
 | Niveau          | Description                                                        |
 | :-------------- | :----------------------------------------------------------------- |
@@ -10,7 +10,7 @@ Cette section décrit comment s'authentifier auprès de l'API Gamers ERP pour ob
 | **Authentifié** | Nécessite un jeton JWT valide porté par l'en-tête `Authorization`. |
 | **Admin**       | Nécessite un jeton JWT possédant des droits d'administrateur.      |
 
-## Connexion Utilisateur
+## Connexion utilisateur
 
 Permet à un joueur de se connecter pour gérer ses abonnements.
 
@@ -18,7 +18,7 @@ Permet à un joueur de se connecter pour gérer ses abonnements.
 - **Chemin** : `/auth/login`
 - **Accès** : Public
 
-### Exemple de Requête
+### Exemple de requête
 
 ```json
 {
@@ -27,7 +27,7 @@ Permet à un joueur de se connecter pour gérer ses abonnements.
 }
 ```
 
-### Exemple de Réponse (200 OK)
+### Exemple de réponse (200 OK)
 
 ```json
 {
@@ -46,7 +46,7 @@ Permet à un joueur de se connecter pour gérer ses abonnements.
 }
 ```
 
-## Connexion Administrateur
+## Connexion administrateur
 
 Permet à un administrateur d'accéder aux fonctions de gestion globale, facturation et exports.
 
@@ -54,7 +54,7 @@ Permet à un administrateur d'accéder aux fonctions de gestion globale, factura
 - **Chemin** : `/auth/admin/login`
 - **Accès** : Public
 
-### Exemple de Requête
+### Exemple de requête
 
 ```json
 {
@@ -63,7 +63,7 @@ Permet à un administrateur d'accéder aux fonctions de gestion globale, factura
 }
 ```
 
-### Exemple de Réponse (200 OK)
+### Exemple de réponse (200 OK)
 
 ```json
 {
@@ -81,7 +81,7 @@ Permet à un administrateur d'accéder aux fonctions de gestion globale, factura
 }
 ```
 
-## Utilisation du Token
+## Utilisation du token
 
 Une fois le token obtenu, il doit être inclus dans chaque requête protégée via l'en-tête `Authorization`.
 
