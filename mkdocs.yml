@@ -1,0 +1,58 @@
+site_name: Gamers ERP Backend Documentation
+site_description: Documentation for the Gamers ERP Backend Service
+
+plugins:
+  - search
+  - git-committers:
+      repository: ERP-CNAM/back
+      branch: main
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: black
+      accent: black
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: black
+      accent: black
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - content.code.copy
+    - content.code.annotate
+
+nav:
+  - Home: index.md
+  - Démarrage Rapide: demarrage-rapide.md
+  - Architecture:
+    - Architecture Decision Records: architecture/001-adr.md
+    - Authentification: architecture/002-authentification.md
+    - Permissions: architecture/003-permission.md
+  - API Reference:
+    - Vue d'ensemble: api/README.md
+    - Authentification: api/authentification.md
+    - Utilisateurs: api/utilisateurs.md
+    - Abonnements: api/abonnements.md
+    - Finance: api/finance-operations.md
+
+markdown_extensions:
+  - admonition
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed
+  - tables

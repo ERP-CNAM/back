@@ -22,7 +22,6 @@ npm run dev
 ```
 
 L'API sera accessible sur `http://localhost:3000` et la documentation de l'API sur `http://localhost:3000/swagger`.
-Une documentation complète par domaine métier est disponible dans le dossier [docs/api/](docs/api/README.md).
 
 ---
 
@@ -99,3 +98,8 @@ back/
 ## Support
 
 Pour toute question ou problème, ouvrez une [issue sur GitHub](https://github.com/ERP-CNAM/back/issues).
+
+## Documentation
+
+Une documentation complète incluant l'architecture (ADR) et les détails des logiques implémentées est disponible et consultable en ligne sur : [https://erp-cnam.github.io/back/](https://erp-cnam.github.io/back/)
+

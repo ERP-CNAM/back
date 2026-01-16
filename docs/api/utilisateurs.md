@@ -1,4 +1,4 @@
-# Gestion des Utilisateurs
+# Gestion des utilisateurs
 
 Cette section détaille les opérations relatives aux comptes utilisateurs (joueurs).
 
@@ -10,7 +10,7 @@ Création d'un nouveau compte joueur. Cet endpoint est généralement appelé lo
 - **Chemin** : `/users`
 - **Accès** : Public
 
-### Exemple de Requête
+### Exemple de requête
 
 ```json
 {
@@ -27,7 +27,7 @@ Création d'un nouveau compte joueur. Cet endpoint est généralement appelé lo
 }
 ```
 
-### Exemple de Réponse (201 Created)
+### Exemple de réponse (201 Created)
 
 ```json
 {
@@ -40,6 +40,7 @@ Création d'un nouveau compte joueur. Cet endpoint est généralement appelé lo
     "email": "alice.smith@example.com",
     "status": "OK",
     "createdAt": "2026-01-13T20:00:00Z"
+    ...
   }
 }
 ```
@@ -60,7 +61,7 @@ Récupère la liste de tous les joueurs inscrits.
 - **Paramètres (Query)** :
   - `status` : Filtrer par statut (`OK`, `SUSPENDED`, `BLOCKED`, `DELETED`).
 
-#### Exemple de Réponse (200 OK)
+#### Exemple de réponse (200 OK)
 
 ```json
 {
@@ -75,6 +76,7 @@ Récupère la liste de tous les joueurs inscrits.
       "phone": "+33600000000",
       "status": "OK",
       "createdAt": "2026-01-13T20:00:00Z"
+      ...
     },
     {
       "id": "b2c3d4e5-f6g7-5h8i-9j0k-l1m2n3o4p5q6",
@@ -84,6 +86,7 @@ Récupère la liste de tous les joueurs inscrits.
       "phone": "+33611111111",
       "status": "OK",
       "createdAt": "2026-01-14T10:00:00Z"
+      ...
     }
   ]
 }
@@ -133,7 +136,7 @@ Permet de suspendre ou bloquer un utilisateur (souvent suite à un incident de p
 - **Chemin** : `/users/{userId}/status`
 - **Accès** : Admin
 
-#### Exemple de Requête
+#### Exemple de requête
 
 ```json
 {
@@ -141,7 +144,7 @@ Permet de suspendre ou bloquer un utilisateur (souvent suite à un incident de p
 }
 ```
 
-#### Exemple de Réponse (200 OK)
+#### Exemple de réponse (200 OK)
 
 ```json
 {
@@ -157,7 +160,7 @@ Permet de suspendre ou bloquer un utilisateur (souvent suite à un incident de p
 }
 ```
 
-### Suppression Logique
+### Suppression logique
 
 Désactive le compte d'un utilisateur sans supprimer les données historiques.
 
@@ -165,7 +168,7 @@ Désactive le compte d'un utilisateur sans supprimer les données historiques.
 - **Chemin** : `/users/{userId}`
 - **Accès** : Admin
 
-#### Exemple de Réponse (200 OK)
+#### Exemple de réponse (200 OK)
 
 ```json
 {
