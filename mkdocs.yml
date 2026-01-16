@@ -1,6 +1,12 @@
 site_name: Gamers ERP Backend Documentation
 site_description: Documentation for the Gamers ERP Backend Service
 
+plugins:
+  - search
+  - git-committers:
+      repository: ERP-CNAM/back
+      branch: main
+
 theme:
   name: material
   palette:

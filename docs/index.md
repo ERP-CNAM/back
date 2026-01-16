@@ -39,7 +39,7 @@ graph TD
     Gateway -.-> Client
 ```
 
-## Structure de la documentation
+## Navigation rapide
 
 - **[Architecture Decision Records](architecture/001-adr.md)** : Les choix techniques structurants du projet.
 - **[Démarrage rapide](demarrage-rapide.md)** : Installation et exécution du projet.

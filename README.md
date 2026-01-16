@@ -23,16 +23,6 @@ npm run dev
 
 L'API sera accessible sur `http://localhost:3000` et la documentation de l'API sur `http://localhost:3000/swagger`.
 
-### Documentation technique (MkDocs)
-
-Une documentation complète incluant l'architecture (ADR) et les détails des domaines métier est disponible via MkDocs.
-
-Pour la consulter localement sans installation :
-```bash
-docker run --rm -it -p 8000:8000 -v ${PWD}:/docs squidfunk/mkdocs-material
-```
-Puis ouvrez [http://localhost:8000](http://localhost:8000).
-
 ---
 
 ## Workflow Design to Code API
@@ -111,4 +101,5 @@ Pour toute question ou problème, ouvrez une [issue sur GitHub](https://github.c
 
 ## Documentation
 
-La documentation est disponible en ligne sur [https://github.com/ERP-CNAM/back/docs](https://github.com/ERP-CNAM/back/docs).
+Une documentation complète incluant l'architecture (ADR) et les détails des logiques implémentées est disponible et consultable en ligne sur : [https://erp-cnam.github.io/back/](https://erp-cnam.github.io/back/)
+
