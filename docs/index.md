@@ -17,7 +17,7 @@ Le diagramme suivant illustre le cheminement d'une requête type à travers les 
 
 ```mermaid
 graph TD
-    Client([Client Web/Mobile]) -- "Requête HTTP (JWT)" --> Gateway[Connect Gateway]
+    Client([Client]) -- "Requête HTTP (JWT)" --> Gateway[Connect Gateway]
     
     subgraph "Sécurité & Routing"
     Gateway -- "1. Vérification Permissions" --> RouteConfig[Route Config]

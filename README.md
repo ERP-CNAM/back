@@ -111,4 +111,4 @@ Pour toute question ou problème, ouvrez une [issue sur GitHub](https://github.c
 
 ## Documentation
 
-La documentation est disponible en ligne sur [https://docs.gamers-erp.com](https://docs.gamers-erp.com).
+La documentation est disponible en ligne sur [https://github.com/ERP-CNAM/back/docs](https://github.com/ERP-CNAM/back/docs).
