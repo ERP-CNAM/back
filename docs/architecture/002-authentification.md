@@ -1,8 +1,5 @@
 # Architecture d'authentification
 
-**Statut :** Accepté  
-**Date :** 15/01/2026
-
 ## Contexte
 
 Le backend sert trois types de clients avec différents modèles de confiance :
@@ -17,49 +14,22 @@ Nous avions besoin d'un flux d'authentification unifié gérant les trois sans d
 
 ### Flux d'authentification
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│                           REQUÊTE REÇUE                                │
-└────────────────────────────────────────────────────────────────────────┘
-                                    │
-                                    ▼
-                  ┌────────────────────────────────────┐
-                  │   apiKey présente dans le body ?   │
-                  └────────────────────────────────────┘
-                          │                   │
-                         OUI                 NON
-                          │                   │
-                          ▼                   ▼
-            ┌──────────────────────┐   ┌──────────────────────┐
-            │  CONNECT MIDDLEWARE  │   │   BYPASS (direct)    │
-            │  1. Valide apiKey    │   │                      │
-            │  2. Extrait userData │   │                      │
-            └──────────────────────┘   └──────────────────────┘
-                          │                   │
-                          ▼                   ▼
-            ┌──────────────────────┐   ┌──────────────────────┐
-            │ isConnectRequest=true│   │ isConnectRequest=    │
-            │ req.user = userData  │   │    undefined         │
-            └──────────────────────┘   └──────────────────────┘
-                          │                   │
-                          └─────────┬─────────┘
-                                    ▼
-                  ┌────────────────────────────────────┐
-                  │          AUTH MIDDLEWARE           │
-                  └────────────────────────────────────┘
-                                    │
-          ┌─────────────────────────┼─────────────────────────┐
-          ▼                         ▼                         ▼
-  ┌────────────────┐        ┌────────────────┐        ┌────────────────┐
-  │isConnectRequest│        │   req.user     │        │     Aucun      │
-  │    = true      │        │    existe      │        │                │
-  └────────────────┘        └────────────────┘        └────────────────┘
-          │                         │                         │
-          ▼                         ▼                         ▼
-  ┌────────────────┐        ┌────────────────┐        ┌────────────────┐
-  │ CONFIANCE S2S  │        │  VÉRIF PERMS   │        │  VALIDER JWT   │
-  │  Accès total   │        │ (admin/user)   │        │ depuis header  │
-  └────────────────┘        └────────────────┘        └────────────────┘
+```mermaid
+flowchart TD
+    Start([REQUÊTE REÇUE]) --> APIKey{apiKey présente dans le body ?}
+    APIKey -- "OUI" --> Connect["CONNECT MIDDLEWARE<br/>1. Valide apiKey<br/>2. Extrait userData"]
+    APIKey -- "NON" --> Bypass["BYPASS direct"]
+    
+    Connect --> SetConnect["isConnectRequest=true<br/>req.user = userData"]
+    Bypass --> SetNormal["isConnectRequest=undefined"]
+    
+    SetConnect --> Auth["AUTH MIDDLEWARE"]
+    SetNormal --> Auth
+    
+    Auth --> CheckCase{Cas}
+    CheckCase -- "isConnectRequest = true" --> S2S["CONFIANCE S2S<br/>Accès total"]
+    CheckCase -- "req.user existe" --> Perms["VÉRIF PERMS<br/>(admin/user)"]
+    CheckCase -- "Aucun" --> JWT["VALIDER JWT<br/>depuis header"]
 ```
 
 ### Chemins d'accès
@@ -80,33 +50,21 @@ Nous avions besoin d'un flux d'authentification unifié gérant les trois sans d
    - `userData` de Connect (chemin Gateway)
    - JWT dans l'en-tête Authorization (chemin Direct)
 
-### Flux SPA Direct (Sans apiKey)
+### Flux SPA Direct (sans apiKey de Connect)
 
-```
-Requête : GET /users
-Headers : { Authorization: "Bearer <jwt>" }
-Body : { } (pas d'apiKey)
-              │
-              ▼
-┌────────────────────────────────────────────────────────────────┐
-│                    connect.middleware.ts                       │
-│  1. shouldBypassConnect(req)                                   │
-│  2. req.body?.apiKey → undefined                               │
-│  3. Retourne TRUE → SAUTE ce middleware                        │
-│  4. isConnectRequest = undefined, req.user = undefined         │
-└────────────────────────────────────────────────────────────────┘
-              │
-              ▼
-┌────────────────────────────────────────────────────────────────┐
-│                      auth.middleware.ts                        │
-│  1. isConnectRequest? → NON                                    │
-│  2. req.user? → NON                                            │
-│  3. Appelle authenticateWithToken()                            │
-│  4. Extrait JWT de l'en-tête Authorization                     │
-│  5. Appelle security.verifyToken(jwt)                          │
-│  6. Définit req.user depuis le payload décodé                  │
-│  7. Vérifie les permissions → Autorise ou Refuse               │
-└────────────────────────────────────────────────────────────────┘
+```mermaid
+sequenceDiagram
+    participant SPA as Admin SPA
+    participant CM as connect.middleware.ts
+    participant AM as auth.middleware.ts
+    SPA->>CM: GET /users (sans apiKey)
+    Note over CM: shouldBypassConnect(req) returns TRUE
+    Note over CM: SAUTE ce middleware
+    CM->>AM: isConnectRequest = undefined
+    Note over AM: authenticateWithToken()
+    Note over AM: Extrait & Vérifie JWT de l'en-tête
+    Note over AM: Définit req.user
+    AM-->>SPA: "Autorisé ou Refusé (Permissions)"
 ```
 
 ### Cycle de vie du token

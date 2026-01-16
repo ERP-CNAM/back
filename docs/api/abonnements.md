@@ -1,8 +1,8 @@
-# Gestion des Abonnements
+# Gestion des abonnements
 
 Cette section concerne le cycle de vie des abonnements aux services Gamers ERP.
 
-## Principes Généraux
+## Principes généraux
 
 - Les abonnements sont mensuels.
 - Tout mois commencé est dû intégralement (pas de prorata).
@@ -10,7 +10,7 @@ Cette section concerne le cycle de vie des abonnements aux services Gamers ERP.
 
 ---
 
-## Opérations d'Abonnement
+## Opérations d'abonnement
 
 _Note : Ces endpoints sont accessibles aux utilisateurs (pour leur propre compte) et aux administrateurs._
 
@@ -22,7 +22,7 @@ Active un nouvel abonnement pour un joueur.
 - **Chemin** : `/subscriptions`
 - **Accès** : Authentifié
 
-#### Exemple de Requête
+#### Exemple de requête
 
 ```json
 {
@@ -34,7 +34,7 @@ Active un nouvel abonnement pour un joueur.
 }
 ```
 
-#### Exemple de Réponse (201 Created)
+#### Exemple de réponse (201 Created)
 
 ```json
 {
@@ -63,7 +63,7 @@ Liste les abonnements actifs ou passés.
   - `userId` : (Optionnel) Filtrer par utilisateur.
   - `status` : (Optionnel) Filtrer par statut (`ACTIVE`, `CANCELLED`).
 
-#### Exemple de Réponse (200 OK)
+#### Exemple de réponse (200 OK)
 
 ```json
 {
@@ -97,7 +97,7 @@ Récupère les détails d'un abonnement spécifique, incluant les informations d
 - **Chemin** : `/subscriptions/{subscriptionId}`
 - **Accès** : Authentifié
 
-#### Exemple de Réponse (200 OK)
+#### Exemple de réponse (200 OK)
 
 ```json
 {
@@ -131,7 +131,7 @@ Modifie les détails d'un abonnement existant.
 - **Chemin** : `/subscriptions/{subscriptionId}`
 - **Accès** : Authentifié
 
-#### Exemple de Requête
+#### Exemple de requête
 
 ```json
 {
@@ -140,7 +140,7 @@ Modifie les détails d'un abonnement existant.
 }
 ```
 
-#### Exemple de Réponse (200 OK)
+#### Exemple de réponse (200 OK)
 
 ```json
 {
@@ -165,7 +165,7 @@ Met fin à un abonnement à la fin de la période en cours.
 - **Chemin** : `/subscriptions/{subscriptionId}`
 - **Accès** : Authentifié
 
-#### Exemple de Réponse (200 OK)
+#### Exemple de réponse (200 OK)
 
 ```json
 {

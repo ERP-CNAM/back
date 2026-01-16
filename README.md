@@ -22,7 +22,16 @@ npm run dev
 ```
 
 L'API sera accessible sur `http://localhost:3000` et la documentation de l'API sur `http://localhost:3000/swagger`.
-Une documentation complète par domaine métier est disponible dans le dossier [docs/api/](docs/api/README.md).
+
+### Documentation technique (MkDocs)
+
+Une documentation complète incluant l'architecture (ADR) et les détails des domaines métier est disponible via MkDocs.
+
+Pour la consulter localement sans installation :
+```bash
+docker run --rm -it -p 8000:8000 -v ${PWD}:/docs squidfunk/mkdocs-material
+```
+Puis ouvrez [http://localhost:8000](http://localhost:8000).
 
 ---
 
@@ -99,3 +108,7 @@ back/
 ## Support
 
 Pour toute question ou problème, ouvrez une [issue sur GitHub](https://github.com/ERP-CNAM/back/issues).
+
+## Documentation
+
+La documentation est disponible en ligne sur [https://docs.gamers-erp.com](https://docs.gamers-erp.com).
