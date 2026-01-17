@@ -9,7 +9,7 @@ import type { UserRepository } from '../../src/repository/user.repository';
 import type { SubscriptionRepository } from '../../src/repository/subscription.repository';
 import type { t_BaseAPIResponse, t_DirectDebitOrder } from '../../api/models';
 import { BillingService } from '../../src/service/billing.service';
-import { ReportingService } from '../../src/service/reporting.service';
+import { ReportService } from '../../src/service/report.service';
 import { InMemorySubscriptionRepository } from '../../src/repository/memory/in-memory-subscription.repository';
 
 // Mock response object
@@ -35,7 +35,7 @@ describe('Banking Integration', () => {
         subscriptionRepo = new InMemorySubscriptionRepository(db); // Needed for billing service
 
         const billingService = new BillingService(invoiceRepo, subscriptionRepo, userRepo);
-        const reportingService = new ReportingService(invoiceRepo, userRepo);
+        const reportingService = new ReportService(invoiceRepo, userRepo);
 
         reportHandlers = createReportHandlers(billingService, reportingService);
     });

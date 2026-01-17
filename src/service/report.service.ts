@@ -3,7 +3,7 @@ import type { UserRepository } from '../repository/user.repository';
 import type { t_AccountingExportLine, t_DirectDebitOrder } from '../../api/models';
 import { generateUUID } from '../utils/uuid';
 
-export class ReportingService {
+export class ReportService {
     constructor(
         private readonly invoiceRepository: InvoiceRepository,
         private readonly userRepository: UserRepository,

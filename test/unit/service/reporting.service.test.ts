@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { ReportingService } from '../../../src/service/reporting.service';
+import { ReportService } from '../../../src/service/report.service';
 import type { InvoiceRepository } from '../../../src/repository/invoice.repository';
 import type { UserRepository } from '../../../src/repository/user.repository';
 
-describe('ReportingService', () => {
-    let service: ReportingService;
+describe('ReportService', () => {
+    let service: ReportService;
     let invoiceRepo: InvoiceRepository;
     let userRepo: UserRepository;
 
@@ -20,7 +20,7 @@ describe('ReportingService', () => {
             updateStatus: vi.fn(),
         } as unknown as UserRepository;
 
-        service = new ReportingService(invoiceRepo, userRepo);
+        service = new ReportService(invoiceRepo, userRepo);
     });
 
     describe('exportDirectDebits', () => {

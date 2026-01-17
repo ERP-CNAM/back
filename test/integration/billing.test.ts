@@ -10,7 +10,7 @@ import type { InvoiceRepository } from '../../src/repository/invoice.repository'
 import type { UserRepository } from '../../src/repository/user.repository';
 import type { t_BaseAPIResponse, t_InvoiceDetailed, t_AccountingExportLine } from '../../api/models';
 import { BillingService } from '../../src/service/billing.service';
-import { ReportingService } from '../../src/service/reporting.service';
+import { ReportService } from '../../src/service/report.service';
 
 
 // Mock response object
@@ -36,7 +36,7 @@ describe('Billing Integration', () => {
         userRepo = new InMemoryUserRepository(db);
 
         const billingService = new BillingService(invoiceRepo, subscriptionRepo, userRepo);
-        const reportingService = new ReportingService(invoiceRepo, userRepo);
+        const reportingService = new ReportService(invoiceRepo, userRepo);
 
         billingHandlers = createBillingHandlers(billingService, reportingService);
     });

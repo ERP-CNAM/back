@@ -1,33 +1,33 @@
 import type { ExportDirectDebits, GetMonthlyRevenue, UpdatePaymentStatus } from '../../../api/generated';
 import type { BillingService } from '../../service/billing.service';
-import type { ReportingService } from '../../service/reporting.service';
+import type { ReportService } from '../../service/report.service';
 
 /**
  * Creates the report handlers
- * 
+ *
  * @param billingService The billing service
- * @param reportingService The reporting service
- * 
+ * @param reportService The reporting service
+ *
  * @returns The report handlers
  */
 export function createReportHandlers(
     billingService: BillingService,
-    reportingService: ReportingService,
+    reportService: ReportService,
 ) {
     /**
      * Exports the direct debits
-     * 
+     *
      * @route GET /exports/banking/direct-debits
-     * 
+     *
      * @param params The request parameters
      * @param respond The response handler
-     * 
+     *
      * @returns The response object
      */
     const exportDirectDebits: ExportDirectDebits = async (params, respond) => {
         const { executionDate } = params.query; // YYYY-MM-DD
 
-        const directDebits = await reportingService.exportDirectDebits(executionDate);
+        const directDebits = await reportService.exportDirectDebits(executionDate);
 
         return respond.with200().body({
             success: true,
@@ -38,18 +38,18 @@ export function createReportHandlers(
 
     /**
      * Gets the monthly revenue
-     * 
+     *
      * @route GET /reports/revenue/monthly
-     * 
+     *
      * @param params The request parameters
      * @param respond The response handler
-     * 
+     *
      * @returns The response object
      */
     const getMonthlyRevenue: GetMonthlyRevenue = async (params, respond) => {
         const { from, to } = params.query;
 
-        const payload = await reportingService.getMonthlyRevenue(from, to);
+        const payload = await reportService.getMonthlyRevenue(from, to);
 
         return respond.with200().body({
             success: true,
@@ -60,12 +60,12 @@ export function createReportHandlers(
 
     /**
      * Updates the payment status
-     * 
+     *
      * @route POST /bank/payment-updates
-     * 
+     *
      * @param params The request parameters
      * @param respond The response handler
-     * 
+     *
      * @returns The response object
      */
     const updatePaymentStatus: UpdatePaymentStatus = async (params, respond) => {

@@ -27,7 +27,7 @@ import { createInvoiceHandlers } from './admin/invoice';
 
 import { UserService } from '../service/user.service';
 import { BillingService } from '../service/billing.service';
-import { ReportingService } from '../service/reporting.service';
+import { ReportService } from '../service/report.service';
 import { SubscriptionService } from '../service/subscription.service';
 import { AuthService } from '../service/auth.service';
 import { InvoiceService } from '../service/invoice.service';
@@ -53,7 +53,7 @@ if (DB_TYPE === 'postgres') {
 
 // Services
 const billingService = new BillingService(invoiceRepository, subscriptionRepository, userRepository);
-const reportingService = new ReportingService(invoiceRepository, userRepository);
+const reportingService = new ReportService(invoiceRepository, userRepository);
 const subscriptionService = new SubscriptionService(subscriptionRepository);
 const authService = new AuthService(userRepository, adminRepository);
 const userService = new UserService(userRepository);

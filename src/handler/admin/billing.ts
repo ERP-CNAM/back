@@ -1,27 +1,27 @@
 import type { GenerateMonthlyBilling, ExportMonthlyInvoices } from '../../../api/generated';
 import type { BillingService } from '../../service/billing.service';
-import type { ReportingService } from '../../service/reporting.service';
+import type { ReportService } from '../../service/report.service';
 
 /**
  * Creates the billing handlers
- * 
+ *
  * @param billingService The billing service
- * @param reportingService The reporting service
- * 
+ * @param reportService The reporting service
+ *
  * @returns The billing handlers
  */
 export function createBillingHandlers(
     billingService: BillingService,
-    reportingService: ReportingService,
+    reportService: ReportService,
 ) {
     /**
      * Generates the monthly billing
-     * 
+     *
      * @route POST /billing/monthly
-     * 
+     *
      * @param params The request parameters
      * @param respond The response handler
-     * 
+     *
      * @returns The response object
      */
     const generateMonthlyBilling: GenerateMonthlyBilling = async (params, respond) => {
@@ -39,18 +39,18 @@ export function createBillingHandlers(
 
     /**
      * Exports the monthly invoices
-     * 
+     *
      * @route GET /exports/accounting/monthly-invoices
-     * 
+     *
      * @param params The request parameters
      * @param respond The response handler
-     * 
+     *
      * @returns The response object
      */
     const exportMonthlyInvoices: ExportMonthlyInvoices = async (params, respond) => {
         const { billingMonth } = params.query;
 
-        const result = await reportingService.exportMonthlyInvoices(billingMonth);
+        const result = await reportService.exportMonthlyInvoices(billingMonth);
 
         return respond.with200().body({
             success: true,
