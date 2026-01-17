@@ -24,7 +24,7 @@ export const createAuthHandlers = (authService: AuthService) => {
         const result = await authService.login(params.body);
 
         if (!result.success) {
-            (req as any).log.warn({ email: params.body.email }, `Login failed: ${result.reason}`);
+            req.log.warn({ email: params.body.email }, `Login failed: ${result.reason}`);
             return respond.with401().body({
                 success: false,
                 message: 'Invalid credentials',
@@ -34,7 +34,7 @@ export const createAuthHandlers = (authService: AuthService) => {
 
         const { user, token } = result;
 
-        (req as any).log.info({ email: params.body.email, userId: user!.id }, 'User logged in successfully');
+        req.log.info({ email: params.body.email, userId: user!.id }, 'User logged in successfully');
 
         return respond.with200().body({
             success: true,
