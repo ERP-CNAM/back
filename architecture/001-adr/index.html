@@ -1035,9 +1035,15 @@
 <ul>
 <li><strong>API Layer (<code>/api</code>)</strong> : définition des contrats et routage.</li>
 <li><strong>Handler Layer (<code>/src/handler</code>)</strong> : orchestration des requêtes HTTP.</li>
+<li>S'occupe du parsing, de la validation HTTP et du formatage de la réponse.</li>
+<li>Délégué la logique métier au Service Layer.</li>
 <li><code>/public</code> : routes ouvertes (ex: création de compte).</li>
 <li><code>/authenticated</code> : routes nécessitant une connexion simple.</li>
 <li><code>/admin</code> : routes réservées aux administrateurs.</li>
+<li><strong>Service Layer (<code>/src/service</code>)</strong> : Contient la logique métier pure (Business Logic).</li>
+<li>Orchestre les opérations complexes.</li>
+<li>Utilise les repositories pour l'accès aux données.</li>
+<li>Indépendant du framework HTTP (Express).</li>
 <li><strong>Middleware Layer (<code>/src/middleware</code>)</strong> : fonctions transverses (Auth, Logs, Securité des routes).</li>
 <li><strong>Repository Layer (<code>/src/repository</code>)</strong> : abstraction de l'accès aux données.</li>
 <li><strong>Database Layer (<code>/src/database</code>)</strong> : implémentations concrètes (Drizzle ORM).</li>
@@ -1053,7 +1059,7 @@
 <li>les mots de passe ne sont <strong>jamais</strong> renvoyés dans les réponses API.</li>
 </ul>
 <h3 id="4-abstraction-de-la-base-de-donnees">4. Abstraction de la base de données</h3>
-<p>Nous utilisons le pattern Repository pour découpler la logique métier de la base de données.</p>
+<p>Nous utilisons le pattern Repository pour découpler la logique métier de la base de données. Les Services utilisent ces repositories pour accéder aux données.</p>
 <ul>
 <li><strong>Interface</strong> : <code>UserRepository</code>, <code>SubscriptionRepository</code>, etc.</li>
 <li><strong>Implémentations</strong> :</li>

@@ -926,15 +926,17 @@
     Gateway -- "2. Appel Handler" --&gt; Handlers[API Handlers]
 
     subgraph "Logique Métier"
-    Handlers -- "3. Appel" --&gt; Repos[Repositories]
+    Handlers -- "3. Appel" --&gt; Services[Services]
+    Services -- "4. Appel" --&gt; Repos[Repositories]
     end
 
     subgraph "Persistance"
-    Repos -- "4. Requête SQL" --&gt; DB[(Base de Données)]
+    Repos -- "5. Requête SQL" --&gt; DB[(Base de Données)]
     end
 
     DB -.-&gt; Repos
-    Repos -.-&gt; Handlers
+    Repos -.-&gt; Services
+    Services -.-&gt; Handlers
     Handlers -.-&gt; Gateway
     Gateway -.-&gt; Client</code></pre>
 <h2 id="navigation-rapide">Navigation rapide</h2>
