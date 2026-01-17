@@ -10,21 +10,20 @@ import type { UserPayload } from '../../utils/security';
 
 /**
  * Creates the subscription handlers
- * 
- * @param repository The subscription repository
- * 
+ *
+ * @param subscriptionService
  * @returns The subscription handlers
  */
 export const createSubscriptionHandlers = (subscriptionService: SubscriptionService) => {
     /**
      * Lists the subscriptions
-     * 
+     *
      * @route GET /subscriptions
-     * 
+     *
      * @param params The request parameters
      * @param respond The response handler
      * @param req The request object
-     * 
+     *
      * @returns The response object
      */
     const listSubscriptions: ListSubscriptions = async (params, respond, req) => {
@@ -41,13 +40,13 @@ export const createSubscriptionHandlers = (subscriptionService: SubscriptionServ
 
     /**
      * Creates a subscription
-     * 
+     *
      * @route POST /subscriptions
-     * 
+     *
      * @param params The request parameters
      * @param respond The response handler
      * @param req The request object
-     * 
+     *
      * @returns The response object
      */
     const createSubscription: CreateSubscription = async (params, respond, req) => {
@@ -64,13 +63,13 @@ export const createSubscriptionHandlers = (subscriptionService: SubscriptionServ
 
     /**
      * Gets a subscription
-     * 
+     *
      * @route GET /subscriptions/{subscriptionId}
-     * 
+     *
      * @param params The request parameters
      * @param respond The response handler
      * @param req The request object
-     * 
+     *
      * @returns The response object
      */
     const getSubscription: GetSubscription = async (params, respond, req) => {
@@ -96,13 +95,13 @@ export const createSubscriptionHandlers = (subscriptionService: SubscriptionServ
 
     /**
      * Updates a subscription
-     * 
+     *
      * @route PUT /subscriptions/{subscriptionId}
-     * 
+     *
      * @param params The request parameters
      * @param respond The response handler
      * @param req The request object
-     * 
+     *
      * @returns The response object
      */
     const updateSubscription: UpdateSubscription = async (params, respond, req) => {
@@ -128,13 +127,13 @@ export const createSubscriptionHandlers = (subscriptionService: SubscriptionServ
 
     /**
      * Cancels a subscription
-     * 
+     *
      * @route DELETE /subscriptions/{subscriptionId}
-     * 
+     *
      * @param params The request parameters
      * @param respond The response handler
      * @param req The request object
-     * 
+     *
      * @returns The response object
      */
     const cancelSubscription: CancelSubscription = async (params, respond, req) => {
@@ -169,9 +168,8 @@ export const createSubscriptionHandlers = (subscriptionService: SubscriptionServ
 
 /**
  * Gets the user payload from the request
- * 
+ *
  * @param req The request object
- * 
  * @returns The user payload
  */
 function getUserPayload(req: any): UserPayload | undefined {
