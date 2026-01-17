@@ -6,7 +6,11 @@ import { createReportHandlers } from '../../src/handler/admin/report';
 import { createTestDatabase } from '../../src/database/memory/test-instance';
 import type { InvoiceRepository } from '../../src/repository/invoice.repository';
 import type { UserRepository } from '../../src/repository/user.repository';
+import type { SubscriptionRepository } from '../../src/repository/subscription.repository';
 import type { t_BaseAPIResponse, t_DirectDebitOrder } from '../../api/models';
+import { BillingService } from '../../src/service/billing.service';
+import { ReportingService } from '../../src/service/reporting.service';
+import { InMemorySubscriptionRepository } from '../../src/repository/memory/in-memory-subscription.repository';
 
 // Mock response object
 const createMockResponse = () => {
@@ -17,17 +21,23 @@ const createMockResponse = () => {
     } as any;
 };
 
+
 describe('Banking Integration', () => {
     let invoiceRepo: InvoiceRepository;
     let userRepo: UserRepository;
+    let subscriptionRepo: SubscriptionRepository;
     let reportHandlers: ReturnType<typeof createReportHandlers>;
 
     beforeEach(() => {
         const db = createTestDatabase([]);
         invoiceRepo = new InMemoryInvoiceRepository(db);
         userRepo = new InMemoryUserRepository(db);
+        subscriptionRepo = new InMemorySubscriptionRepository(db); // Needed for billing service
 
-        reportHandlers = createReportHandlers(invoiceRepo, userRepo);
+        const billingService = new BillingService(invoiceRepo, subscriptionRepo, userRepo);
+        const reportingService = new ReportingService(invoiceRepo, userRepo);
+
+        reportHandlers = createReportHandlers(billingService, reportingService);
     });
 
     describe('exportDirectDebits', () => {
