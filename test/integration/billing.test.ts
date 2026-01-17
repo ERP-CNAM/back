@@ -9,6 +9,9 @@ import type { SubscriptionRepository } from '../../src/repository/subscription.r
 import type { InvoiceRepository } from '../../src/repository/invoice.repository';
 import type { UserRepository } from '../../src/repository/user.repository';
 import type { t_BaseAPIResponse, t_InvoiceDetailed, t_AccountingExportLine } from '../../api/models';
+import { BillingService } from '../../src/service/billing.service';
+import { ReportService } from '../../src/service/report.service';
+
 
 // Mock response object
 const createMockResponse = () => {
@@ -32,7 +35,10 @@ describe('Billing Integration', () => {
         invoiceRepo = new InMemoryInvoiceRepository(db);
         userRepo = new InMemoryUserRepository(db);
 
-        billingHandlers = createBillingHandlers(invoiceRepo, subscriptionRepo, userRepo);
+        const billingService = new BillingService(invoiceRepo, subscriptionRepo, userRepo);
+        const reportingService = new ReportService(invoiceRepo, userRepo);
+
+        billingHandlers = createBillingHandlers(billingService, reportingService);
     });
 
     describe('generateMonthlyBilling', () => {

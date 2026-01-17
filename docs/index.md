@@ -26,15 +26,17 @@ graph TD
     Gateway -- "2. Appel Handler" --> Handlers[API Handlers]
     
     subgraph "Logique Métier"
-    Handlers -- "3. Appel" --> Repos[Repositories]
+    Handlers -- "3. Appel" --> Services[Services]
+    Services -- "4. Appel" --> Repos[Repositories]
     end
     
     subgraph "Persistance"
-    Repos -- "4. Requête SQL" --> DB[(Base de Données)]
+    Repos -- "5. Requête SQL" --> DB[(Base de Données)]
     end
     
     DB -.-> Repos
-    Repos -.-> Handlers
+    Repos -.-> Services
+    Services -.-> Handlers
     Handlers -.-> Gateway
     Gateway -.-> Client
 ```

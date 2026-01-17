@@ -1,14 +1,13 @@
 import type { AdminLogin } from '../../../api/generated';
-import type { AdminRepository } from '../../repository/admin.repository';
-import { security } from '../../utils/security';
+import type { AuthService } from '../../service/auth.service';
 
 /**
  * Creates the admin authentication handlers
  * 
- * @param adminRepository The admin repository
+ * @param authService The auth service
  * @returns The admin authentication handlers
  */
-export const createAdminAuthHandlers = (adminRepository: AdminRepository) => {
+export const createAdminAuthHandlers = (authService: AuthService) => {
 
     /**
      * Logs in an admin
@@ -22,52 +21,27 @@ export const createAdminAuthHandlers = (adminRepository: AdminRepository) => {
      * @returns The response object
      */
     const adminLogin: AdminLogin = async (params, respond, req) => {
-        const { email, password } = params.body;
+        const result = await authService.adminLogin(params.body);
 
-        const admin = await adminRepository.findWithPasswordByEmail(email);
-
-        if (!admin || !admin.password) {
-            (req as any).log.warn({ email }, 'Admin login failed: admin not found');
+        if (!result.success) {
+            (req as any).log.warn({ email: params.body.email }, `Admin login failed: ${result.reason}`);
             return respond.with401().body({
                 success: false,
-                message: 'Invalid credentials',
+                message: result.reason === 'Account inactive' ? 'Account inactive' : 'Invalid credentials',
                 payload: null,
             });
         }
 
-        if (admin.isActive !== 'true') {
-            (req as any).log.warn({ email }, 'Admin login failed: account inactive');
-            return respond.with401().body({
-                success: false,
-                message: 'Account inactive',
-                payload: null,
-            });
-        }
+        const { admin, token } = result;
 
-        const isValid = await security.verifyPassword(password, admin.password);
-        if (!isValid) {
-            (req as any).log.warn({ email }, 'Admin login failed: invalid password');
-            return respond.with401().body({
-                success: false,
-                message: 'Invalid credentials',
-                payload: null,
-            });
-        }
-
-        const token = security.generateAdminToken(admin);
-
-        await adminRepository.updateLastLogin(admin.id!);
-
-        const { password: _, ...adminWithoutPassword } = admin;
-
-        (req as any).log.info({ email, adminId: admin.id }, 'Admin logged in successfully');
+        (req as any).log.info({ email: params.body.email, adminId: admin!.id }, 'Admin logged in successfully');
 
         return respond.with200().body({
             success: true,
             message: 'Admin login successful',
             payload: {
-                token,
-                admin: adminWithoutPassword,
+                token: token!,
+                admin: admin!,
             },
         });
     };

@@ -1,15 +1,14 @@
 import type { Login } from '../../../api/generated';
-import type { UserRepository } from '../../repository/user.repository';
-import { security } from '../../utils/security';
+import type { AuthService } from '../../service/auth.service';
 
 /**
  * Creates the authentication handlers
  * 
- * @param userRepository The user repository
+ * @param authService The auth service
  * 
  * @returns The authentication handlers
  */
-export const createAuthHandlers = (userRepository: UserRepository) => {
+export const createAuthHandlers = (authService: AuthService) => {
     /**
      * Logs in a user
      * 
@@ -22,12 +21,10 @@ export const createAuthHandlers = (userRepository: UserRepository) => {
      * @returns The response object
      */
     const login: Login = async (params, respond, req) => {
-        const { email, password } = params.body;
+        const result = await authService.login(params.body);
 
-        const user = await userRepository.findWithPasswordByEmail(email);
-
-        if (!user || !user.password) {
-            (req as any).log.warn({ email }, 'Login failed: user not found or no password');
+        if (!result.success) {
+            req.log.warn({ email: params.body.email }, `Login failed: ${result.reason}`);
             return respond.with401().body({
                 success: false,
                 message: 'Invalid credentials',
@@ -35,28 +32,16 @@ export const createAuthHandlers = (userRepository: UserRepository) => {
             });
         }
 
-        const isValid = await security.verifyPassword(password, user.password);
-        if (!isValid) {
-            (req as any).log.warn({ email }, 'Login failed: invalid password');
-            return respond.with401().body({
-                success: false,
-                message: 'Invalid credentials',
-                payload: null,
-            });
-        }
+        const { user, token } = result;
 
-        const token = security.generateToken(user);
-
-        const { password: _, ...userWithoutPassword } = user;
-
-        (req as any).log.info({ email, userId: user.id }, 'User logged in successfully');
+        req.log.info({ email: params.body.email, userId: user!.id }, 'User logged in successfully');
 
         return respond.with200().body({
             success: true,
             message: 'Login successful',
             payload: {
-                token,
-                user: userWithoutPassword,
+                token: token!,
+                user: user!,
             },
         });
     };

@@ -1,64 +1,33 @@
 import type { ExportDirectDebits, GetMonthlyRevenue, UpdatePaymentStatus } from '../../../api/generated';
-import type { InvoiceRepository } from '../../repository/invoice.repository';
-import type { UserRepository } from '../../repository/user.repository';
-import type { t_DirectDebitOrder } from '../../../api/models';
-import { generateUUID } from '../../utils/uuid';
+import type { BillingService } from '../../service/billing.service';
+import type { ReportService } from '../../service/report.service';
 
 /**
  * Creates the report handlers
- * 
- * @param invoiceRepository The invoice repository
- * @param userRepository The user repository
- * 
+ *
+ * @param billingService The billing service
+ * @param reportService The reporting service
+ *
  * @returns The report handlers
  */
-export function createReportHandlers(invoiceRepository: InvoiceRepository, userRepository: UserRepository) {
+export function createReportHandlers(
+    billingService: BillingService,
+    reportService: ReportService,
+) {
     /**
      * Exports the direct debits
-     * 
+     *
      * @route GET /exports/banking/direct-debits
-     * 
+     *
      * @param params The request parameters
      * @param respond The response handler
-     * 
+     *
      * @returns The response object
      */
     const exportDirectDebits: ExportDirectDebits = async (params, respond) => {
         const { executionDate } = params.query; // YYYY-MM-DD
 
-        // Calculate the billing month (previous month relative to executionDate)
-        const dateObj = new Date(executionDate);
-        dateObj.setMonth(dateObj.getMonth() - 1);
-        const billingMonth = dateObj.toISOString().slice(0, 7); // YYYY-MM
-
-        // 1. Fetch invoices for the billing month
-        const invoices = await invoiceRepository.findAllByMonth(billingMonth);
-
-        // 2. Filter pending invoices
-        const pendingInvoices = invoices.filter((inv) => inv.status === 'PENDING' || inv.status === 'SENT');
-
-        const directDebits: t_DirectDebitOrder[] = [];
-
-        for (const invoice of pendingInvoices) {
-            // 3. Fetch user to check payment method
-            const user = await userRepository.findById(invoice.userId!);
-
-            if (
-                user &&
-                user.paymentMethod &&
-                (user.paymentMethod.type === 'SEPA' || user.paymentMethod.type === 'CARD')
-            ) {
-                directDebits.push({
-                    id: generateUUID(),
-                    invoiceId: invoice.id,
-                    userId: user.id,
-                    executionDate: executionDate,
-                    amount: invoice.amountInclVat,
-                    status: 'TO_SEND',
-                    paymentMethod: user.paymentMethod.type,
-                });
-            }
-        }
+        const directDebits = await reportService.exportDirectDebits(executionDate);
 
         return respond.with200().body({
             success: true,
@@ -69,94 +38,45 @@ export function createReportHandlers(invoiceRepository: InvoiceRepository, userR
 
     /**
      * Gets the monthly revenue
-     * 
+     *
      * @route GET /reports/revenue/monthly
-     * 
+     *
      * @param params The request parameters
      * @param respond The response handler
-     * 
+     *
      * @returns The response object
      */
     const getMonthlyRevenue: GetMonthlyRevenue = async (params, respond) => {
         const { from, to } = params.query;
 
-        // Default range: current year if not specified, or reasonable defaults
-        const now = new Date();
-        const startMonth = from || `${now.getFullYear()}-01`;
-        const endMonth = to || `${now.getFullYear()}-12`;
-
-        const startDate = `${startMonth}-01`;
-        // Calculate last day of end month
-        const [yearStr, monthStr] = endMonth.split('-');
-        const endYear = parseInt(yearStr || '2026', 10);
-        const endMonthNum = parseInt(monthStr || '12', 10);
-        const lastDay = new Date(endYear, endMonthNum, 0).getDate();
-        const endDate = `${endMonth}-${lastDay}`;
-
-        const invoices = await invoiceRepository.findAllByDateRange(startDate, endDate);
-
-        // Aggregation
-        const revenueMap = new Map<string, { revenueExclVat: number; vatAmount: number; revenueInclVat: number }>();
-
-        for (const invoice of invoices) {
-            const month = invoice.billingDate!.slice(0, 7); // YYYY-MM
-
-            const current = revenueMap.get(month) || { revenueExclVat: 0, vatAmount: 0, revenueInclVat: 0 };
-
-            current.revenueExclVat += invoice.amountExclVat || 0;
-            current.vatAmount += invoice.vatAmount || 0;
-            current.revenueInclVat += invoice.amountInclVat || 0;
-
-            revenueMap.set(month, current);
-        }
-
-        // Format result
-        const payload = Array.from(revenueMap.entries())
-            .map(([month, data]) => ({
-                month,
-                revenueExclVat: Number(data.revenueExclVat.toFixed(2)),
-                vatAmount: Number(data.vatAmount.toFixed(2)),
-                revenueInclVat: Number(data.revenueInclVat.toFixed(2)),
-            }))
-            .sort((a, b) => a.month.localeCompare(b.month));
+        const payload = await reportService.getMonthlyRevenue(from, to);
 
         return respond.with200().body({
             success: true,
-            message: `Revenue report generated from ${startMonth} to ${endMonth}`,
+            message: `Revenue report generated from ${from || 'start'} to ${to || 'end'}`,
             payload,
         });
     };
 
     /**
      * Updates the payment status
-     * 
+     *
      * @route POST /bank/payment-updates
-     * 
+     *
      * @param params The request parameters
      * @param respond The response handler
-     * 
+     *
      * @returns The response object
      */
     const updatePaymentStatus: UpdatePaymentStatus = async (params, respond) => {
         const updates = params.body;
 
-        for (const update of updates) {
-            const newStatus = update.status === 'EXECUTED' ? 'PAID' : 'FAILED';
-
-            // 1. Update Invoice
-            const invoice = await invoiceRepository.updateStatus(update.invoiceId, newStatus);
-
-            // 2. If Failed, Block User
-            if (newStatus === 'FAILED' && invoice && invoice.userId) {
-                // Find user and update status to SUSPENDED
-                await userRepository.updateStatus(invoice.userId, 'SUSPENDED');
-            }
-        }
+        const updatedCount = await billingService.updatePaymentStatuses(updates);
 
         return respond.with200().body({
             success: true,
             message: 'Payment statuses updated',
-            payload: { updatedCount: updates.length },
+            payload: { updatedCount },
         });
     };
 
