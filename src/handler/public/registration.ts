@@ -1,5 +1,5 @@
 import type { CreateUser } from '../../../api/generated';
-import type { UserRepository } from '../../repository/user.repository';
+import type { UserService } from '../../service/user.service';
 
 /**
  * Creates the registration handlers
@@ -8,7 +8,7 @@ import type { UserRepository } from '../../repository/user.repository';
  * 
  * @returns The registration handlers
  */
-export function createRegistrationHandlers(repository: UserRepository) {
+export function createRegistrationHandlers(userService: UserService) {
     /**
      * Creates a user
      * 
@@ -22,7 +22,7 @@ export function createRegistrationHandlers(repository: UserRepository) {
     const createUser: CreateUser = async (params, respond) => {
         const userData = params.body;
 
-        const newUser = await repository.create(userData);
+        const newUser = await userService.create(userData);
 
         return respond.with201().body({
             success: true,

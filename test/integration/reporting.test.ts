@@ -7,6 +7,9 @@ import { createTestDatabase } from '../../src/database/memory/test-instance';
 import type { InvoiceRepository } from '../../src/repository/invoice.repository';
 import type { UserRepository } from '../../src/repository/user.repository';
 import type { t_BaseAPIResponse } from '../../api/models';
+import { BillingService } from '../../src/service/billing.service';
+import { ReportService } from '../../src/service/report.service';
+import { InMemorySubscriptionRepository } from '../../src/repository/memory/in-memory-subscription.repository';
 
 // Mock response object
 const createMockResponse = () => {
@@ -26,7 +29,12 @@ describe('Reporting Integration', () => {
         const db = createTestDatabase([]);
         invoiceRepo = new InMemoryInvoiceRepository(db);
         userRepo = new InMemoryUserRepository(db);
-        reportHandlers = createReportHandlers(invoiceRepo, userRepo);
+        const subscriptionRepo = new InMemorySubscriptionRepository(db);
+
+        const billingService = new BillingService(invoiceRepo, subscriptionRepo, userRepo);
+        const reportingService = new ReportService(invoiceRepo, userRepo);
+
+        reportHandlers = createReportHandlers(billingService, reportingService);
     });
 
     describe('getMonthlyRevenue', () => {
