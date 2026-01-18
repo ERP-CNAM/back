@@ -56,9 +56,9 @@ Récupère toutes les factures avec filtres optionnels.
 - **Chemin** : `/invoices`
 - **Accès** : Admin
 - **Paramètres (Query)** :
-  - `userId` : Filtrer par utilisateur.
-  - `subscriptionId` : Filtrer par abonnement.
-  - `status` : Filtrer par statut (`PENDING`, `SENT`, `PAID`, `FAILED`).
+    - `userId` : Filtrer par utilisateur.
+    - `subscriptionId` : Filtrer par abonnement.
+    - `status` : Filtrer par statut (`PENDING`, `SENT`, `PAID`, `FAILED`).
 
 ### Exemple de réponse (200 OK)
 
@@ -233,8 +233,8 @@ Récupère le CA (HT, TVA, TTC) agrégé par mois.
 - **Chemin** : `/reports/revenue/monthly`
 - **Accès** : Admin
 - **Paramètres (Query)** :
-  - `from` : Mois de début (YYYY-MM).
-  - `to` : Mois de fin (YYYY-MM).
+    - `from` : Mois de début (YYYY-MM).
+    - `to` : Mois de fin (YYYY-MM).
 
 ### Exemple de Réponse (200 OK)
 

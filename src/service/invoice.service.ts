@@ -27,7 +27,7 @@ export class InvoiceService {
             if (invoice.subscriptionId) subscriptionIds.add(invoice.subscriptionId);
         }
 
-        // 3. Fetch related data in parallel (N+1 optimisation vs loading full DB)
+        // 3. Fetch related data in parallel
         const [users, subscriptions] = await Promise.all([
             Promise.all(Array.from(userIds).map(id => this.userRepository.findById(id))),
             Promise.all(Array.from(subscriptionIds).map(id => this.subscriptionRepository.findById(id))),

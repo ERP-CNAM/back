@@ -1,5 +1,5 @@
 import { security } from '../utils/security';
-import { getAccessLevel } from './routes.config';
+import { getAccessLevel } from '../config/routes.config';
 
 /**
  * Authentication and Authorization Middleware.

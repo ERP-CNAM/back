@@ -2,6 +2,7 @@ import type { InvoiceRepository } from '../repository/invoice.repository';
 import type { SubscriptionRepository } from '../repository/subscription.repository';
 import type { UserRepository } from '../repository/user.repository';
 import type { t_Invoice } from '../../api/models';
+import { VAT_RATE, PROMO_CODES, PROMO_RULES } from '../config/constants';
 
 export class BillingService {
     constructor(
@@ -25,15 +26,14 @@ export class BillingService {
             let amountExclVat = sub.monthlyAmount || 0;
 
             // Apply 50% discount on first payment if promo code is 'B1M20'
-            // TODO: Extract promo code logic to a strategy or clearer constant if it grows
-            if (sub.promoCode === 'B1M20') {
+            if (sub.promoCode === PROMO_CODES.WELCOME_OFFER) {
                 const previousInvoicesCount = await this.invoiceRepository.countBySubscriptionId(sub.id!);
                 if (previousInvoicesCount === 0) {
-                    amountExclVat = amountExclVat * 0.5;
+                    amountExclVat = amountExclVat * PROMO_RULES.WELCOME_OFFER_DISCOUNT;
                 }
             }
 
-            const vatRate = 0.2;
+            const vatRate = VAT_RATE;
             const vatAmount = Number((amountExclVat * vatRate).toFixed(2));
             const amountInclVat = Number((amountExclVat + vatAmount).toFixed(2));
 

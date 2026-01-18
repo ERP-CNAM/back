@@ -59,7 +59,7 @@ Récupère la liste de tous les joueurs inscrits.
 - **Chemin** : `/users`
 - **Accès** : Admin
 - **Paramètres (Query)** :
-  - `status` : Filtrer par statut (`OK`, `SUSPENDED`, `BLOCKED`, `DELETED`).
+    - `status` : Filtrer par statut (`OK`, `SUSPENDED`, `BLOCKED`, `DELETED`).
 
 #### Exemple de réponse (200 OK)
 
