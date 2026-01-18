@@ -65,7 +65,7 @@ sequenceDiagram
 
 ## Configuration des routes
 
-Définie dans `src/middleware/routes.config.ts` :
+Définie dans `src/config/routes.config.ts` :
 
 ```typescript
 export const ROUTES: Route[] = [
@@ -75,13 +75,13 @@ export const ROUTES: Route[] = [
   // AUTHENTIFIÉ (permission: 1)
   { path: '/subscriptions', method: 'GET', access: 'authenticated' },
 
-  // ADMIN (permission: 2 - mais user doit avoir 3 pour y accéder)
+  // ADMIN (permission: 2)
   { path: '/users', method: 'GET', access: 'admin' },
 ];
 ```
 
 ## Fichiers concernés
 
-- `src/middleware/routes.config.ts` - Définitions d'accès aux routes
+- `src/config/routes.config.ts` - Définitions d'accès aux routes
 - `src/middleware/auth.middleware.ts` - Logique d'autorisation (bitmask)
 - `src/utils/security.ts` - Génération des tokens (user=1, admin=3)

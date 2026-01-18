@@ -8,7 +8,7 @@ import * as path from 'path';
 import * as yaml from 'yamljs';
 
 const OPENAPI_PATH = path.resolve(__dirname, '../api/spec/openapi.yaml');
-const OUTPUT_PATH = path.resolve(__dirname, '../src/middleware/routes.config.ts');
+const OUTPUT_PATH = path.resolve(__dirname, '../src/config/routes.config.ts');
 
 interface Route {
     path: string;
