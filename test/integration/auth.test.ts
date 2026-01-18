@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { getAccessLevel } from '../../src/middleware/routes.config';
+import { getAccessLevel } from '../../src/config/routes.config';
 import { PERMISSION, hasPermission } from '../../src/middleware/auth.middleware';
 
 /**

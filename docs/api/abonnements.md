@@ -60,8 +60,8 @@ Liste les abonnements actifs ou passés.
 - **Chemin** : `/subscriptions`
 - **Accès** : Authentifié
 - **Paramètres (Query)** :
-  - `userId` : (Optionnel) Filtrer par utilisateur.
-  - `status` : (Optionnel) Filtrer par statut (`ACTIVE`, `CANCELLED`).
+    - `userId` : (Optionnel) Filtrer par utilisateur.
+    - `status` : (Optionnel) Filtrer par statut (`ACTIVE`, `CANCELLED`).
 
 #### Exemple de réponse (200 OK)
 

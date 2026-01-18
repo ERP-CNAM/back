@@ -2,6 +2,7 @@ import type { InvoiceRepository } from '../repository/invoice.repository';
 import type { UserRepository } from '../repository/user.repository';
 import type { t_AccountingExportLine, t_DirectDebitOrder } from '../../api/models';
 import { generateUUID } from '../utils/uuid';
+import { ACCOUNTING_CODES, DEFAULT_FALLBACK_YEAR } from '../config/constants';
 
 export class ReportService {
     constructor(
@@ -67,7 +68,7 @@ export class ReportService {
 
         // Calculate last day of end month
         const [yearStr, monthStr] = endMonth.split('-');
-        const endYear = parseInt(yearStr || '2026', 10);
+        const endYear = parseInt(yearStr || DEFAULT_FALLBACK_YEAR.toString(), 10);
         const endMonthNum = parseInt(monthStr || '12', 10);
         const lastDay = new Date(endYear, endMonthNum, 0).getDate();
         const endDate = `${endMonth}-${lastDay}`;
@@ -116,7 +117,7 @@ export class ReportService {
             const user = await this.userRepository.findById(invoice.userId!);
             const customerName = user ? `${user.firstName} ${user.lastName}` : 'Unknown Customer';
             // Logic for clientAccount: AUX_ + first 5 chars of lastName or CLI
-            const clientAccount = `AUX_${user?.lastName?.toUpperCase().slice(0, 5) || 'CLI'}`;
+            const clientAccount = `${ACCOUNTING_CODES.CLIENT_PREFIX}${user?.lastName?.toUpperCase().slice(0, 5) || 'CLI'}`;
 
             return { invoice, customerName, clientAccount };
         }));
@@ -125,7 +126,7 @@ export class ReportService {
             // Line 1: Debit Client (Total Incl VAT)
             exportLines.push({
                 date: invoice.billingDate,
-                generalAccount: '411',
+                generalAccount: ACCOUNTING_CODES.CLIENT_DEBIT,
                 clientAccount,
                 invoiceRef: invoice.invoiceRef,
                 description: `Facturation abonnement mensuel - ${customerName}`,
@@ -137,7 +138,7 @@ export class ReportService {
             // Line 2: Credit Product (Excl VAT)
             exportLines.push({
                 date: invoice.billingDate,
-                generalAccount: '700',
+                generalAccount: ACCOUNTING_CODES.PRODUCT_CREDIT,
                 clientAccount: undefined,
                 invoiceRef: invoice.invoiceRef,
                 description: 'Prestation de service HT',
@@ -149,7 +150,7 @@ export class ReportService {
             // Line 3: Credit VAT (VAT Amount)
             exportLines.push({
                 date: invoice.billingDate,
-                generalAccount: '445',
+                generalAccount: ACCOUNTING_CODES.VAT_COLLECTED,
                 clientAccount: undefined,
                 invoiceRef: invoice.invoiceRef,
                 description: 'TVA collectée 20%',

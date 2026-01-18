@@ -47,8 +47,8 @@ flowchart TD
 2. **Flag `isConnectRequest`** - Défini à `true` uniquement avec une `apiKey` valide.
 
 3. **Contexte utilisateur** - Peut provenir de :
-   - `userData` de Connect (chemin Gateway)
-   - JWT dans l'en-tête Authorization (chemin Direct)
+    - `userData` de Connect (chemin Gateway)
+    - JWT dans l'en-tête Authorization (chemin Direct)
 
 ### Flux SPA Direct (sans apiKey de Connect)
 
