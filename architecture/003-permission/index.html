@@ -1079,7 +1079,7 @@
     C-&gt;&gt;B: Transfère la requête
     B--&gt;&gt;A: 200 OK</code></pre>
 <h2 id="configuration-des-routes">Configuration des routes</h2>
-<p>Définie dans <code>src/middleware/routes.config.ts</code> :</p>
+<p>Définie dans <code>src/config/routes.config.ts</code> :</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">ROUTES</span><span class="o">:</span><span class="w"> </span><span class="kt">Route</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="c1">// PUBLIC (permission: 0)</span>
 <a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;/auth/login&#39;</span><span class="p">,</span><span class="w"> </span><span class="nx">method</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;POST&#39;</span><span class="p">,</span><span class="w"> </span><span class="nx">access</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;public&#39;</span><span class="w"> </span><span class="p">},</span>
@@ -1087,13 +1087,13 @@
 <a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">  </span><span class="c1">// AUTHENTIFIÉ (permission: 1)</span>
 <a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;/subscriptions&#39;</span><span class="p">,</span><span class="w"> </span><span class="nx">method</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;GET&#39;</span><span class="p">,</span><span class="w"> </span><span class="nx">access</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;authenticated&#39;</span><span class="w"> </span><span class="p">},</span>
 <a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">  </span><span class="c1">// ADMIN (permission: 2 - mais user doit avoir 3 pour y accéder)</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">  </span><span class="c1">// ADMIN (permission: 2)</span>
 <a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="nx">path</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;/users&#39;</span><span class="p">,</span><span class="w"> </span><span class="nx">method</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;GET&#39;</span><span class="p">,</span><span class="w"> </span><span class="nx">access</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;admin&#39;</span><span class="w"> </span><span class="p">},</span>
 <a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="p">];</span>
 </code></pre></div>
 <h2 id="fichiers-concernes">Fichiers concernés</h2>
 <ul>
-<li><code>src/middleware/routes.config.ts</code> - Définitions d'accès aux routes</li>
+<li><code>src/config/routes.config.ts</code> - Définitions d'accès aux routes</li>
 <li><code>src/middleware/auth.middleware.ts</code> - Logique d'autorisation (bitmask)</li>
 <li><code>src/utils/security.ts</code> - Génération des tokens (user=1, admin=3)</li>
 </ul>

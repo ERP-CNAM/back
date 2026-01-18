@@ -1287,10 +1287,12 @@
 <li><strong>Méthode</strong> : <code>GET</code></li>
 <li><strong>Chemin</strong> : <code>/invoices</code></li>
 <li><strong>Accès</strong> : Admin</li>
-<li><strong>Paramètres (Query)</strong> :</li>
+<li><strong>Paramètres (Query)</strong> :<ul>
 <li><code>userId</code> : Filtrer par utilisateur.</li>
 <li><code>subscriptionId</code> : Filtrer par abonnement.</li>
 <li><code>status</code> : Filtrer par statut (<code>PENDING</code>, <code>SENT</code>, <code>PAID</code>, <code>FAILED</code>).</li>
+</ul>
+</li>
 </ul>
 <h3 id="exemple-de-reponse-200-ok_1">Exemple de réponse (200 OK)</h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">{</span>
@@ -1440,9 +1442,11 @@
 <li><strong>Méthode</strong> : <code>GET</code></li>
 <li><strong>Chemin</strong> : <code>/reports/revenue/monthly</code></li>
 <li><strong>Accès</strong> : Admin</li>
-<li><strong>Paramètres (Query)</strong> :</li>
+<li><strong>Paramètres (Query)</strong> :<ul>
 <li><code>from</code> : Mois de début (YYYY-MM).</li>
 <li><code>to</code> : Mois de fin (YYYY-MM).</li>
+</ul>
+</li>
 </ul>
 <h3 id="exemple-de-reponse-200-ok_5">Exemple de Réponse (200 OK)</h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="p">{</span>
