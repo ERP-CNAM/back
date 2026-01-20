@@ -19,6 +19,7 @@ ENV NODE_ENV=production
 
 COPY --from=builder --chown=nonroot:nonroot /erp-cnam-backend/node_modules ./node_modules
 COPY --from=builder --chown=nonroot:nonroot /erp-cnam-backend/dist ./dist
+COPY --from=builder --chown=nonroot:nonroot /erp-cnam-backend/web ./web
 
 USER nonroot
 
