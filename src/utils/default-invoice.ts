@@ -2,6 +2,7 @@ import 'dotenv/config';
 import { getDatabase } from '../database/client';
 import { DB_TYPE } from '../database/config';
 import { logger } from './logger';
+import { PROMO_CODES, PROMO_RULES } from '../config/constants';
 
 import { PostgresUserRepository } from '../repository/postgres/postgres-user.repository';
 import { InMemoryUserRepository } from '../repository/memory/in-memory-user.repository';
@@ -24,6 +25,7 @@ type UserLike = {
 type SubscriptionLike = {
     id: string;
     monthlyAmount?: number | null;
+    promoCode?: string | null;
 };
 
 type InvoiceLike = {
@@ -108,8 +110,6 @@ export async function seedInvoices(): Promise<void> {
     const startYear: number = 2025;
     const startMonth: number = 7; // 07 => juillet 2025
 
-    const factors: number[] = [1, 1, 1.1, 0.9, 1.2, 1, 0.95, 1.05];
-
     for (const sub of subs) {
         if (!sub?.id) continue;
 
@@ -130,8 +130,14 @@ export async function seedInvoices(): Promise<void> {
 
             if (existingBillingDates.has(billingDate)) continue;
 
-            const factor: number = factors[i % factors.length] ?? 1;
-            const incl: number = Math.round(baseInclVat * factor * 100) / 100;
+            // Apply logic: First month with PROMO code gets discount
+            let amount = baseInclVat;
+            if (i === 0 && sub.promoCode === PROMO_CODES.WELCOME_OFFER) {
+                amount = amount * PROMO_RULES.WELCOME_OFFER_DISCOUNT;
+            }
+            
+            // Round to 2 decimals
+            const incl: number = Math.round(amount * 100) / 100;
 
             const { amountExclVat, vatAmount, amountInclVat } = computeAmounts(incl);
             const status: InvoiceStatus = statusForIndex(i);
