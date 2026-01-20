@@ -98,7 +98,7 @@ Détails complets d'un joueur par son ID.
 
 - **Méthode** : `GET`
 - **Chemin** : `/users/{userId}`
-- **Accès** : Admin
+- **Accès** : Authentifié (propre compte) ou Admin
 
 #### Exemple de Réponse (200 OK)
 
@@ -124,6 +124,37 @@ Détails complets d'un joueur par son ID.
     },
     "createdAt": "2026-01-13T20:00:00Z",
     "updatedAt": "2026-01-13T20:00:00Z"
+  }
+}
+```
+
+### Mettre à jour un utilisateur
+
+Mise à jour des informations personnelles du joueur.
+
+- **Méthode** : `PUT`
+- **Chemin** : `/users/{userId}`
+- **Accès** : Authentifié (propre compte) ou Admin
+
+#### Exemple de requête
+
+```json
+{
+  "firstName": "Alice",
+  "address": "12 Avenue des Champs-Élysées"
+}
+```
+
+#### Exemple de réponse (200 OK)
+
+```json
+{
+  "success": true,
+  "message": "User updated successfully",
+  "payload": {
+    "id": "a1b2c3d4-e5f6-4g7h-8i9j-k1l2m3n4o5p6",
+    "firstName": "Alice",
+    ...
   }
 }
 ```

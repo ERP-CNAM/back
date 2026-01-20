@@ -3,20 +3,20 @@ import type { UserService } from '../../service/user.service';
 
 /**
  * Creates the user handlers
- * 
- * @param repository The user repository
- * 
+ *
+ *
  * @returns The user handlers
+ * @param userService
  */
 export function createUserHandlers(userService: UserService) {
     /**
      * Lists the users
-     * 
+     *
      * @route GET /users
-     * 
+     *
      * @param params The request parameters
      * @param respond The response handler
-     * 
+     *
      * @returns The response object
      */
     const listUsers: ListUsers = async (params, respond) => {
@@ -33,13 +33,13 @@ export function createUserHandlers(userService: UserService) {
 
     /**
      * Gets the user
-     * 
+     *
      * @route GET /users/{userId}
-     * 
+     *
      * @param params The request parameters
      * @param respond The response handler
      * @param req The express request
-     * 
+     *
      * @returns The response object
      */
     const getUser: GetUser = async (params, respond, req) => {
@@ -73,13 +73,13 @@ export function createUserHandlers(userService: UserService) {
 
     /**
      * Updates the user
-     * 
+     *
      * @route PUT /users/{userId}
-     * 
+     *
      * @param params The request parameters
      * @param respond The response handler
      * @param req The express request
-     * 
+     *
      * @returns The response object
      */
     const updateUser: UpdateUser = async (params, respond, req) => {
@@ -114,12 +114,12 @@ export function createUserHandlers(userService: UserService) {
 
     /**
      * Deletes the user
-     * 
+     *
      * @route DELETE /users/{userId}
-     * 
+     *
      * @param params The request parameters
      * @param respond The response handler
-     * 
+     *
      * @returns The response object
      */
     const deleteUser: DeleteUser = async (params, respond) => {
@@ -144,12 +144,12 @@ export function createUserHandlers(userService: UserService) {
 
     /**
      * Updates the user status
-     * 
+     *
      * @route PATCH /users/{userId}/status
-     * 
+     *
      * @param params The request parameters
      * @param respond The response handler
-     * 
+     *
      * @returns The response object
      */
     const updateUserStatus: UpdateUserStatus = async (params, respond) => {

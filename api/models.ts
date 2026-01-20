@@ -227,7 +227,6 @@ export type t_UpdateUserRequestBodySchema = {
   paymentMethod?: t_PaymentMethod
   phone?: string
   postalCode?: string
-  status?: t_UserStatus
 }
 
 export type t_UpdateUserStatusParamSchema = {

@@ -3,7 +3,6 @@ import { eq } from 'drizzle-orm';
 import type { UserRepository, UserQueryOptions, UserWithPassword } from '../user.repository';
 import type {
     t_CreateUserRequestBodySchema,
-    t_UpdateUserRequestBodySchema,
     t_User,
     t_UserStatus,
 } from '../../../api/models';
@@ -12,7 +11,7 @@ import { generateUUID } from '../../utils/uuid';
 import { security } from '../../utils/security';
 
 export class PostgresUserRepository implements UserRepository {
-    constructor(private db: NodePgDatabase) {}
+    constructor(private db: NodePgDatabase) { }
 
     private toUser(row: typeof users.$inferSelect): t_User {
         return {
@@ -94,7 +93,7 @@ export class PostgresUserRepository implements UserRepository {
         return this.toUser(inserted);
     }
 
-    async update(id: string, data: t_UpdateUserRequestBodySchema): Promise<t_User | null> {
+    async update(id: string, data: Partial<t_User>): Promise<t_User | null> {
         const existingUser = await this.findById(id);
         if (!existingUser) {
             return null;
