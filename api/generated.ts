@@ -156,6 +156,7 @@ export type GetUserResponder = {
       payload?: t_User
     }
   >
+  with403(): ExpressRuntimeResponse<t_BaseAPIResponse>
   with404(): ExpressRuntimeResponse<
     t_BaseAPIResponse & {
       payload?: EmptyObject | null
@@ -177,6 +178,7 @@ export type UpdateUserResponder = {
       payload?: t_User
     }
   >
+  with403(): ExpressRuntimeResponse<t_BaseAPIResponse>
   with404(): ExpressRuntimeResponse<
     t_BaseAPIResponse & {
       payload?: EmptyObject | null
@@ -799,6 +801,7 @@ export function createRouter(implementation: Implementation): Router {
         "200",
         s_BaseAPIResponse.merge(z.object({ payload: s_User.optional() })),
       ],
+      ["403", s_BaseAPIResponse],
       [
         "404",
         s_BaseAPIResponse.merge(
@@ -832,6 +835,9 @@ export function createRouter(implementation: Implementation): Router {
                 payload?: t_User
               }
             >(200)
+          },
+          with403() {
+            return new ExpressRuntimeResponse<t_BaseAPIResponse>(403)
           },
           with404() {
             return new ExpressRuntimeResponse<
@@ -884,6 +890,7 @@ export function createRouter(implementation: Implementation): Router {
         "200",
         s_BaseAPIResponse.merge(z.object({ payload: s_User.optional() })),
       ],
+      ["403", s_BaseAPIResponse],
       [
         "404",
         s_BaseAPIResponse.merge(
@@ -921,6 +928,9 @@ export function createRouter(implementation: Implementation): Router {
                 payload?: t_User
               }
             >(200)
+          },
+          with403() {
+            return new ExpressRuntimeResponse<t_BaseAPIResponse>(403)
           },
           with404() {
             return new ExpressRuntimeResponse<

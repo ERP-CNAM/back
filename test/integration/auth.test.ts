@@ -28,8 +28,8 @@ describe('Routes Configuration', () => {
 
         it('should return "admin" for user management routes', () => {
             expect(getAccessLevel('/users', 'GET')).toBe('admin');
-            expect(getAccessLevel('/users/123', 'GET')).toBe('admin');
-            expect(getAccessLevel('/users/123', 'PUT')).toBe('admin');
+            expect(getAccessLevel('/users/123', 'GET')).toBe('authenticated');
+            expect(getAccessLevel('/users/123', 'PUT')).toBe('authenticated');
             expect(getAccessLevel('/users/123', 'DELETE')).toBe('admin');
         });
 
