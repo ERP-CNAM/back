@@ -802,15 +802,15 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#modifier-un-statut-financieracces" class="md-nav__link">
+  <a href="#mettre-a-jour-un-utilisateur" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Modifier un statut financier/accès
+        Mettre à jour un utilisateur
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Modifier un statut financier/accès">
+    <nav class="md-nav" aria-label="Mettre à jour un utilisateur">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -841,6 +841,45 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#modifier-un-statut-financieracces" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modifier un statut financier/accès
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Modifier un statut financier/accès">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exemple-de-requete_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exemple de requête
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exemple-de-reponse-200-ok_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exemple de réponse (200 OK)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#suppression-logique" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -853,7 +892,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#exemple-de-reponse-200-ok_3" class="md-nav__link">
+  <a href="#exemple-de-reponse-200-ok_4" class="md-nav__link">
     <span class="md-ellipsis">
       
         Exemple de réponse (200 OK)
@@ -1079,15 +1118,15 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#modifier-un-statut-financieracces" class="md-nav__link">
+  <a href="#mettre-a-jour-un-utilisateur" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Modifier un statut financier/accès
+        Mettre à jour un utilisateur
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Modifier un statut financier/accès">
+    <nav class="md-nav" aria-label="Mettre à jour un utilisateur">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1118,6 +1157,45 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#modifier-un-statut-financieracces" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modifier un statut financier/accès
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Modifier un statut financier/accès">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exemple-de-requete_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exemple de requête
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exemple-de-reponse-200-ok_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exemple de réponse (200 OK)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#suppression-logique" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1130,7 +1208,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#exemple-de-reponse-200-ok_3" class="md-nav__link">
+  <a href="#exemple-de-reponse-200-ok_4" class="md-nav__link">
     <span class="md-ellipsis">
       
         Exemple de réponse (200 OK)
@@ -1252,7 +1330,7 @@
 <ul>
 <li><strong>Méthode</strong> : <code>GET</code></li>
 <li><strong>Chemin</strong> : <code>/users/{userId}</code></li>
-<li><strong>Accès</strong> : Admin</li>
+<li><strong>Accès</strong> : Authentifié (propre compte) ou Admin</li>
 </ul>
 <h4 id="exemple-de-reponse-200-ok_1">Exemple de Réponse (200 OK)</h4>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">{</span>
@@ -1279,6 +1357,30 @@
 <a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a><span class="w">  </span><span class="p">}</span>
 <a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a><span class="p">}</span>
 </code></pre></div>
+<h3 id="mettre-a-jour-un-utilisateur">Mettre à jour un utilisateur</h3>
+<p>Mise à jour des informations personnelles du joueur.</p>
+<ul>
+<li><strong>Méthode</strong> : <code>PUT</code></li>
+<li><strong>Chemin</strong> : <code>/users/{userId}</code></li>
+<li><strong>Accès</strong> : Authentifié (propre compte) ou Admin</li>
+</ul>
+<h4 id="exemple-de-requete_1">Exemple de requête</h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="p">{</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span><span class="nt">&quot;firstName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Alice&quot;</span><span class="p">,</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span><span class="nt">&quot;address&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;12 Avenue des Champs-Élysées&quot;</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="p">}</span>
+</code></pre></div>
+<h4 id="exemple-de-reponse-200-ok_2">Exemple de réponse (200 OK)</h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="p">{</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">  </span><span class="nt">&quot;success&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">  </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;User updated successfully&quot;</span><span class="p">,</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">  </span><span class="nt">&quot;payload&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;a1b2c3d4-e5f6-4g7h-8i9j-k1l2m3n4o5p6&quot;</span><span class="p">,</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">    </span><span class="nt">&quot;firstName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Alice&quot;</span><span class="p">,</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">    </span><span class="err">...</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">  </span><span class="p">}</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="p">}</span>
+</code></pre></div>
 <h3 id="modifier-un-statut-financieracces">Modifier un statut financier/accès</h3>
 <p>Permet de suspendre ou bloquer un utilisateur (souvent suite à un incident de paiement).</p>
 <ul>
@@ -1286,23 +1388,23 @@
 <li><strong>Chemin</strong> : <code>/users/{userId}/status</code></li>
 <li><strong>Accès</strong> : Admin</li>
 </ul>
-<h4 id="exemple-de-requete_1">Exemple de requête</h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="p">{</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;BLOCKED&quot;</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="p">}</span>
+<h4 id="exemple-de-requete_2">Exemple de requête</h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="p">{</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;BLOCKED&quot;</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="p">}</span>
 </code></pre></div>
-<h4 id="exemple-de-reponse-200-ok_2">Exemple de réponse (200 OK)</h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="p">{</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">  </span><span class="nt">&quot;success&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">  </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;User status updated successfully&quot;</span><span class="p">,</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">  </span><span class="nt">&quot;payload&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;a1b2c3d4-e5f6-4g7h-8i9j-k1l2m3n4o5p6&quot;</span><span class="p">,</span>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">    </span><span class="nt">&quot;firstName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Alice&quot;</span><span class="p">,</span>
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">    </span><span class="nt">&quot;lastName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Smith&quot;</span><span class="p">,</span>
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">    </span><span class="nt">&quot;email&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;alice.smith@example.com&quot;</span><span class="p">,</span>
-<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">    </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;BLOCKED&quot;</span>
-<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">  </span><span class="p">}</span>
-<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="p">}</span>
+<h4 id="exemple-de-reponse-200-ok_3">Exemple de réponse (200 OK)</h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="p">{</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">  </span><span class="nt">&quot;success&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">  </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;User status updated successfully&quot;</span><span class="p">,</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">  </span><span class="nt">&quot;payload&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;a1b2c3d4-e5f6-4g7h-8i9j-k1l2m3n4o5p6&quot;</span><span class="p">,</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">    </span><span class="nt">&quot;firstName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Alice&quot;</span><span class="p">,</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">    </span><span class="nt">&quot;lastName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Smith&quot;</span><span class="p">,</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="w">    </span><span class="nt">&quot;email&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;alice.smith@example.com&quot;</span><span class="p">,</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="w">    </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;BLOCKED&quot;</span>
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="w">  </span><span class="p">}</span>
+<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="p">}</span>
 </code></pre></div>
 <h3 id="suppression-logique">Suppression logique</h3>
 <p>Désactive le compte d'un utilisateur sans supprimer les données historiques.</p>
@@ -1311,12 +1413,12 @@
 <li><strong>Chemin</strong> : <code>/users/{userId}</code></li>
 <li><strong>Accès</strong> : Admin</li>
 </ul>
-<h4 id="exemple-de-reponse-200-ok_3">Exemple de réponse (200 OK)</h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="p">{</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span><span class="nt">&quot;success&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">  </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;User deleted successfully&quot;</span><span class="p">,</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">  </span><span class="nt">&quot;payload&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="p">}</span>
+<h4 id="exemple-de-reponse-200-ok_4">Exemple de réponse (200 OK)</h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="p">{</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">  </span><span class="nt">&quot;success&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">  </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;User deleted successfully&quot;</span><span class="p">,</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">  </span><span class="nt">&quot;payload&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="p">}</span>
 </code></pre></div>
 
 
