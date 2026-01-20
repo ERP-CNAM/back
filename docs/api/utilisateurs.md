@@ -136,6 +136,8 @@ Mise à jour des informations personnelles du joueur.
 - **Chemin** : `/users/{userId}`
 - **Accès** : Authentifié (propre compte) ou Admin
 
+_Note : Le champ `status` ne peut pas être modifié via cet endpoint. Utilisez `PATCH /users/{userId}/status` pour modifier le statut (Admin uniquement)._
+
 #### Exemple de requête
 
 ```json
