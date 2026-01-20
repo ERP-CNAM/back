@@ -12,6 +12,7 @@ RUN npm prune --production
 
 # Create the final image
 FROM gcr.io/distroless/nodejs22-debian12 AS runner
+#FROM node:22 as runner
 
 WORKDIR /erp-cnam-backend
 
@@ -19,6 +20,7 @@ ENV NODE_ENV=production
 
 COPY --from=builder --chown=nonroot:nonroot /erp-cnam-backend/node_modules ./node_modules
 COPY --from=builder --chown=nonroot:nonroot /erp-cnam-backend/dist ./dist
+COPY --from=builder --chown=nonroot:nonroot /erp-cnam-backend/web ./web
 
 USER nonroot
 
