@@ -24,7 +24,7 @@
     "start": "ts-node src/index.ts",
     "dev": "nodemon src/index.ts",
     "prod": "node dist/src/index.js",
-    "build": "tsc && cp -r api/spec dist/api/spec && cp -r src/database/memory/migrations dist/src/database/memory/ && cp -r src/database/postgres/migrations dist/src/database/postgres/",
+    "build": "tsc && cp -r api/spec dist/api/spec && cp -r src/database/memory/migrations dist/src/database/memory/ && cp -r src/database/postgres/migrations dist/src/database/postgres/ && cp -r web dist/web",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
