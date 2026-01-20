@@ -3,7 +3,7 @@ import { eq } from 'drizzle-orm';
 import type { UserRepository, UserQueryOptions, UserWithPassword } from '../user.repository';
 import type {
     t_CreateUserRequestBodySchema,
-    t_UpdateUserRequestBodySchema,
+
     t_User,
     t_UserStatus,
 } from '../../../api/models';
@@ -12,7 +12,7 @@ import { generateUUID } from '../../utils/uuid';
 import { security } from '../../utils/security';
 
 export class InMemoryUserRepository implements UserRepository {
-    constructor(private db: BetterSQLite3Database) {}
+    constructor(private db: BetterSQLite3Database) { }
 
     private toUser(row: any): t_User {
         return {
@@ -105,7 +105,7 @@ export class InMemoryUserRepository implements UserRepository {
         return newUser;
     }
 
-    async update(id: string, data: t_UpdateUserRequestBodySchema): Promise<t_User | null> {
+    async update(id: string, data: Partial<t_User>): Promise<t_User | null> {
         const existingUser = await this.findById(id);
 
         if (!existingUser) {

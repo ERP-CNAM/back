@@ -898,8 +898,6 @@ components:
           format: date
           nullable: true
           example: '1990-05-15'
-        status:
-          $ref: '#/components/schemas/UserStatus'
         paymentMethod:
           $ref: '#/components/schemas/PaymentMethod'
 

@@ -2,7 +2,7 @@ import type {
     t_User,
     t_UserStatus,
     t_CreateUserRequestBodySchema,
-    t_UpdateUserRequestBodySchema,
+
 } from '../../api/models';
 
 export interface UserQueryOptions {
@@ -62,7 +62,7 @@ export interface UserRepository {
      * @param data The user data
      * @returns The updated user
      */
-    update(id: string, data: t_UpdateUserRequestBodySchema): Promise<t_User | null>;
+    update(id: string, data: Partial<t_User>): Promise<t_User | null>;
 
     /**
      * Deletes a user

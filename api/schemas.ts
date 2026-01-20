@@ -163,7 +163,6 @@ export const s_UserUpdate = z.object({
   postalCode: z.string().optional(),
   country: z.string().optional(),
   dateOfBirth: z.string().nullable().optional(),
-  status: s_UserStatus.optional(),
   paymentMethod: s_PaymentMethod.optional(),
 })
 
