@@ -22,6 +22,8 @@ export const ROUTES: Route[] = [
     { path: '/users', method: 'POST', access: 'public' },
 
     // ==================== AUTHENTICATED ====================
+    { path: '/users/:userId', method: 'GET', access: 'authenticated' },
+    { path: '/users/:userId', method: 'PUT', access: 'authenticated' },
     { path: '/subscriptions/:subscriptionId', method: 'GET', access: 'authenticated' },
     { path: '/subscriptions/:subscriptionId', method: 'PUT', access: 'authenticated' },
     { path: '/subscriptions/:subscriptionId', method: 'DELETE', access: 'authenticated' },
@@ -35,8 +37,6 @@ export const ROUTES: Route[] = [
     { path: '/users/:userId/status', method: 'PATCH', access: 'admin' },
     { path: '/billing/monthly', method: 'POST', access: 'admin' },
     { path: '/bank/payment-updates', method: 'POST', access: 'admin' },
-    { path: '/users/:userId', method: 'GET', access: 'admin' },
-    { path: '/users/:userId', method: 'PUT', access: 'admin' },
     { path: '/users/:userId', method: 'DELETE', access: 'admin' },
     { path: '/users', method: 'GET', access: 'admin' },
     { path: '/invoices', method: 'GET', access: 'admin' },

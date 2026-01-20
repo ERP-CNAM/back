@@ -172,7 +172,7 @@ paths:
       operationId: getUser
       tags: [Users]
       summary: Récupérer un utilisateur
-      x-access-level: admin
+      x-access-level: authenticated
       parameters:
         - in: path
           name: userId
@@ -192,6 +192,12 @@ paths:
                     properties:
                       payload:
                         $ref: '#/components/schemas/User'
+        '403':
+          description: Accès refusé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseAPIResponse'
         '404':
           description: Utilisateur non trouvé
           content:
@@ -208,7 +214,7 @@ paths:
       operationId: updateUser
       tags: [Users]
       summary: Mettre à jour un utilisateur
-      x-access-level: admin
+      x-access-level: authenticated
       parameters:
         - in: path
           name: userId
@@ -234,6 +240,12 @@ paths:
                     properties:
                       payload:
                         $ref: '#/components/schemas/User'
+        '403':
+          description: Accès refusé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseAPIResponse'
         '404':
           description: Utilisateur non trouvé
           content:

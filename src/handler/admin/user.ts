@@ -38,11 +38,21 @@ export function createUserHandlers(userService: UserService) {
      * 
      * @param params The request parameters
      * @param respond The response handler
+     * @param req The express request
      * 
      * @returns The response object
      */
-    const getUser: GetUser = async (params, respond) => {
+    const getUser: GetUser = async (params, respond, req) => {
         const { userId } = params.params;
+        const currentUser = (req as any).user;
+
+        // Security check: non-admins can only access their own profile
+        if (currentUser.permission < 2 && currentUser.userId !== userId) {
+            return respond.with403().body({
+                success: false,
+                message: 'Access denied',
+            });
+        }
 
         const user = await userService.getById(userId);
 
@@ -68,12 +78,22 @@ export function createUserHandlers(userService: UserService) {
      * 
      * @param params The request parameters
      * @param respond The response handler
+     * @param req The express request
      * 
      * @returns The response object
      */
-    const updateUser: UpdateUser = async (params, respond) => {
+    const updateUser: UpdateUser = async (params, respond, req) => {
         const { userId } = params.params;
+        const currentUser = (req as any).user;
         const updates = params.body;
+
+        // Security check: non-admins can only update their own profile
+        if (currentUser.permission < 2 && currentUser.userId !== userId) {
+            return respond.with403().body({
+                success: false,
+                message: 'Access denied',
+            });
+        }
 
         const updatedUser = await userService.update(userId, updates);
 
