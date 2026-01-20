@@ -111,7 +111,7 @@ export function registerLoginAlpine() {
             error: '',
             apiUrl: config.API || 'http://localhost:3000',
             email: 'admin@gamers-erp.com',
-            password: 'Password123!',
+            password: '',
 
             async submit() {
                 if (this.loading) return;
