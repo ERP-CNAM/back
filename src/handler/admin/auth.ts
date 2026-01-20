@@ -3,21 +3,20 @@ import type { AuthService } from '../../service/auth.service';
 
 /**
  * Creates the admin authentication handlers
- * 
+ *
  * @param authService The auth service
  * @returns The admin authentication handlers
  */
 export const createAdminAuthHandlers = (authService: AuthService) => {
-
     /**
      * Logs in an admin
-     * 
+     *
      * @route POST /auth/admin/login
-     * 
+     *
      * @param params The request parameters
      * @param respond The response handler
      * @param req The request object
-     * 
+     *
      * @returns The response object
      */
     const adminLogin: AdminLogin = async (params, respond, req) => {

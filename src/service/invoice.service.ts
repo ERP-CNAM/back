@@ -8,9 +8,13 @@ export class InvoiceService {
         private readonly invoiceRepository: InvoiceRepository,
         private readonly subscriptionRepository: SubscriptionRepository,
         private readonly userRepository: UserRepository,
-    ) { }
+    ) {}
 
-    async listInvoices(filters: { userId?: string; subscriptionId?: string; status?: 'PENDING' | 'SENT' | 'PAID' | 'FAILED' }): Promise<t_InvoiceDetailed[]> {
+    async listInvoices(filters: {
+        userId?: string;
+        subscriptionId?: string;
+        status?: 'PENDING' | 'SENT' | 'PAID' | 'FAILED';
+    }): Promise<t_InvoiceDetailed[]> {
         // 1. Fetch filtered invoices
         const invoices = await this.invoiceRepository.findAll(filters);
 
@@ -29,15 +33,15 @@ export class InvoiceService {
 
         // 3. Fetch related data in parallel
         const [users, subscriptions] = await Promise.all([
-            Promise.all(Array.from(userIds).map(id => this.userRepository.findById(id))),
-            Promise.all(Array.from(subscriptionIds).map(id => this.subscriptionRepository.findById(id))),
+            Promise.all(Array.from(userIds).map((id) => this.userRepository.findById(id))),
+            Promise.all(Array.from(subscriptionIds).map((id) => this.subscriptionRepository.findById(id))),
         ]);
 
-        const usersById = new Map(users.filter(u => u !== null).map(u => [u!.id!, u!]));
-        const subscriptionsById = new Map(subscriptions.filter(s => s !== null).map(s => [s!.id!, s!]));
+        const usersById = new Map(users.filter((u) => u !== null).map((u) => [u!.id!, u!]));
+        const subscriptionsById = new Map(subscriptions.filter((s) => s !== null).map((s) => [s!.id!, s!]));
 
         // 4. Hydrate result
-        return invoices.map(invoice => {
+        return invoices.map((invoice) => {
             const sub = invoice.subscriptionId ? subscriptionsById.get(invoice.subscriptionId) : undefined;
             const user = invoice.userId ? usersById.get(invoice.userId) : undefined;
 

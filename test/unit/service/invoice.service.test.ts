@@ -38,8 +38,10 @@ describe('InvoiceService', () => {
             vi.mocked(invoiceRepo.findAll).mockResolvedValue(invoices as any);
 
             // Setup Related Data Mocks
-            vi.mocked(userRepo.findById).mockImplementation(async (id) => ({ id, email: `user-${id}@test.com` } as any));
-            vi.mocked(subscriptionRepo.findById).mockImplementation(async (id) => ({ id, status: 'ACTIVE' } as any));
+            vi.mocked(userRepo.findById).mockImplementation(
+                async (id) => ({ id, email: `user-${id}@test.com` }) as any,
+            );
+            vi.mocked(subscriptionRepo.findById).mockImplementation(async (id) => ({ id, status: 'ACTIVE' }) as any);
 
             // Execute
             const result = await service.listInvoices({});
@@ -61,9 +63,7 @@ describe('InvoiceService', () => {
         });
 
         it('should handles missing related data gracefully', async () => {
-            const invoices = [
-                { id: 'i1', userId: 'u1', subscriptionId: 's1' },
-            ];
+            const invoices = [{ id: 'i1', userId: 'u1', subscriptionId: 's1' }];
             vi.mocked(invoiceRepo.findAll).mockResolvedValue(invoices as any);
 
             // Mock Repos returning null (data inconsistency case)

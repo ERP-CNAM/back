@@ -1,8 +1,13 @@
 import type { UserRepository } from '../repository/user.repository';
-import type { t_User, t_CreateUserRequestBodySchema, t_UpdateUserRequestBodySchema, t_UserStatus } from '../../api/models';
+import type {
+    t_User,
+    t_CreateUserRequestBodySchema,
+    t_UpdateUserRequestBodySchema,
+    t_UserStatus,
+} from '../../api/models';
 
 export class UserService {
-    constructor(private readonly repository: UserRepository) { }
+    constructor(private readonly repository: UserRepository) {}
 
     async list(query?: { status?: t_UserStatus }): Promise<t_User[]> {
         return this.repository.findAll(query);

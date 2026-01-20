@@ -600,36 +600,6 @@ paths:
                         items:
                           $ref: '#/components/schemas/InvoiceDetailed'
 
-  /exports/accounting/monthly-invoices:
-    get:
-      operationId: exportMonthlyInvoices
-      tags: [Billing]
-      summary: Export des factures mensuelles pour le Groupe Money
-      x-access-level: admin
-      description: Fournit les écritures de facturation mensuelle à destination de l'application MONEY (Groupe Money).
-      parameters:
-        - in: query
-          name: billingMonth
-          required: true
-          schema:
-            type: string
-            pattern: '^[0-9]{4}-(0[1-9]|1[0-2])$'
-          description: 'Mois de facturation au format YYYY-MM (ex: 2026-06)'
-      responses:
-        '200':
-          description: Données de facturation pour le Groupe Money
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/BaseAPIResponse'
-                  - type: object
-                    properties:
-                      payload:
-                        type: array
-                        items:
-                          $ref: '#/components/schemas/AccountingExportLine'
-
   /exports/banking/direct-debits:
     get:
       operationId: exportDirectDebits
@@ -1038,37 +1008,6 @@ components:
           properties:
             subscription:
               $ref: '#/components/schemas/SubscriptionDetailed'
-
-    AccountingExportLine:
-      type: object
-      description: Ligne d'export comptable pour le Groupe Money.
-      properties:
-        date:
-          type: string
-          format: date
-        generalAccount:
-          type: string
-          example: '700'
-        clientAccount:
-          type: string
-          example: '411'
-        description:
-          type: string
-          example: 'Produit'
-        invoiceRef:
-          type: string
-          example: 'Facture1'
-        debit:
-          type: number
-          format: float
-          nullable: true
-        credit:
-          type: number
-          format: float
-          nullable: true
-        customerName:
-          type: string
-          example: 'John Doe'
 
     DirectDebitOrder:
       type: object

@@ -3,7 +3,7 @@ import type { UserPayload } from '../utils/security';
 import type { t_Subscription, t_CreateSubscriptionRequestBodySchema } from '../../api/models';
 
 export class SubscriptionService {
-    constructor(private readonly repository: SubscriptionRepository) { }
+    constructor(private readonly repository: SubscriptionRepository) {}
 
     async list(user: UserPayload | undefined, query: any): Promise<t_Subscription[]> {
         const queryOptions = query ? { ...query } : {};
@@ -36,7 +36,11 @@ export class SubscriptionService {
         return subscription;
     }
 
-    async update(user: UserPayload | undefined, subscriptionId: string, updates: Partial<t_Subscription>): Promise<t_Subscription | null> {
+    async update(
+        user: UserPayload | undefined,
+        subscriptionId: string,
+        updates: Partial<t_Subscription>,
+    ): Promise<t_Subscription | null> {
         const existing = await this.repository.findById(subscriptionId);
         if (!existing || !this.hasAccess(user, existing.userId)) {
             return null;

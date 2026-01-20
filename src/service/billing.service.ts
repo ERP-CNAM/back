@@ -9,13 +9,15 @@ export class BillingService {
         private readonly invoiceRepository: InvoiceRepository,
         private readonly subscriptionRepository: SubscriptionRepository,
         private readonly userRepository: UserRepository,
-    ) { }
+    ) {}
 
     /**
      * Generates monthly billing invoices for active subscriptions.
      * @param billingDate The date of billing (YYYY-MM-DD). Defaults to today.
      */
-    async generateMonthlyBilling(billingDate: string = new Date().toISOString().slice(0, 10)): Promise<{ billingDate: string; invoices: t_Invoice[] }> {
+    async generateMonthlyBilling(
+        billingDate: string = new Date().toISOString().slice(0, 10),
+    ): Promise<{ billingDate: string; invoices: t_Invoice[] }> {
         const dateObj = new Date(billingDate);
 
         // 1. Fetch active subscriptions
@@ -71,18 +73,20 @@ export class BillingService {
         let updatedCount = 0;
 
         // Process updates in parallel
-        await Promise.all(updates.map(async (update) => {
-            const newStatus = update.status === 'EXECUTED' ? 'PAID' : 'FAILED';
+        await Promise.all(
+            updates.map(async (update) => {
+                const newStatus = update.status === 'EXECUTED' ? 'PAID' : 'FAILED';
 
-            // 1. Update Invoice
-            const invoice = await this.invoiceRepository.updateStatus(update.invoiceId, newStatus);
+                // 1. Update Invoice
+                const invoice = await this.invoiceRepository.updateStatus(update.invoiceId, newStatus);
 
-            // 2. If Failed, Block User
-            if (newStatus === 'FAILED' && invoice && invoice.userId) {
-                await this.userRepository.updateStatus(invoice.userId, 'SUSPENDED');
-            }
-            updatedCount++;
-        }));
+                // 2. If Failed, Block User
+                if (newStatus === 'FAILED' && invoice && invoice.userId) {
+                    await this.userRepository.updateStatus(invoice.userId, 'SUSPENDED');
+                }
+                updatedCount++;
+            }),
+        );
 
         return updatedCount;
     }

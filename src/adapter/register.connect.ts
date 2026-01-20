@@ -13,7 +13,7 @@ const HTTP_METHODS: HttpMethod[] = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
 
 /**
  * Converts an AccessLevel to a bitmask for Connect
- * 
+ *
  * @param access The access level to convert
  * @returns The bitmask for the given access level
  */
@@ -32,7 +32,7 @@ function accessToBitmask(access: AccessLevel): number {
 
 /**
  * Registers the service with Connect
- * 
+ *
  * @returns Promise<void>
  */
 export async function registerConnect() {

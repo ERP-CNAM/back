@@ -32,7 +32,6 @@ import { SubscriptionService } from '../service/subscription.service';
 import { AuthService } from '../service/auth.service';
 import { InvoiceService } from '../service/invoice.service';
 
-
 const databaseInstance = getDatabase();
 let userRepository: UserRepository;
 let adminRepository: AdminRepository;
@@ -65,8 +64,8 @@ const registrationHandlers = createRegistrationHandlers(userService);
 const userHandlers = createUserHandlers(userService);
 const adminAuthHandlers = createAdminAuthHandlers(authService);
 const subscriptionHandlers = createSubscriptionHandlers(subscriptionService);
-const billingHandlers = createBillingHandlers(billingService, reportingService);
-const reportHandlers = createReportHandlers(billingService, reportingService);
+const billingHandlers = createBillingHandlers(billingService);
+const reportHandlers = createReportHandlers(reportingService);
 const invoiceHandlers = createInvoiceHandlers(invoiceService);
 
 /**
@@ -91,10 +90,9 @@ export const handlers: Implementation = {
     updateUser: userHandlers.updateUser,
     deleteUser: userHandlers.deleteUser,
     updateUserStatus: userHandlers.updateUserStatus,
+    updatePaymentStatus: billingHandlers.updatePaymentStatus,
     generateMonthlyBilling: billingHandlers.generateMonthlyBilling,
-    exportMonthlyInvoices: billingHandlers.exportMonthlyInvoices,
     exportDirectDebits: reportHandlers.exportDirectDebits,
-    updatePaymentStatus: reportHandlers.updatePaymentStatus,
     getMonthlyRevenue: reportHandlers.getMonthlyRevenue,
     listInvoices: invoiceHandlers.listInvoices,
 };

@@ -1,9 +1,4 @@
-import type {
-    t_User,
-    t_UserStatus,
-    t_CreateUserRequestBodySchema,
-
-} from '../../api/models';
+import type { t_User, t_UserStatus, t_CreateUserRequestBodySchema } from '../../api/models';
 
 export interface UserQueryOptions {
     status?: t_UserStatus;
@@ -17,7 +12,7 @@ export type UserWithPassword = t_User & { password?: string };
 export interface UserRepository {
     /**
      * Finds all users
-     * 
+     *
      * @param options The query options (status)
      * @returns All users matching the filter
      */
@@ -25,7 +20,7 @@ export interface UserRepository {
 
     /**
      * Finds a user by id
-     * 
+     *
      * @param id The id of the user
      * @returns The user
      */
@@ -33,7 +28,7 @@ export interface UserRepository {
 
     /**
      * Finds a user by email
-     * 
+     *
      * @param email The email of the user
      * @returns The user
      */
@@ -41,7 +36,7 @@ export interface UserRepository {
 
     /**
      * Finds a user by email with password
-     * 
+     *
      * @param email The email of the user
      * @returns The user with password
      */
@@ -49,7 +44,7 @@ export interface UserRepository {
 
     /**
      * Creates a user
-     * 
+     *
      * @param data The user data
      * @returns The created user
      */
@@ -57,7 +52,7 @@ export interface UserRepository {
 
     /**
      * Updates a user
-     * 
+     *
      * @param id The id of the user
      * @param data The user data
      * @returns The updated user
@@ -66,7 +61,7 @@ export interface UserRepository {
 
     /**
      * Deletes a user
-     * 
+     *
      * @param id The id of the user
      * @returns True if the user was deleted, false otherwise
      */
@@ -74,7 +69,7 @@ export interface UserRepository {
 
     /**
      * Updates the status of a user
-     * 
+     *
      * @param id The id of the user
      * @param status The new status
      * @returns The updated user

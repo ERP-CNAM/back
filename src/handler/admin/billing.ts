@@ -1,19 +1,15 @@
-import type { GenerateMonthlyBilling, ExportMonthlyInvoices } from '../../../api/generated';
+import type { GenerateMonthlyBilling } from '../../../api/generated';
 import type { BillingService } from '../../service/billing.service';
-import type { ReportService } from '../../service/report.service';
+import type { UpdatePaymentStatus } from '../../../api/generated';
 
 /**
  * Creates the billing handlers
  *
  * @param billingService The billing service
- * @param reportService The reporting service
  *
  * @returns The billing handlers
  */
-export function createBillingHandlers(
-    billingService: BillingService,
-    reportService: ReportService,
-) {
+export function createBillingHandlers(billingService: BillingService) {
     /**
      * Generates the monthly billing
      *
@@ -38,29 +34,29 @@ export function createBillingHandlers(
     };
 
     /**
-     * Exports the monthly invoices
+     * Updates the payment status
      *
-     * @route GET /exports/accounting/monthly-invoices
+     * @route POST /bank/payment-updates
      *
      * @param params The request parameters
      * @param respond The response handler
      *
      * @returns The response object
      */
-    const exportMonthlyInvoices: ExportMonthlyInvoices = async (params, respond) => {
-        const { billingMonth } = params.query;
+    const updatePaymentStatus: UpdatePaymentStatus = async (params, respond) => {
+        const updates = params.body;
 
-        const result = await reportService.exportMonthlyInvoices(billingMonth);
+        const updatedCount = await billingService.updatePaymentStatuses(updates);
 
         return respond.with200().body({
             success: true,
-            message: `Export generated for ${billingMonth}`,
-            payload: result,
+            message: 'Payment statuses updated',
+            payload: { updatedCount },
         });
     };
 
     return {
         generateMonthlyBilling,
-        exportMonthlyInvoices,
+        updatePaymentStatus,
     };
 }
