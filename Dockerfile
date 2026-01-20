@@ -23,5 +23,6 @@ COPY --from=builder --chown=nonroot:nonroot /erp-cnam-backend/dist ./dist
 USER nonroot
 
 EXPOSE 3000
+EXPOSE 3001
 
 CMD ["dist/src/index.js"]
