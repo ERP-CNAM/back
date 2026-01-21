@@ -1,14 +1,14 @@
 import type { InvoiceRepository } from '../repository/invoice.repository';
 import type { UserRepository } from '../repository/user.repository';
-import type { t_AccountingExportLine, t_DirectDebitOrder } from '../../api/models';
+import type { t_DirectDebitOrder } from '../../api/models';
 import { generateUUID } from '../utils/uuid';
-import { ACCOUNTING_CODES, DEFAULT_FALLBACK_YEAR } from '../config/constants';
+import { DEFAULT_FALLBACK_YEAR } from '../config/constants';
 
 export class ReportService {
     constructor(
         private readonly invoiceRepository: InvoiceRepository,
         private readonly userRepository: UserRepository,
-    ) { }
+    ) {}
 
     /**
      * Exports direct debit orders for a given execution date.
@@ -27,26 +27,28 @@ export class ReportService {
         const pendingInvoices = invoices.filter((inv) => inv.status === 'PENDING' || inv.status === 'SENT');
 
         // 3. Process each invoice to check user payment method
-        const results = await Promise.all(pendingInvoices.map(async (invoice) => {
-            const user = await this.userRepository.findById(invoice.userId!);
+        const results = await Promise.all(
+            pendingInvoices.map(async (invoice) => {
+                const user = await this.userRepository.findById(invoice.userId!);
 
-            if (
-                user &&
-                user.paymentMethod &&
-                (user.paymentMethod.type === 'SEPA' || user.paymentMethod.type === 'CARD')
-            ) {
-                return {
-                    id: generateUUID(),
-                    invoiceId: invoice.id,
-                    userId: user.id,
-                    executionDate: executionDate,
-                    amount: invoice.amountInclVat,
-                    status: 'TO_SEND',
-                    paymentMethod: user.paymentMethod.type,
-                } as t_DirectDebitOrder;
-            }
-            return null;
-        }));
+                if (
+                    user &&
+                    user.paymentMethod &&
+                    (user.paymentMethod.type === 'SEPA' || user.paymentMethod.type === 'CARD')
+                ) {
+                    return {
+                        id: generateUUID(),
+                        invoiceId: invoice.id,
+                        userId: user.id,
+                        executionDate: executionDate,
+                        amount: invoice.amountInclVat,
+                        status: 'TO_SEND',
+                        paymentMethod: user.paymentMethod.type,
+                    } as t_DirectDebitOrder;
+                }
+                return null;
+            }),
+        );
 
         // Filter out nulls
         return results.filter((item): item is t_DirectDebitOrder => item !== null);
@@ -99,67 +101,5 @@ export class ReportService {
                 revenueInclVat: Number(data.revenueInclVat.toFixed(2)),
             }))
             .sort((a, b) => a.month.localeCompare(b.month));
-    }
-
-    /**
-     * Exports monthly invoices for accounting.
-     * @param billingMonth The billing month (YYYY-MM).
-     */
-    async exportMonthlyInvoices(billingMonth: string): Promise<t_AccountingExportLine[]> {
-        // 1. Fetch invoices for the month
-        const invoices = await this.invoiceRepository.findAllByMonth(billingMonth);
-
-        const exportLines: t_AccountingExportLine[] = [];
-
-        // 2. Process invoices
-        // We can parallelize user fetching here
-        const processedInvoices = await Promise.all(invoices.map(async (invoice) => {
-            const user = await this.userRepository.findById(invoice.userId!);
-            const customerName = user ? `${user.firstName} ${user.lastName}` : 'Unknown Customer';
-            // Logic for clientAccount: AUX_ + first 5 chars of lastName or CLI
-            const clientAccount = `${ACCOUNTING_CODES.CLIENT_PREFIX}${user?.lastName?.toUpperCase().slice(0, 5) || 'CLI'}`;
-
-            return { invoice, customerName, clientAccount };
-        }));
-
-        for (const { invoice, customerName, clientAccount } of processedInvoices) {
-            // Line 1: Debit Client (Total Incl VAT)
-            exportLines.push({
-                date: invoice.billingDate,
-                generalAccount: ACCOUNTING_CODES.CLIENT_DEBIT,
-                clientAccount,
-                invoiceRef: invoice.invoiceRef,
-                description: `Facturation abonnement mensuel - ${customerName}`,
-                debit: invoice.amountInclVat,
-                credit: null,
-                customerName,
-            });
-
-            // Line 2: Credit Product (Excl VAT)
-            exportLines.push({
-                date: invoice.billingDate,
-                generalAccount: ACCOUNTING_CODES.PRODUCT_CREDIT,
-                clientAccount: undefined,
-                invoiceRef: invoice.invoiceRef,
-                description: 'Prestation de service HT',
-                debit: null,
-                credit: invoice.amountExclVat,
-                customerName,
-            });
-
-            // Line 3: Credit VAT (VAT Amount)
-            exportLines.push({
-                date: invoice.billingDate,
-                generalAccount: ACCOUNTING_CODES.VAT_COLLECTED,
-                clientAccount: undefined,
-                invoiceRef: invoice.invoiceRef,
-                description: 'TVA collectée 20%',
-                debit: null,
-                credit: invoice.vatAmount,
-                customerName,
-            });
-        }
-
-        return exportLines;
     }
 }

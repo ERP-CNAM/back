@@ -10,7 +10,7 @@ vi.mock('../../../src/utils/security', () => ({
         verifyPassword: vi.fn(),
         generateToken: vi.fn(),
         generateAdminToken: vi.fn(),
-    }
+    },
 }));
 
 describe('AuthService', () => {

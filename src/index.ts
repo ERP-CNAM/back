@@ -43,13 +43,7 @@ async function main() {
         port: PORT,
         router: createRouter(handlers),
         cors: undefined,
-        middleware: [
-            ...swaggerUi.serve,
-            connectMiddleware,
-            debugRequestMiddleware,
-            loggerMiddleware,
-            authMiddleware,
-        ],
+        middleware: [...swaggerUi.serve, connectMiddleware, debugRequestMiddleware, loggerMiddleware, authMiddleware],
     });
 
     app.use('/swagger', swaggerUi.setup(swaggerDocument));

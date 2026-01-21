@@ -31,7 +31,6 @@ export const ROUTES: Route[] = [
     { path: '/subscriptions', method: 'POST', access: 'authenticated' },
 
     // ==================== ADMIN ONLY ====================
-    { path: '/exports/accounting/monthly-invoices', method: 'GET', access: 'admin' },
     { path: '/exports/banking/direct-debits', method: 'GET', access: 'admin' },
     { path: '/reports/revenue/monthly', method: 'GET', access: 'admin' },
     { path: '/users/:userId/status', method: 'PATCH', access: 'admin' },

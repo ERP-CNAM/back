@@ -8,10 +8,8 @@ import { createTestDatabase } from '../../src/database/memory/test-instance';
 import type { SubscriptionRepository } from '../../src/repository/subscription.repository';
 import type { InvoiceRepository } from '../../src/repository/invoice.repository';
 import type { UserRepository } from '../../src/repository/user.repository';
-import type { t_BaseAPIResponse, t_InvoiceDetailed, t_AccountingExportLine } from '../../api/models';
+import type { t_BaseAPIResponse, t_InvoiceDetailed } from '../../api/models';
 import { BillingService } from '../../src/service/billing.service';
-import { ReportService } from '../../src/service/report.service';
-
 
 // Mock response object
 const createMockResponse = () => {
@@ -36,9 +34,8 @@ describe('Billing Integration', () => {
         userRepo = new InMemoryUserRepository(db);
 
         const billingService = new BillingService(invoiceRepo, subscriptionRepo, userRepo);
-        const reportingService = new ReportService(invoiceRepo, userRepo);
 
-        billingHandlers = createBillingHandlers(billingService, reportingService);
+        billingHandlers = createBillingHandlers(billingService);
     });
 
     describe('generateMonthlyBilling', () => {
@@ -243,75 +240,6 @@ describe('Billing Integration', () => {
 
             expect(result.status).toBe(200);
             expect(result.body.payload.invoices).toHaveLength(0);
-        });
-    });
-
-    describe('exportMonthlyInvoices', () => {
-        it('should generate accounting lines for a given month', async () => {
-            // 1. Setup: Create User and Invoice
-            const user = await userRepo.create({
-                firstName: 'John',
-                lastName: 'Doe',
-                email: 'john@example.com',
-                password: 'pass',
-                address: '1 Main Street',
-                city: 'Paris',
-                country: 'France',
-                phone: '+33111222333',
-                postalCode: '75000',
-            });
-
-            await invoiceRepo.create({
-                invoiceRef: 'INV-TEST',
-                subscriptionId: 'sub-1',
-                userId: user.id!,
-                billingDate: '2026-06-30',
-                periodStart: '2026-06-01',
-                periodEnd: '2026-06-30',
-                amountExclVat: 100,
-                vatAmount: 20,
-                amountInclVat: 120,
-                status: 'PENDING',
-            });
-
-            // 2. Execute
-            const params = { query: { billingMonth: '2026-06' } } as any;
-            const respond = createMockResponse();
-            const response = await billingHandlers.exportMonthlyInvoices(
-                params,
-                respond,
-                {} as any,
-                {} as any,
-                {} as any,
-            );
-
-            // 3. Verify
-            if (response === SkipResponse) throw new Error('Response skipped');
-            const result = response.unpack() as {
-                status: number;
-                body: t_BaseAPIResponse & { payload: t_AccountingExportLine[] };
-            };
-
-            expect(result.status).toBe(200);
-            const lines = result.body.payload;
-            expect(lines).toHaveLength(3);
-
-            // Verify Client Line
-            const clientLine = lines.find((l: any) => l.generalAccount === '411');
-            expect(clientLine).toBeDefined();
-            expect(clientLine!.debit).toBe(120);
-            expect(clientLine!.clientAccount).toBe('AUX_DOE');
-            expect(clientLine!.customerName).toBe('John Doe');
-
-            // Verify Product Line
-            const productLine = lines.find((l: any) => l.generalAccount === '700');
-            expect(productLine).toBeDefined();
-            expect(productLine!.credit).toBe(100);
-
-            // Verify VAT Line
-            const vatLine = lines.find((l: any) => l.generalAccount === '445');
-            expect(vatLine).toBeDefined();
-            expect(vatLine!.credit).toBe(20);
         });
     });
 });

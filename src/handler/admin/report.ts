@@ -1,19 +1,14 @@
-import type { ExportDirectDebits, GetMonthlyRevenue, UpdatePaymentStatus } from '../../../api/generated';
-import type { BillingService } from '../../service/billing.service';
+import type { ExportDirectDebits, GetMonthlyRevenue } from '../../../api/generated';
 import type { ReportService } from '../../service/report.service';
 
 /**
  * Creates the report handlers
  *
- * @param billingService The billing service
  * @param reportService The reporting service
  *
  * @returns The report handlers
  */
-export function createReportHandlers(
-    billingService: BillingService,
-    reportService: ReportService,
-) {
+export function createReportHandlers(reportService: ReportService) {
     /**
      * Exports the direct debits
      *
@@ -58,31 +53,8 @@ export function createReportHandlers(
         });
     };
 
-    /**
-     * Updates the payment status
-     *
-     * @route POST /bank/payment-updates
-     *
-     * @param params The request parameters
-     * @param respond The response handler
-     *
-     * @returns The response object
-     */
-    const updatePaymentStatus: UpdatePaymentStatus = async (params, respond) => {
-        const updates = params.body;
-
-        const updatedCount = await billingService.updatePaymentStatuses(updates);
-
-        return respond.with200().body({
-            success: true,
-            message: 'Payment statuses updated',
-            payload: { updatedCount },
-        });
-    };
-
     return {
         exportDirectDebits,
         getMonthlyRevenue,
-        updatePaymentStatus,
     };
 }

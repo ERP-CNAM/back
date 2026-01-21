@@ -19,13 +19,13 @@ flowchart TD
     Start([REQUÊTE REÇUE]) --> APIKey{apiKey présente dans le body ?}
     APIKey -- "OUI" --> Connect["CONNECT MIDDLEWARE<br/>1. Valide apiKey<br/>2. Extrait userData"]
     APIKey -- "NON" --> Bypass["BYPASS direct"]
-    
+
     Connect --> SetConnect["isConnectRequest=true<br/>req.user = userData"]
     Bypass --> SetNormal["isConnectRequest=undefined"]
-    
+
     SetConnect --> Auth["AUTH MIDDLEWARE"]
     SetNormal --> Auth
-    
+
     Auth --> CheckCase{Cas}
     CheckCase -- "isConnectRequest = true" --> S2S["CONFIANCE S2S<br/>Accès total"]
     CheckCase -- "req.user existe" --> Perms["VÉRIF PERMS<br/>(admin/user)"]
@@ -47,8 +47,8 @@ flowchart TD
 2. **Flag `isConnectRequest`** - Défini à `true` uniquement avec une `apiKey` valide.
 
 3. **Contexte utilisateur** - Peut provenir de :
-    - `userData` de Connect (chemin Gateway)
-    - JWT dans l'en-tête Authorization (chemin Direct)
+   - `userData` de Connect (chemin Gateway)
+   - JWT dans l'en-tête Authorization (chemin Direct)
 
 ### Flux SPA Direct (sans apiKey de Connect)
 

@@ -40,9 +40,11 @@ describe('SubscriptionService', () => {
 
             await service.create(normalUser, body);
 
-            expect(repoMock.create).toHaveBeenCalledWith(expect.objectContaining({
-                userId: 'u1' // Must override the body's userId
-            }));
+            expect(repoMock.create).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    userId: 'u1', // Must override the body's userId
+                }),
+            );
         });
 
         it('should allow admin to specify userId', async () => {
@@ -51,9 +53,11 @@ describe('SubscriptionService', () => {
 
             await service.create(adminUser, body);
 
-            expect(repoMock.create).toHaveBeenCalledWith(expect.objectContaining({
-                userId: 'other-user' // Admin can set this
-            }));
+            expect(repoMock.create).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    userId: 'other-user', // Admin can set this
+                }),
+            );
         });
     });
 

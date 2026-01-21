@@ -39,7 +39,6 @@ describe('Routes Configuration', () => {
         });
 
         it('should return "admin" for export routes', () => {
-            expect(getAccessLevel('/exports/accounting/monthly-invoices', 'GET')).toBe('admin');
             expect(getAccessLevel('/exports/banking/direct-debits', 'GET')).toBe('admin');
         });
 

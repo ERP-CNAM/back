@@ -10,12 +10,12 @@ export const logger = pino({
         process.env.NODE_ENV === 'production'
             ? undefined
             : {
-                target: 'pino-pretty',
-                options: {
-                    colorize: true,
-                    translateTime: 'SYS:standard',
-                },
-            },
+                  target: 'pino-pretty',
+                  options: {
+                      colorize: true,
+                      translateTime: 'SYS:standard',
+                  },
+              },
 });
 
 export default logger;

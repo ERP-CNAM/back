@@ -16,7 +16,7 @@ export type CreateInvoiceDTO = {
 export interface InvoiceRepository {
     /**
      * Creates an invoice
-     * 
+     *
      * @param data The invoice data
      * @returns The created invoice
      */
@@ -24,7 +24,7 @@ export interface InvoiceRepository {
 
     /**
      * Finds all invoices
-     * 
+     *
      * @param filter The filter options (userId, subscriptionId, status)
      * @returns All invoices matching the filter
      */
@@ -36,7 +36,7 @@ export interface InvoiceRepository {
 
     /**
      * Finds all invoices by date
-     * 
+     *
      * @param date The date
      * @returns The invoices for the given date
      */
@@ -44,7 +44,7 @@ export interface InvoiceRepository {
 
     /**
      * Finds all invoices by month
-     * 
+     *
      * @param month The month
      * @returns The invoices for the given month
      */
@@ -52,7 +52,7 @@ export interface InvoiceRepository {
 
     /**
      * Finds all invoices by date range
-     * 
+     *
      * @param startDate The start date
      * @param endDate The end date
      * @returns The invoices for the given date range
@@ -61,7 +61,7 @@ export interface InvoiceRepository {
 
     /**
      * Counts the number of invoices by subscription id
-     * 
+     *
      * @param subscriptionId The subscription id
      * @returns The count of invoices for the given subscription id
      */
@@ -69,7 +69,7 @@ export interface InvoiceRepository {
 
     /**
      * Updates the status of an invoice
-     * 
+     *
      * @param id The id of the invoice
      * @param status The new status
      * @returns The updated invoice

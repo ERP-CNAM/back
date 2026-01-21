@@ -5,14 +5,14 @@ export type AdminWithPassword = t_Admin & { password?: string };
 export interface AdminRepository {
     /**
      * Finds all admins
-     * 
+     *
      * @returns All admins
      */
     findAll(): Promise<t_Admin[]>;
 
     /**
      * Finds an admin by id
-     * 
+     *
      * @param id The id of the admin
      * @returns The admin
      */
@@ -20,7 +20,7 @@ export interface AdminRepository {
 
     /**
      * Finds an admin by email
-     * 
+     *
      * @param email The email of the admin
      * @returns The admin
      */
@@ -28,7 +28,7 @@ export interface AdminRepository {
 
     /**
      * Finds an admin by email with password
-     * 
+     *
      * @param email The email of the admin
      * @returns The admin with password
      */
@@ -36,7 +36,7 @@ export interface AdminRepository {
 
     /**
      * Creates an admin
-     * 
+     *
      * @param data The admin data
      * @returns The created admin
      */
@@ -44,7 +44,7 @@ export interface AdminRepository {
 
     /**
      * Updates the last login of an admin
-     * 
+     *
      * @param id The id of the admin
      */
     updateLastLogin(id: string): Promise<void>;

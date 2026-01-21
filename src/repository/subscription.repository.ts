@@ -14,7 +14,7 @@ export interface SubscriptionQueryOptions {
 export interface SubscriptionRepository {
     /**
      * Finds all subscriptions
-     * 
+     *
      * @param options The query options (userId, status)
      * @returns All subscriptions
      */
@@ -22,7 +22,7 @@ export interface SubscriptionRepository {
 
     /**
      * Finds a subscription by id
-     * 
+     *
      * @param id The id of the subscription
      * @returns The subscription
      */
@@ -30,7 +30,7 @@ export interface SubscriptionRepository {
 
     /**
      * Creates a subscription
-     * 
+     *
      * @param data The subscription data
      * @returns The created subscription
      */
@@ -38,7 +38,7 @@ export interface SubscriptionRepository {
 
     /**
      * Updates a subscription
-     * 
+     *
      * @param id The id of the subscription
      * @param data The subscription data
      * @returns The updated subscription
@@ -47,7 +47,7 @@ export interface SubscriptionRepository {
 
     /**
      * Cancels a subscription
-     * 
+     *
      * @param id The id of the subscription
      * @returns The cancelled subscription
      */
