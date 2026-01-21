@@ -80,9 +80,14 @@ export class BillingService {
                 // 1. Update Invoice
                 const invoice = await this.invoiceRepository.updateStatus(update.invoiceId, newStatus);
 
-                // 2. If Failed, Block User
-                if (newStatus === 'FAILED' && invoice && invoice.userId) {
-                    await this.userRepository.updateStatus(invoice.userId, 'SUSPENDED');
+                if (invoice && invoice.userId) {
+                    if (newStatus === 'PAID') {
+                        // 2a. If Paid, set User to OK (in case they were BLOCKED or SUSPENDED)
+                        await this.userRepository.updateStatus(invoice.userId, 'OK');
+                    } else if (newStatus === 'FAILED') {
+                        // 2b. If Failed, Block User
+                        await this.userRepository.updateStatus(invoice.userId, 'SUSPENDED');
+                    }
                 }
                 updatedCount++;
             }),

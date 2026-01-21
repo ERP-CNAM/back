@@ -53,7 +53,7 @@ if (DB_TYPE === 'postgres') {
 // Services
 const billingService = new BillingService(invoiceRepository, subscriptionRepository, userRepository);
 const reportingService = new ReportService(invoiceRepository, userRepository);
-const subscriptionService = new SubscriptionService(subscriptionRepository);
+const subscriptionService = new SubscriptionService(subscriptionRepository, userRepository);
 const authService = new AuthService(userRepository, adminRepository);
 const userService = new UserService(userRepository);
 const invoiceService = new InvoiceService(invoiceRepository, subscriptionRepository, userRepository);

@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { InMemoryUserRepository } from '../../src/repository/memory/in-memory-user.repository';
 import type {
     t_CreateUserRequestBodySchema,
@@ -157,7 +157,7 @@ describe('InMemoryUserRepository', () => {
             expect(createdUser.firstName).toBe(newUserData.firstName);
             expect(createdUser.lastName).toBe(newUserData.lastName);
             expect(createdUser.email).toBe(newUserData.email);
-            expect(createdUser.status).toBe('OK');
+            expect(createdUser.status).toBe('BLOCKED');
             expect(createdUser.createdAt).toBeDefined();
             expect(createdUser.updatedAt).toBeDefined();
             expect(createdUser.country).toBe('FR'); // Default value
@@ -322,7 +322,8 @@ describe('InMemoryUserRepository', () => {
         it('should reject invalid status values', async () => {
             // @ts-expect-error Testing runtime validation
             const promise = repository.updateStatus('user-1', 'BOQUE');
-            await expect(promise).rejects.toThrow();
+            const { toThrow } = expect(promise).rejects;
+            await toThrow();
         });
     });
 });

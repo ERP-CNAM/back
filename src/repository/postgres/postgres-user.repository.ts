@@ -78,7 +78,7 @@ export class PostgresUserRepository implements UserRepository {
                 country: data.country ?? 'FR',
                 dateOfBirth: data.dateOfBirth ? new Date(data.dateOfBirth) : null,
                 paymentMethod: data.paymentMethod ? JSON.stringify(data.paymentMethod) : null,
-                status: 'OK',
+                status: 'BLOCKED',
             })
             .returning();
 

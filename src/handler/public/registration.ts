@@ -4,8 +4,7 @@ import type { UserService } from '../../service/user.service';
 /**
  * Creates the registration handlers
  *
- * @param repository The user repository
- *
+ * @param userService
  * @returns The registration handlers
  */
 export function createRegistrationHandlers(userService: UserService) {

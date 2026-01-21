@@ -135,7 +135,7 @@ export async function seedInvoices(): Promise<void> {
             if (i === 0 && sub.promoCode === PROMO_CODES.WELCOME_OFFER) {
                 amount = amount * PROMO_RULES.WELCOME_OFFER_DISCOUNT;
             }
-            
+
             // Round to 2 decimals
             const incl: number = Math.round(amount * 100) / 100;
 

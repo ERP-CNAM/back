@@ -1,9 +1,13 @@
 import type { SubscriptionRepository } from '../repository/subscription.repository';
+import type { UserRepository } from '../repository/user.repository';
 import type { UserPayload } from '../utils/security';
 import type { t_Subscription, t_CreateSubscriptionRequestBodySchema } from '../../api/models';
 
 export class SubscriptionService {
-    constructor(private readonly repository: SubscriptionRepository) {}
+    constructor(
+        private readonly repository: SubscriptionRepository,
+        private readonly userRepository: UserRepository,
+    ) {}
 
     async list(user: UserPayload | undefined, query: any): Promise<t_Subscription[]> {
         const queryOptions = query ? { ...query } : {};
@@ -18,12 +22,24 @@ export class SubscriptionService {
 
     async create(user: UserPayload | undefined, body: t_CreateSubscriptionRequestBodySchema): Promise<t_Subscription> {
         // Non-admin users can only create subscriptions for themselves
+        const userId = user?.userType !== 'admin' && user?.userId ? user.userId : body.userId;
+
         const payload = {
             ...body,
-            userId: user?.userType !== 'admin' && user?.userId ? user.userId : body.userId,
+            userId,
         };
 
-        return this.repository.create(payload);
+        const subscription = await this.repository.create(payload);
+
+        // If the user was BLOCKED, we transition them to OK upon subscription
+        if (userId) {
+            const userData = await this.userRepository.findById(userId);
+            if (userData && userData.status === 'BLOCKED') {
+                await this.userRepository.updateStatus(userId, 'OK');
+            }
+        }
+
+        return subscription;
     }
 
     async getById(user: UserPayload | undefined, subscriptionId: string): Promise<t_Subscription | null> {
