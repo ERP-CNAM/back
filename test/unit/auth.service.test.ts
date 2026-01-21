@@ -1,11 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { AuthService } from '../../../src/service/auth.service';
-import type { UserRepository } from '../../../src/repository/user.repository';
-import type { AdminRepository } from '../../../src/repository/admin.repository';
-import { security } from '../../../src/utils/security';
+import { AuthService } from '../../src/service/auth.service';
+import type { UserRepository } from '../../src/repository/user.repository';
+import type { AdminRepository } from '../../src/repository/admin.repository';
+import { security } from '../../src/utils/security';
 
 // Mock the security utility
-vi.mock('../../../src/utils/security', () => ({
+vi.mock('../../src/utils/security', () => ({
     security: {
         verifyPassword: vi.fn(),
         generateToken: vi.fn(),

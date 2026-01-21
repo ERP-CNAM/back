@@ -12,7 +12,7 @@ export class SubscriptionService {
     async list(user: UserPayload | undefined, query: any): Promise<t_Subscription[]> {
         const queryOptions = query ? { ...query } : {};
 
-        // Non-admin users can only see their own subscriptions
+        // Non-admin users can only seed their own subscriptions
         if (user?.userType !== 'admin' && user?.userId) {
             queryOptions.userId = user.userId;
         }

@@ -1,11 +1,11 @@
 import 'dotenv/config';
-import { getDatabase } from '../database/client';
-import { DB_TYPE } from '../database/config';
-import { PostgresUserRepository } from '../repository/postgres/postgres-user.repository';
-import { InMemoryUserRepository } from '../repository/memory/in-memory-user.repository';
-import { PostgresSubscriptionRepository } from '../repository/postgres/postgres-subscription.repository';
-import { InMemorySubscriptionRepository } from '../repository/memory/in-memory-subscription.repository';
-import { logger } from './logger';
+import { getDatabase } from '../../database/client';
+import { DB_TYPE } from '../../database/config';
+import { PostgresUserRepository } from '../../repository/postgres/postgres-user.repository';
+import { InMemoryUserRepository } from '../../repository/memory/in-memory-user.repository';
+import { PostgresSubscriptionRepository } from '../../repository/postgres/postgres-subscription.repository';
+import { InMemorySubscriptionRepository } from '../../repository/memory/in-memory-subscription.repository';
+import { logger } from '../logger';
 
 /**
  * Seeds the subscription table with default subscription if it doesn't exist
@@ -27,6 +27,10 @@ export async function seedSubscriptions() {
     const existing = await subRepo.findAll?.({ userId: john.id });
     if (existing?.length) {
         logger.debug('Subscription already exists for John');
+        if (john.status !== 'OK') {
+            await userRepo.updateStatus(john.id!, 'OK');
+            logger.info('User status updated to OK (existing subscription)');
+        }
         return;
     }
 
@@ -38,7 +42,11 @@ export async function seedSubscriptions() {
         promoCode: 'B1M20',
     } as any);
 
-    logger.info('Subscription created for John');
+    if (john.status !== 'OK') {
+        await userRepo.updateStatus(john.id!, 'OK');
+    }
+
+    logger.info('Subscription created for John and user status updated to OK');
 }
 
 /**

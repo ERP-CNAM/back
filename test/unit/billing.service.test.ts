@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { BillingService } from '../../../src/service/billing.service';
-import type { InvoiceRepository } from '../../../src/repository/invoice.repository';
-import type { SubscriptionRepository } from '../../../src/repository/subscription.repository';
-import type { UserRepository } from '../../../src/repository/user.repository';
+import { BillingService } from '../../src/service/billing.service';
+import type { InvoiceRepository } from '../../src/repository/invoice.repository';
+import type { SubscriptionRepository } from '../../src/repository/subscription.repository';
+import type { UserRepository } from '../../src/repository/user.repository';
 
 describe('BillingService', () => {
     let service: BillingService;

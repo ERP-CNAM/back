@@ -1,10 +1,10 @@
 import 'dotenv/config';
-import { getDatabase } from '../database/client';
-import { DB_TYPE } from '../database/config';
-import { PostgresUserRepository } from '../repository/postgres/postgres-user.repository';
-import { InMemoryUserRepository } from '../repository/memory/in-memory-user.repository';
+import { getDatabase } from '../../database/client';
+import { DB_TYPE } from '../../database/config';
+import { PostgresUserRepository } from '../../repository/postgres/postgres-user.repository';
+import { InMemoryUserRepository } from '../../repository/memory/in-memory-user.repository';
 
-import { logger } from './logger';
+import { logger } from '../logger';
 
 /**
  * Seeds the user table with default users if they don't exist
