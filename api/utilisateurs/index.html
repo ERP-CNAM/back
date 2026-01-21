@@ -1292,10 +1292,8 @@
 <li><strong>Méthode</strong> : <code>GET</code></li>
 <li><strong>Chemin</strong> : <code>/users</code></li>
 <li><strong>Accès</strong> : Admin</li>
-<li><strong>Paramètres (Query)</strong> :<ul>
+<li><strong>Paramètres (Query)</strong> :</li>
 <li><code>status</code> : Filtrer par statut (<code>OK</code>, <code>SUSPENDED</code>, <code>BLOCKED</code>, <code>DELETED</code>).</li>
-</ul>
-</li>
 </ul>
 <h4 id="exemple-de-reponse-200-ok">Exemple de réponse (200 OK)</h4>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">{</span>
@@ -1364,6 +1362,7 @@
 <li><strong>Chemin</strong> : <code>/users/{userId}</code></li>
 <li><strong>Accès</strong> : Authentifié (propre compte) ou Admin</li>
 </ul>
+<p><em>Note : Le champ <code>status</code> ne peut pas être modifié via cet endpoint. Utilisez <code>PATCH /users/{userId}/status</code> pour modifier le statut (Admin uniquement).</em></p>
 <h4 id="exemple-de-requete_1">Exemple de requête</h4>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="p">{</span>
 <a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span><span class="nt">&quot;firstName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Alice&quot;</span><span class="p">,</span>
