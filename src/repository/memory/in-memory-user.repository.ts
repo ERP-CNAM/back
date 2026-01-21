@@ -64,7 +64,7 @@ export class InMemoryUserRepository implements UserRepository {
         const { password, ...userData } = data;
         const newUser: t_User = {
             id: generateUUID(),
-            status: 'OK',
+            status: 'BLOCKED',
             ...userData,
             country: userData.country ?? 'FR',
             phone: userData.phone ?? undefined,

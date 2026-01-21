@@ -1,17 +1,17 @@
 import 'dotenv/config';
-import { getDatabase } from '../database/client';
-import { DB_TYPE } from '../database/config';
-import { logger } from './logger';
-import { PROMO_CODES, PROMO_RULES } from '../config/constants';
+import { getDatabase } from '../../database/client';
+import { DB_TYPE } from '../../database/config';
+import { logger } from '../logger';
+import { PROMO_CODES, PROMO_RULES } from '../../config/constants';
 
-import { PostgresUserRepository } from '../repository/postgres/postgres-user.repository';
-import { InMemoryUserRepository } from '../repository/memory/in-memory-user.repository';
+import { PostgresUserRepository } from '../../repository/postgres/postgres-user.repository';
+import { InMemoryUserRepository } from '../../repository/memory/in-memory-user.repository';
 
-import { PostgresSubscriptionRepository } from '../repository/postgres/postgres-subscription.repository';
-import { InMemorySubscriptionRepository } from '../repository/memory/in-memory-subscription.repository';
+import { PostgresSubscriptionRepository } from '../../repository/postgres/postgres-subscription.repository';
+import { InMemorySubscriptionRepository } from '../../repository/memory/in-memory-subscription.repository';
 
-import { PostgresInvoiceRepository } from '../repository/postgres/postgres-invoice.repository';
-import { InMemoryInvoiceRepository } from '../repository/memory/in-memory-invoice.repository';
+import { PostgresInvoiceRepository } from '../../repository/postgres/postgres-invoice.repository';
+import { InMemoryInvoiceRepository } from '../../repository/memory/in-memory-invoice.repository';
 
 type InvoiceStatus = 'PAID' | 'SENT' | 'PENDING' | 'FAILED';
 
@@ -135,7 +135,7 @@ export async function seedInvoices(): Promise<void> {
             if (i === 0 && sub.promoCode === PROMO_CODES.WELCOME_OFFER) {
                 amount = amount * PROMO_RULES.WELCOME_OFFER_DISCOUNT;
             }
-            
+
             // Round to 2 decimals
             const incl: number = Math.round(amount * 100) / 100;
 

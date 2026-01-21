@@ -36,7 +36,7 @@ function accessToBitmask(access: AccessLevel): number {
  * @returns Promise<void>
  */
 export async function registerConnect() {
-    logger.info(`[CONNECT] Attempting to register service "${SERVICE_NAME}"...`);
+    logger.info(`[CONNECT] Attempting to register service '${SERVICE_NAME}'...`);
 
     const routes: any[] = [];
 

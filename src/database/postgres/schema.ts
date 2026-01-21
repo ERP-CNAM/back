@@ -18,7 +18,7 @@ export const users = pgTable('users', {
     dateOfBirth: timestamp('dateOfBirth'), // Optional
 
     paymentMethod: text('paymentMethod'), // Storing JSON string
-    status: varchar('status', { length: 50 }).$type<t_UserStatus>().notNull().default('OK'),
+    status: varchar('status', { length: 50 }).$type<t_UserStatus>().notNull().default('BLOCKED'),
     createdAt: timestamp('createdAt').defaultNow(),
     updatedAt: timestamp('updatedAt').defaultNow(),
 });

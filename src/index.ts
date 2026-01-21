@@ -9,10 +9,7 @@ import { loggerMiddleware } from './middleware/logger.middleware';
 import { authMiddleware } from './middleware/auth.middleware';
 import { debugRequestMiddleware } from './middleware/debug.middleware';
 import { connectMiddleware } from './middleware/connect.middleware';
-import { createDefaultAdmin } from './utils/default-admin';
-import { createDefaultUsers } from './utils/default-users';
-import { createDefaultSubscriptions } from './utils/default-subscription';
-import { createDefaultInvoices } from './utils/default-invoice';
+import { runDatabaseSeed } from './utils/seed/runner';
 import { registerConnect } from './adapter/register.connect';
 import { logger } from './utils/logger';
 import { runPostgresMigrations } from './database/postgres/instance';
@@ -24,20 +21,14 @@ const BACKOFFICE_PORT = Number(process.env.BACKOFFICE_PORT) || 3001;
 /**
  * Main function
  * - Runs migrations
- * - Creates default admin
- * - Creates default users
- * - Creates default subscriptions
- * - Creates default invoices
+ * - Runs database seeds (Admin, Users, Subscriptions, Invoices)
  * - Registers Connect
  * - Starts the server
+ * - Starts backoffice web page
  */
 async function main() {
     await runPostgresMigrations();
-    await createDefaultAdmin();
-    await createDefaultUsers();
-
-    const backofficeApp = express();
-    backofficeApp.use(express.static(path.join(process.cwd(), 'web')));
+    await runDatabaseSeed();
 
     const { app } = await bootstrap({
         port: PORT,
@@ -60,16 +51,22 @@ async function main() {
         });
     });
 
-    await createDefaultSubscriptions();
-    await createDefaultInvoices();
     await registerConnect();
-
-    backofficeApp.listen(BACKOFFICE_PORT, () => {
-        logger.info(`Backoffice server running on http://localhost:${BACKOFFICE_PORT}`);
-    });
 
     logger.info(`Server running on http://localhost:${PORT}`);
     logger.info(`Swagger UI: http://localhost:${PORT}/swagger`);
+    bootstrapBackoffice();
+}
+
+/**
+ * Bootstrap backoffice administration web page
+ */
+function bootstrapBackoffice() {
+    const backofficeApp = express();
+    backofficeApp.use(express.static(path.join(process.cwd(), 'web')));
+    backofficeApp.listen(BACKOFFICE_PORT, () => {
+        logger.info(`Backoffice server running on http://localhost:${BACKOFFICE_PORT}`);
+    });
 }
 
 main().catch((e) => {

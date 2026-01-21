@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { BillingService } from '../../../src/service/billing.service';
-import type { InvoiceRepository } from '../../../src/repository/invoice.repository';
-import type { SubscriptionRepository } from '../../../src/repository/subscription.repository';
-import type { UserRepository } from '../../../src/repository/user.repository';
+import { BillingService } from '../../src/service/billing.service';
+import type { InvoiceRepository } from '../../src/repository/invoice.repository';
+import type { SubscriptionRepository } from '../../src/repository/subscription.repository';
+import type { UserRepository } from '../../src/repository/user.repository';
 
 describe('BillingService', () => {
     let service: BillingService;
@@ -80,12 +80,13 @@ describe('BillingService', () => {
     });
 
     describe('updatePaymentStatuses', () => {
-        it('should update invoice status to PAID if executed', async () => {
-            vi.mocked(invoiceRepo.updateStatus).mockResolvedValue({ id: 'i1', status: 'PAID' } as any);
+        it('should update invoice status to PAID and user status to OK if executed', async () => {
+            vi.mocked(invoiceRepo.updateStatus).mockResolvedValue({ id: 'i1', userId: 'u1', status: 'PAID' } as any);
 
             await service.updatePaymentStatuses([{ invoiceId: 'i1', status: 'EXECUTED' }]);
 
             expect(invoiceRepo.updateStatus).toHaveBeenCalledWith('i1', 'PAID');
+            expect(userRepo.updateStatus).toHaveBeenCalledWith('u1', 'OK');
         });
 
         it('should update invoice to FAILED and suspend user if rejected', async () => {

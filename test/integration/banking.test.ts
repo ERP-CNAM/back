@@ -73,8 +73,6 @@ describe('Banking Integration', () => {
 
             // 2. Setup Invoices (for previous month relative to execution date)
             // Execution: 2026-07-01 -> Billing Month: 2026-06
-            const billingMonth = '2026-06';
-
             // Invoice 1: Eligible
             await invoiceRepo.create({
                 invoiceRef: 'INV-1',
@@ -138,6 +136,7 @@ describe('Banking Integration', () => {
             expect(orders).toHaveLength(1);
 
             const order = orders[0];
+
             expect(order.userId).toBe(userWithSepa.id);
             expect(order.amount).toBe(12);
             expect(order.status).toBe('TO_SEND');
