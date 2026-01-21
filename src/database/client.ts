@@ -6,7 +6,7 @@ let dbInstance: any;
 
 /**
  * Get the database instance
- * 
+ *
  * @returns The database instance
  */
 export function getDatabase(): any {

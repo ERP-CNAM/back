@@ -9,7 +9,7 @@ let dbInstance: ReturnType<typeof drizzle>;
 
 /**
  * Get the in-memory database instance with drizzle and migrations
- * 
+ *
  * @returns The in-memory database instance
  */
 export function getInMemoryDatabase() {

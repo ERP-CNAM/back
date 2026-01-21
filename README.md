@@ -102,4 +102,3 @@ Pour toute question ou problème, ouvrez une [issue sur GitHub](https://github.c
 ## Documentation
 
 Une documentation complète incluant l'architecture (ADR) et les détails des logiques implémentées est disponible et consultable en ligne sur : [https://erp-cnam.github.io/back/](https://erp-cnam.github.io/back/)
-

@@ -7,7 +7,7 @@ export class AuthService {
     constructor(
         private readonly userRepository: UserRepository,
         private readonly adminRepository: AdminRepository,
-    ) { }
+    ) {}
 
     async login(credentials: t_LoginRequestBodySchema) {
         const { email, password } = credentials;

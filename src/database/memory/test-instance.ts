@@ -8,7 +8,7 @@ import { t_User, t_UserStatus } from '../../../api/models';
 
 /**
  * Creates a test database with optional seed data
- * 
+ *
  * @param seedData Optional seed data for the user table
  * @returns The test database instance
  */
@@ -28,7 +28,7 @@ export function createTestDatabase(seedData?: (t_User & { password: string })[])
 
 /**
  * Seeds the user table with test data
- * 
+ *
  * @param db The database instance
  * @param userData The user data to seed
  */

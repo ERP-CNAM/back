@@ -1,11 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { SubscriptionService } from '../../../src/service/subscription.service';
-import type { SubscriptionRepository } from '../../../src/repository/subscription.repository';
-import type { UserPayload } from '../../../src/utils/security';
+import { SubscriptionService } from '../../src/service/subscription.service';
+import type { SubscriptionRepository } from '../../src/repository/subscription.repository';
+import type { UserRepository } from '../../src/repository/user.repository';
+import type { UserPayload } from '../../src/utils/security';
 
 describe('SubscriptionService', () => {
     let service: SubscriptionService;
     let repoMock: SubscriptionRepository;
+    let userRepoMock: UserRepository;
 
     beforeEach(() => {
         repoMock = {
@@ -16,7 +18,12 @@ describe('SubscriptionService', () => {
             cancel: vi.fn(),
         } as unknown as SubscriptionRepository;
 
-        service = new SubscriptionService(repoMock);
+        userRepoMock = {
+            findById: vi.fn(),
+            updateStatus: vi.fn(),
+        } as unknown as UserRepository;
+
+        service = new SubscriptionService(repoMock, userRepoMock);
     });
 
     describe('list', () => {
@@ -34,26 +41,50 @@ describe('SubscriptionService', () => {
     });
 
     describe('create', () => {
-        it('should force userId for non-admin users', async () => {
+        it('should force userId for non-admin users and update status if BLOCKED', async () => {
             const normalUser: UserPayload = { userId: 'u1', userType: 'user', permission: 1 };
             const body: any = { contractCode: 'C1', monthlyAmount: 10, startDate: '2023-01-01', userId: 'other-user' };
 
+            vi.mocked(repoMock.create).mockResolvedValue({ id: 's1', ...body, userId: 'u1' });
+            vi.mocked(userRepoMock.findById).mockResolvedValue({ id: 'u1', status: 'BLOCKED' } as any);
+
             await service.create(normalUser, body);
 
-            expect(repoMock.create).toHaveBeenCalledWith(expect.objectContaining({
-                userId: 'u1' // Must override the body's userId
-            }));
+            expect(repoMock.create).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    userId: 'u1', // Must override the body's userId
+                }),
+            );
+            expect(userRepoMock.updateStatus).toHaveBeenCalledWith('u1', 'OK');
+        });
+
+        it('should not update status if user is already OK', async () => {
+            const normalUser: UserPayload = { userId: 'u1', userType: 'user', permission: 1 };
+            const body: any = { contractCode: 'C1', monthlyAmount: 10, startDate: '2023-01-01' };
+
+            vi.mocked(repoMock.create).mockResolvedValue({ id: 's1', ...body, userId: 'u1' });
+            vi.mocked(userRepoMock.findById).mockResolvedValue({ id: 'u1', status: 'OK' } as any);
+
+            await service.create(normalUser, body);
+
+            expect(userRepoMock.updateStatus).not.toHaveBeenCalled();
         });
 
         it('should allow admin to specify userId', async () => {
             const adminUser: UserPayload = { userId: 'admin', userType: 'admin', permission: 2 };
             const body: any = { contractCode: 'C1', monthlyAmount: 10, startDate: '2023-01-01', userId: 'other-user' };
 
+            vi.mocked(repoMock.create).mockResolvedValue({ id: 's1', ...body });
+            vi.mocked(userRepoMock.findById).mockResolvedValue({ id: 'other-user', status: 'BLOCKED' } as any);
+
             await service.create(adminUser, body);
 
-            expect(repoMock.create).toHaveBeenCalledWith(expect.objectContaining({
-                userId: 'other-user' // Admin can set this
-            }));
+            expect(repoMock.create).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    userId: 'other-user', // Admin can set this
+                }),
+            );
+            expect(userRepoMock.updateStatus).toHaveBeenCalledWith('other-user', 'OK');
         });
     });
 

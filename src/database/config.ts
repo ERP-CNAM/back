@@ -1,6 +1,6 @@
 /**
  * Set the default repository type
- * 
+ *
  * @default 'in-memory' if NODE_ENV is not 'production', otherwise 'postgres'
  */
 

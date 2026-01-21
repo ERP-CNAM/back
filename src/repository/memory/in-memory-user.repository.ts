@@ -1,18 +1,13 @@
 import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 import { eq } from 'drizzle-orm';
 import type { UserRepository, UserQueryOptions, UserWithPassword } from '../user.repository';
-import type {
-    t_CreateUserRequestBodySchema,
-
-    t_User,
-    t_UserStatus,
-} from '../../../api/models';
+import type { t_CreateUserRequestBodySchema, t_User, t_UserStatus } from '../../../api/models';
 import { users } from '../../database/memory/schema';
 import { generateUUID } from '../../utils/uuid';
 import { security } from '../../utils/security';
 
 export class InMemoryUserRepository implements UserRepository {
-    constructor(private db: BetterSQLite3Database) { }
+    constructor(private db: BetterSQLite3Database) {}
 
     private toUser(row: any): t_User {
         return {
@@ -69,7 +64,7 @@ export class InMemoryUserRepository implements UserRepository {
         const { password, ...userData } = data;
         const newUser: t_User = {
             id: generateUUID(),
-            status: 'OK',
+            status: 'BLOCKED',
             ...userData,
             country: userData.country ?? 'FR',
             phone: userData.phone ?? undefined,

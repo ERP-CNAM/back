@@ -2,15 +2,16 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { ExpressRuntimeResponse, SkipResponse } from '@nahkies/typescript-express-runtime/server';
 import { InMemoryInvoiceRepository } from '../../src/repository/memory/in-memory-invoice.repository';
 import { InMemoryUserRepository } from '../../src/repository/memory/in-memory-user.repository';
-import { createReportHandlers } from '../../src/handler/admin/report';
 import { createTestDatabase } from '../../src/database/memory/test-instance';
 import type { InvoiceRepository } from '../../src/repository/invoice.repository';
 import type { UserRepository } from '../../src/repository/user.repository';
 import type { SubscriptionRepository } from '../../src/repository/subscription.repository';
 import type { t_BaseAPIResponse, t_DirectDebitOrder } from '../../api/models';
 import { BillingService } from '../../src/service/billing.service';
-import { ReportService } from '../../src/service/report.service';
+import { createBillingHandlers } from '../../src/handler/admin/billing';
 import { InMemorySubscriptionRepository } from '../../src/repository/memory/in-memory-subscription.repository';
+import { ReportService } from '../../src/service/report.service';
+import { createReportHandlers } from '../../src/handler/admin/report';
 
 // Mock response object
 const createMockResponse = () => {
@@ -21,11 +22,11 @@ const createMockResponse = () => {
     } as any;
 };
 
-
 describe('Banking Integration', () => {
     let invoiceRepo: InvoiceRepository;
     let userRepo: UserRepository;
     let subscriptionRepo: SubscriptionRepository;
+    let billingHandlers: ReturnType<typeof createBillingHandlers>;
     let reportHandlers: ReturnType<typeof createReportHandlers>;
 
     beforeEach(() => {
@@ -35,9 +36,10 @@ describe('Banking Integration', () => {
         subscriptionRepo = new InMemorySubscriptionRepository(db); // Needed for billing service
 
         const billingService = new BillingService(invoiceRepo, subscriptionRepo, userRepo);
-        const reportingService = new ReportService(invoiceRepo, userRepo);
+        const reportService = new ReportService(invoiceRepo, userRepo);
 
-        reportHandlers = createReportHandlers(billingService, reportingService);
+        billingHandlers = createBillingHandlers(billingService);
+        reportHandlers = createReportHandlers(reportService);
     });
 
     describe('exportDirectDebits', () => {
@@ -71,8 +73,6 @@ describe('Banking Integration', () => {
 
             // 2. Setup Invoices (for previous month relative to execution date)
             // Execution: 2026-07-01 -> Billing Month: 2026-06
-            const billingMonth = '2026-06';
-
             // Invoice 1: Eligible
             await invoiceRepo.create({
                 invoiceRef: 'INV-1',
@@ -136,6 +136,7 @@ describe('Banking Integration', () => {
             expect(orders).toHaveLength(1);
 
             const order = orders[0];
+
             expect(order.userId).toBe(userWithSepa.id);
             expect(order.amount).toBe(12);
             expect(order.status).toBe('TO_SEND');
@@ -176,7 +177,7 @@ describe('Banking Integration', () => {
             const params = { body } as any;
             const respond = createMockResponse();
 
-            await reportHandlers.updatePaymentStatus(params, respond, {} as any, {} as any, {} as any);
+            await billingHandlers.updatePaymentStatus(params, respond, {} as any, {} as any, {} as any);
 
             // Verify
             const updatedInvoice = (await invoiceRepo.findAllByDate('2026-06-30')).find((i) => i.id === invoice.id);
@@ -217,7 +218,7 @@ describe('Banking Integration', () => {
             const params = { body } as any;
             const respond = createMockResponse();
 
-            await reportHandlers.updatePaymentStatus(params, respond, {} as any, {} as any, {} as any);
+            await billingHandlers.updatePaymentStatus(params, respond, {} as any, {} as any, {} as any);
 
             // Verify
             const updatedInvoice = (await invoiceRepo.findAllByDate('2026-06-30')).find((i) => i.id === invoice.id);

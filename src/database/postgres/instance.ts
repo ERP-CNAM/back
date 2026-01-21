@@ -10,7 +10,7 @@ let db: ReturnType<typeof drizzle>;
 
 /**
  * Get the postgres database instance with drizzle and migrations
- * 
+ *
  * @returns The postgres database instance
  */
 export function getPostgresDatabase() {
@@ -30,7 +30,7 @@ export function getPostgresDatabase() {
 
 /**
  * Runs the postgres migrations
- * 
+ *
  * @returns Promise<void>
  */
 export async function runPostgresMigrations() {

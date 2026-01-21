@@ -3,21 +3,21 @@ import type { AuthService } from '../../service/auth.service';
 
 /**
  * Creates the authentication handlers
- * 
+ *
  * @param authService The auth service
- * 
+ *
  * @returns The authentication handlers
  */
 export const createAuthHandlers = (authService: AuthService) => {
     /**
      * Logs in a user
-     * 
+     *
      * @route POST /auth/login
-     * 
+     *
      * @param params The request parameters
      * @param respond The response handler
      * @param req The request object
-     * 
+     *
      * @returns The response object
      */
     const login: Login = async (params, respond, req) => {

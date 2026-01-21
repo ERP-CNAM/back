@@ -1,17 +1,13 @@
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { eq } from 'drizzle-orm';
 import type { UserRepository, UserQueryOptions, UserWithPassword } from '../user.repository';
-import type {
-    t_CreateUserRequestBodySchema,
-    t_User,
-    t_UserStatus,
-} from '../../../api/models';
+import type { t_CreateUserRequestBodySchema, t_User, t_UserStatus } from '../../../api/models';
 import { users } from '../../database/postgres/schema';
 import { generateUUID } from '../../utils/uuid';
 import { security } from '../../utils/security';
 
 export class PostgresUserRepository implements UserRepository {
-    constructor(private db: NodePgDatabase) { }
+    constructor(private db: NodePgDatabase) {}
 
     private toUser(row: typeof users.$inferSelect): t_User {
         return {
@@ -82,7 +78,7 @@ export class PostgresUserRepository implements UserRepository {
                 country: data.country ?? 'FR',
                 dateOfBirth: data.dateOfBirth ? new Date(data.dateOfBirth) : null,
                 paymentMethod: data.paymentMethod ? JSON.stringify(data.paymentMethod) : null,
-                status: 'OK',
+                status: 'BLOCKED',
             })
             .returning();
 

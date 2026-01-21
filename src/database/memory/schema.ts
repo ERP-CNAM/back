@@ -17,7 +17,7 @@ export const users = sqliteTable('users', {
     dateOfBirth: text('dateOfBirth'), // Optional
 
     paymentMethod: text('paymentMethod'),
-    status: text('status').$type<t_UserStatus>().notNull().default('OK'),
+    status: text('status').$type<t_UserStatus>().notNull().default('BLOCKED'),
     createdAt: text('createdAt'),
     updatedAt: text('updatedAt'),
 });

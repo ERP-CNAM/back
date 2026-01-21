@@ -1,9 +1,9 @@
 import 'dotenv/config';
-import { getDatabase } from '../database/client';
-import { DB_TYPE } from '../database/config';
-import { PostgresAdminRepository } from '../repository/postgres/postgres-admin.repository';
-import { InMemoryAdminRepository } from '../repository/memory/in-memory-admin.repository';
-import { logger } from './logger';
+import { getDatabase } from '../../database/client';
+import { DB_TYPE } from '../../database/config';
+import { PostgresAdminRepository } from '../../repository/postgres/postgres-admin.repository';
+import { InMemoryAdminRepository } from '../../repository/memory/in-memory-admin.repository';
+import { logger } from '../logger';
 
 /**
  * Seeds the admin table with default admin user if it doesn't exist

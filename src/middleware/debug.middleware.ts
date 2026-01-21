@@ -5,7 +5,7 @@ const PRODUCTION_ENABLED = process.env.NODE_ENV === 'production';
 
 /**
  * Middleware to log raw request data before Zod parsing for validation
- * 
+ *
  * @param req - Express request object
  * @param _res - Express response object
  * @param next - Express next function
