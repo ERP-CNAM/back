@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { AuthService } from '../../src/service/auth.service';
 import type { UserRepository } from '../../src/repository/user.repository';
 import type { AdminRepository } from '../../src/repository/admin.repository';
+import type { SubscriptionRepository } from '../../src/repository/subscription.repository';
 import { security } from '../../src/utils/security';
 
 // Mock the security utility
@@ -17,6 +18,7 @@ describe('AuthService', () => {
     let service: AuthService;
     let userRepoMock: UserRepository;
     let adminRepoMock: AdminRepository;
+    let subscriptionRepoMock: SubscriptionRepository;
 
     beforeEach(() => {
         userRepoMock = {
@@ -28,7 +30,11 @@ describe('AuthService', () => {
             updateLastLogin: vi.fn(),
         } as unknown as AdminRepository;
 
-        service = new AuthService(userRepoMock, adminRepoMock);
+        subscriptionRepoMock = {
+            hasActiveSubscription: vi.fn(),
+        } as unknown as SubscriptionRepository;
+
+        service = new AuthService(userRepoMock, adminRepoMock, subscriptionRepoMock);
     });
 
     describe('login', () => {

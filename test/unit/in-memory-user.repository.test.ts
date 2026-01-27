@@ -157,7 +157,7 @@ describe('InMemoryUserRepository', () => {
             expect(createdUser.firstName).toBe(newUserData.firstName);
             expect(createdUser.lastName).toBe(newUserData.lastName);
             expect(createdUser.email).toBe(newUserData.email);
-            expect(createdUser.status).toBe('BLOCKED');
+            expect(createdUser.status).toBe('OK');
             expect(createdUser.createdAt).toBeDefined();
             expect(createdUser.updatedAt).toBeDefined();
             expect(createdUser.country).toBe('FR'); // Default value
