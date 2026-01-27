@@ -7,7 +7,7 @@ import { generateUUID } from '../../utils/uuid';
 import { security } from '../../utils/security';
 
 export class InMemoryUserRepository implements UserRepository {
-    constructor(private db: BetterSQLite3Database) {}
+    constructor(private db: BetterSQLite3Database) { }
 
     private toUser(row: any): t_User {
         return {
@@ -64,7 +64,7 @@ export class InMemoryUserRepository implements UserRepository {
         const { password, ...userData } = data;
         const newUser: t_User = {
             id: generateUUID(),
-            status: 'BLOCKED',
+            status: 'OK',
             ...userData,
             country: userData.country ?? 'FR',
             phone: userData.phone ?? undefined,

@@ -786,6 +786,16 @@ components:
         updatedAt:
           type: string
           format: date-time
+    UserWithSubscriptionFlag:
+      allOf:
+        - $ref: '#/components/schemas/User'
+        - type: object
+          required: [isSubscribed]
+          properties:
+            isSubscribed:
+              type: boolean
+              description: "Calculé à la volée: true si l'utilisateur a au moins un abonnement ACTIVE."
+              example: true
 
     UserCreate:
       type: object
@@ -1068,7 +1078,7 @@ components:
           type: string
           description: 'JWT Token'
         user:
-          $ref: '#/components/schemas/User'
+          $ref: '#/components/schemas/UserWithSubscriptionFlag'
 
     Admin:
       type: object

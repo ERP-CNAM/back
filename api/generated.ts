@@ -2,1579 +2,1946 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { ExpressRuntimeError, RequestInputType } from '@nahkies/typescript-express-runtime/errors';
 import {
-    type ExpressRuntimeResponder,
-    ExpressRuntimeResponse,
-    type Params,
-    type ServerConfig,
-    SkipResponse,
-    type StatusCode,
-    startServer,
-} from '@nahkies/typescript-express-runtime/server';
-import { parseRequestInput, responseValidationFactory } from '@nahkies/typescript-express-runtime/zod-v4';
-import { type NextFunction, type Request, type Response, Router } from 'express';
-import { z } from 'zod/v4';
+  ExpressRuntimeError,
+  RequestInputType,
+} from "@nahkies/typescript-express-runtime/errors"
+import {
+  type ExpressRuntimeResponder,
+  ExpressRuntimeResponse,
+  type Params,
+  type ServerConfig,
+  SkipResponse,
+  type StatusCode,
+  startServer,
+} from "@nahkies/typescript-express-runtime/server"
+import {
+  parseRequestInput,
+  responseValidationFactory,
+} from "@nahkies/typescript-express-runtime/zod-v4"
+import { type NextFunction, type Request, type Response, Router } from "express"
+import { z } from "zod/v4"
 import type {
-    EmptyObject,
-    t_AdminLoginRequestBodySchema,
-    t_AdminLoginResponse,
-    t_BaseAPIResponse,
-    t_CancelSubscriptionParamSchema,
-    t_CreateSubscriptionRequestBodySchema,
-    t_CreateUserRequestBodySchema,
-    t_DeleteUserParamSchema,
-    t_DirectDebitOrder,
-    t_ExportDirectDebitsQuerySchema,
-    t_GenerateMonthlyBillingRequestBodySchema,
-    t_GetMonthlyRevenueQuerySchema,
-    t_GetSubscriptionParamSchema,
-    t_GetUserParamSchema,
-    t_InvoiceDetailed,
-    t_ListInvoicesQuerySchema,
-    t_ListSubscriptionsQuerySchema,
-    t_ListUsersQuerySchema,
-    t_LoginRequestBodySchema,
-    t_LoginResponse,
-    t_Subscription,
-    t_SubscriptionDetailed,
-    t_UpdatePaymentStatusRequestBodySchema,
-    t_UpdateSubscriptionParamSchema,
-    t_UpdateSubscriptionRequestBodySchema,
-    t_UpdateUserParamSchema,
-    t_UpdateUserRequestBodySchema,
-    t_UpdateUserStatusParamSchema,
-    t_UpdateUserStatusRequestBodySchema,
-    t_User,
-} from './models';
+  EmptyObject,
+  t_AdminLoginRequestBodySchema,
+  t_AdminLoginResponse,
+  t_BaseAPIResponse,
+  t_CancelSubscriptionParamSchema,
+  t_CreateSubscriptionRequestBodySchema,
+  t_CreateUserRequestBodySchema,
+  t_DeleteUserParamSchema,
+  t_DirectDebitOrder,
+  t_ExportDirectDebitsQuerySchema,
+  t_GenerateMonthlyBillingRequestBodySchema,
+  t_GetMonthlyRevenueQuerySchema,
+  t_GetSubscriptionParamSchema,
+  t_GetUserParamSchema,
+  t_InvoiceDetailed,
+  t_ListInvoicesQuerySchema,
+  t_ListSubscriptionsQuerySchema,
+  t_ListUsersQuerySchema,
+  t_LoginRequestBodySchema,
+  t_LoginResponse,
+  t_Subscription,
+  t_SubscriptionDetailed,
+  t_UpdatePaymentStatusRequestBodySchema,
+  t_UpdateSubscriptionParamSchema,
+  t_UpdateSubscriptionRequestBodySchema,
+  t_UpdateUserParamSchema,
+  t_UpdateUserRequestBodySchema,
+  t_UpdateUserStatusParamSchema,
+  t_UpdateUserStatusRequestBodySchema,
+  t_User,
+} from "./models"
 import {
-    s_AdminLoginResponse,
-    s_BaseAPIResponse,
-    s_DirectDebitOrder,
-    s_InvoiceDetailed,
-    s_LoginRequest,
-    s_LoginResponse,
-    s_PaymentUpdate,
-    s_Subscription,
-    s_SubscriptionCreate,
-    s_SubscriptionDetailed,
-    s_SubscriptionStatus,
-    s_SubscriptionUpdate,
-    s_User,
-    s_UserCreate,
-    s_UserStatus,
-    s_UserUpdate,
-} from './schemas';
+  s_AdminLoginResponse,
+  s_BaseAPIResponse,
+  s_DirectDebitOrder,
+  s_InvoiceDetailed,
+  s_LoginRequest,
+  s_LoginResponse,
+  s_PaymentUpdate,
+  s_Subscription,
+  s_SubscriptionCreate,
+  s_SubscriptionDetailed,
+  s_SubscriptionStatus,
+  s_SubscriptionUpdate,
+  s_User,
+  s_UserCreate,
+  s_UserStatus,
+  s_UserUpdate,
+} from "./schemas"
 
 export type LoginResponder = {
-    with200(): ExpressRuntimeResponse<
-        t_BaseAPIResponse & {
-            payload?: t_LoginResponse;
-        }
-    >;
-    with401(): ExpressRuntimeResponse<
-        t_BaseAPIResponse & {
-            payload?: EmptyObject | null;
-        }
-    >;
-} & ExpressRuntimeResponder;
+  with200(): ExpressRuntimeResponse<
+    t_BaseAPIResponse & {
+      payload?: t_LoginResponse
+    }
+  >
+  with401(): ExpressRuntimeResponse<
+    t_BaseAPIResponse & {
+      payload?: EmptyObject | null
+    }
+  >
+} & ExpressRuntimeResponder
 
 export type Login = (
-    params: Params<void, void, t_LoginRequestBodySchema, void>,
-    respond: LoginResponder,
-    req: Request,
-    res: Response,
-    next: NextFunction,
-) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>;
+  params: Params<void, void, t_LoginRequestBodySchema, void>,
+  respond: LoginResponder,
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>
 
 export type AdminLoginResponder = {
-    with200(): ExpressRuntimeResponse<
-        t_BaseAPIResponse & {
-            payload?: t_AdminLoginResponse;
-        }
-    >;
-    with401(): ExpressRuntimeResponse<
-        t_BaseAPIResponse & {
-            payload?: EmptyObject | null;
-        }
-    >;
-} & ExpressRuntimeResponder;
+  with200(): ExpressRuntimeResponse<
+    t_BaseAPIResponse & {
+      payload?: t_AdminLoginResponse
+    }
+  >
+  with401(): ExpressRuntimeResponse<
+    t_BaseAPIResponse & {
+      payload?: EmptyObject | null
+    }
+  >
+} & ExpressRuntimeResponder
 
 export type AdminLogin = (
-    params: Params<void, void, t_AdminLoginRequestBodySchema, void>,
-    respond: AdminLoginResponder,
-    req: Request,
-    res: Response,
-    next: NextFunction,
-) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>;
+  params: Params<void, void, t_AdminLoginRequestBodySchema, void>,
+  respond: AdminLoginResponder,
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>
 
 export type CreateUserResponder = {
-    with201(): ExpressRuntimeResponse<
-        t_BaseAPIResponse & {
-            payload?: t_User;
-        }
-    >;
-} & ExpressRuntimeResponder;
+  with201(): ExpressRuntimeResponse<
+    t_BaseAPIResponse & {
+      payload?: t_User
+    }
+  >
+} & ExpressRuntimeResponder
 
 export type CreateUser = (
-    params: Params<void, void, t_CreateUserRequestBodySchema, void>,
-    respond: CreateUserResponder,
-    req: Request,
-    res: Response,
-    next: NextFunction,
-) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>;
+  params: Params<void, void, t_CreateUserRequestBodySchema, void>,
+  respond: CreateUserResponder,
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>
 
 export type ListUsersResponder = {
-    with200(): ExpressRuntimeResponse<
-        t_BaseAPIResponse & {
-            payload?: t_User[];
-        }
-    >;
-    with403(): ExpressRuntimeResponse<t_BaseAPIResponse>;
-} & ExpressRuntimeResponder;
+  with200(): ExpressRuntimeResponse<
+    t_BaseAPIResponse & {
+      payload?: t_User[]
+    }
+  >
+  with403(): ExpressRuntimeResponse<t_BaseAPIResponse>
+} & ExpressRuntimeResponder
 
 export type ListUsers = (
-    params: Params<void, t_ListUsersQuerySchema, void, void>,
-    respond: ListUsersResponder,
-    req: Request,
-    res: Response,
-    next: NextFunction,
-) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>;
+  params: Params<void, t_ListUsersQuerySchema, void, void>,
+  respond: ListUsersResponder,
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>
 
 export type GetUserResponder = {
-    with200(): ExpressRuntimeResponse<
-        t_BaseAPIResponse & {
-            payload?: t_User;
-        }
-    >;
-    with403(): ExpressRuntimeResponse<t_BaseAPIResponse>;
-    with404(): ExpressRuntimeResponse<
-        t_BaseAPIResponse & {
-            payload?: EmptyObject | null;
-        }
-    >;
-} & ExpressRuntimeResponder;
+  with200(): ExpressRuntimeResponse<
+    t_BaseAPIResponse & {
+      payload?: t_User
+    }
+  >
+  with403(): ExpressRuntimeResponse<t_BaseAPIResponse>
+  with404(): ExpressRuntimeResponse<
+    t_BaseAPIResponse & {
+      payload?: EmptyObject | null
+    }
+  >
+} & ExpressRuntimeResponder
 
 export type GetUser = (
-    params: Params<t_GetUserParamSchema, void, void, void>,
-    respond: GetUserResponder,
-    req: Request,
-    res: Response,
-    next: NextFunction,
-) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>;
+  params: Params<t_GetUserParamSchema, void, void, void>,
+  respond: GetUserResponder,
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>
 
 export type UpdateUserResponder = {
-    with200(): ExpressRuntimeResponse<
-        t_BaseAPIResponse & {
-            payload?: t_User;
-        }
-    >;
-    with403(): ExpressRuntimeResponse<t_BaseAPIResponse>;
-    with404(): ExpressRuntimeResponse<
-        t_BaseAPIResponse & {
-            payload?: EmptyObject | null;
-        }
-    >;
-} & ExpressRuntimeResponder;
+  with200(): ExpressRuntimeResponse<
+    t_BaseAPIResponse & {
+      payload?: t_User
+    }
+  >
+  with403(): ExpressRuntimeResponse<t_BaseAPIResponse>
+  with404(): ExpressRuntimeResponse<
+    t_BaseAPIResponse & {
+      payload?: EmptyObject | null
+    }
+  >
+} & ExpressRuntimeResponder
 
 export type UpdateUser = (
-    params: Params<t_UpdateUserParamSchema, void, t_UpdateUserRequestBodySchema, void>,
-    respond: UpdateUserResponder,
-    req: Request,
-    res: Response,
-    next: NextFunction,
-) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>;
+  params: Params<
+    t_UpdateUserParamSchema,
+    void,
+    t_UpdateUserRequestBodySchema,
+    void
+  >,
+  respond: UpdateUserResponder,
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>
 
 export type DeleteUserResponder = {
-    with200(): ExpressRuntimeResponse<
-        t_BaseAPIResponse & {
-            payload?: EmptyObject | null;
-        }
-    >;
-    with404(): ExpressRuntimeResponse<
-        t_BaseAPIResponse & {
-            payload?: EmptyObject | null;
-        }
-    >;
-} & ExpressRuntimeResponder;
+  with200(): ExpressRuntimeResponse<
+    t_BaseAPIResponse & {
+      payload?: EmptyObject | null
+    }
+  >
+  with404(): ExpressRuntimeResponse<
+    t_BaseAPIResponse & {
+      payload?: EmptyObject | null
+    }
+  >
+} & ExpressRuntimeResponder
 
 export type DeleteUser = (
-    params: Params<t_DeleteUserParamSchema, void, void, void>,
-    respond: DeleteUserResponder,
-    req: Request,
-    res: Response,
-    next: NextFunction,
-) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>;
+  params: Params<t_DeleteUserParamSchema, void, void, void>,
+  respond: DeleteUserResponder,
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>
 
 export type UpdateUserStatusResponder = {
-    with200(): ExpressRuntimeResponse<
-        t_BaseAPIResponse & {
-            payload?: t_User;
-        }
-    >;
-    with404(): ExpressRuntimeResponse<
-        t_BaseAPIResponse & {
-            payload?: EmptyObject | null;
-        }
-    >;
-} & ExpressRuntimeResponder;
+  with200(): ExpressRuntimeResponse<
+    t_BaseAPIResponse & {
+      payload?: t_User
+    }
+  >
+  with404(): ExpressRuntimeResponse<
+    t_BaseAPIResponse & {
+      payload?: EmptyObject | null
+    }
+  >
+} & ExpressRuntimeResponder
 
 export type UpdateUserStatus = (
-    params: Params<t_UpdateUserStatusParamSchema, void, t_UpdateUserStatusRequestBodySchema, void>,
-    respond: UpdateUserStatusResponder,
-    req: Request,
-    res: Response,
-    next: NextFunction,
-) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>;
+  params: Params<
+    t_UpdateUserStatusParamSchema,
+    void,
+    t_UpdateUserStatusRequestBodySchema,
+    void
+  >,
+  respond: UpdateUserStatusResponder,
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>
 
 export type ListSubscriptionsResponder = {
-    with200(): ExpressRuntimeResponse<
-        t_BaseAPIResponse & {
-            payload?: t_SubscriptionDetailed[];
-        }
-    >;
-} & ExpressRuntimeResponder;
+  with200(): ExpressRuntimeResponse<
+    t_BaseAPIResponse & {
+      payload?: t_SubscriptionDetailed[]
+    }
+  >
+} & ExpressRuntimeResponder
 
 export type ListSubscriptions = (
-    params: Params<void, t_ListSubscriptionsQuerySchema, void, void>,
-    respond: ListSubscriptionsResponder,
-    req: Request,
-    res: Response,
-    next: NextFunction,
-) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>;
+  params: Params<void, t_ListSubscriptionsQuerySchema, void, void>,
+  respond: ListSubscriptionsResponder,
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>
 
 export type CreateSubscriptionResponder = {
-    with201(): ExpressRuntimeResponse<
-        t_BaseAPIResponse & {
-            payload?: t_Subscription;
-        }
-    >;
-} & ExpressRuntimeResponder;
+  with201(): ExpressRuntimeResponse<
+    t_BaseAPIResponse & {
+      payload?: t_Subscription
+    }
+  >
+} & ExpressRuntimeResponder
 
 export type CreateSubscription = (
-    params: Params<void, void, t_CreateSubscriptionRequestBodySchema, void>,
-    respond: CreateSubscriptionResponder,
-    req: Request,
-    res: Response,
-    next: NextFunction,
-) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>;
+  params: Params<void, void, t_CreateSubscriptionRequestBodySchema, void>,
+  respond: CreateSubscriptionResponder,
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>
 
 export type GetSubscriptionResponder = {
-    with200(): ExpressRuntimeResponse<
-        t_BaseAPIResponse & {
-            payload?: t_SubscriptionDetailed;
-        }
-    >;
-    with404(): ExpressRuntimeResponse<
-        t_BaseAPIResponse & {
-            payload?: EmptyObject | null;
-        }
-    >;
-} & ExpressRuntimeResponder;
+  with200(): ExpressRuntimeResponse<
+    t_BaseAPIResponse & {
+      payload?: t_SubscriptionDetailed
+    }
+  >
+  with404(): ExpressRuntimeResponse<
+    t_BaseAPIResponse & {
+      payload?: EmptyObject | null
+    }
+  >
+} & ExpressRuntimeResponder
 
 export type GetSubscription = (
-    params: Params<t_GetSubscriptionParamSchema, void, void, void>,
-    respond: GetSubscriptionResponder,
-    req: Request,
-    res: Response,
-    next: NextFunction,
-) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>;
+  params: Params<t_GetSubscriptionParamSchema, void, void, void>,
+  respond: GetSubscriptionResponder,
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>
 
 export type UpdateSubscriptionResponder = {
-    with200(): ExpressRuntimeResponse<
-        t_BaseAPIResponse & {
-            payload?: t_Subscription;
-        }
-    >;
-    with404(): ExpressRuntimeResponse<
-        t_BaseAPIResponse & {
-            payload?: EmptyObject | null;
-        }
-    >;
-} & ExpressRuntimeResponder;
+  with200(): ExpressRuntimeResponse<
+    t_BaseAPIResponse & {
+      payload?: t_Subscription
+    }
+  >
+  with404(): ExpressRuntimeResponse<
+    t_BaseAPIResponse & {
+      payload?: EmptyObject | null
+    }
+  >
+} & ExpressRuntimeResponder
 
 export type UpdateSubscription = (
-    params: Params<t_UpdateSubscriptionParamSchema, void, t_UpdateSubscriptionRequestBodySchema, void>,
-    respond: UpdateSubscriptionResponder,
-    req: Request,
-    res: Response,
-    next: NextFunction,
-) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>;
+  params: Params<
+    t_UpdateSubscriptionParamSchema,
+    void,
+    t_UpdateSubscriptionRequestBodySchema,
+    void
+  >,
+  respond: UpdateSubscriptionResponder,
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>
 
 export type CancelSubscriptionResponder = {
-    with200(): ExpressRuntimeResponse<
-        t_BaseAPIResponse & {
-            payload?: t_Subscription;
-        }
-    >;
-    with404(): ExpressRuntimeResponse<
-        t_BaseAPIResponse & {
-            payload?: EmptyObject | null;
-        }
-    >;
-} & ExpressRuntimeResponder;
+  with200(): ExpressRuntimeResponse<
+    t_BaseAPIResponse & {
+      payload?: t_Subscription
+    }
+  >
+  with404(): ExpressRuntimeResponse<
+    t_BaseAPIResponse & {
+      payload?: EmptyObject | null
+    }
+  >
+} & ExpressRuntimeResponder
 
 export type CancelSubscription = (
-    params: Params<t_CancelSubscriptionParamSchema, void, void, void>,
-    respond: CancelSubscriptionResponder,
-    req: Request,
-    res: Response,
-    next: NextFunction,
-) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>;
+  params: Params<t_CancelSubscriptionParamSchema, void, void, void>,
+  respond: CancelSubscriptionResponder,
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>
 
 export type GenerateMonthlyBillingResponder = {
-    with200(): ExpressRuntimeResponse<
-        t_BaseAPIResponse & {
-            payload?: {
-                billingDate?: string;
-                invoices?: t_InvoiceDetailed[];
-            };
-        }
-    >;
-} & ExpressRuntimeResponder;
+  with200(): ExpressRuntimeResponse<
+    t_BaseAPIResponse & {
+      payload?: {
+        billingDate?: string
+        invoices?: t_InvoiceDetailed[]
+      }
+    }
+  >
+} & ExpressRuntimeResponder
 
 export type GenerateMonthlyBilling = (
-    params: Params<void, void, t_GenerateMonthlyBillingRequestBodySchema, void>,
-    respond: GenerateMonthlyBillingResponder,
-    req: Request,
-    res: Response,
-    next: NextFunction,
-) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>;
+  params: Params<void, void, t_GenerateMonthlyBillingRequestBodySchema, void>,
+  respond: GenerateMonthlyBillingResponder,
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>
 
 export type ListInvoicesResponder = {
-    with200(): ExpressRuntimeResponse<
-        t_BaseAPIResponse & {
-            payload?: t_InvoiceDetailed[];
-        }
-    >;
-} & ExpressRuntimeResponder;
+  with200(): ExpressRuntimeResponse<
+    t_BaseAPIResponse & {
+      payload?: t_InvoiceDetailed[]
+    }
+  >
+} & ExpressRuntimeResponder
 
 export type ListInvoices = (
-    params: Params<void, t_ListInvoicesQuerySchema, void, void>,
-    respond: ListInvoicesResponder,
-    req: Request,
-    res: Response,
-    next: NextFunction,
-) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>;
+  params: Params<void, t_ListInvoicesQuerySchema, void, void>,
+  respond: ListInvoicesResponder,
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>
 
 export type ExportDirectDebitsResponder = {
-    with200(): ExpressRuntimeResponse<
-        t_BaseAPIResponse & {
-            payload?: t_DirectDebitOrder[];
-        }
-    >;
-} & ExpressRuntimeResponder;
+  with200(): ExpressRuntimeResponse<
+    t_BaseAPIResponse & {
+      payload?: t_DirectDebitOrder[]
+    }
+  >
+} & ExpressRuntimeResponder
 
 export type ExportDirectDebits = (
-    params: Params<void, t_ExportDirectDebitsQuerySchema, void, void>,
-    respond: ExportDirectDebitsResponder,
-    req: Request,
-    res: Response,
-    next: NextFunction,
-) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>;
+  params: Params<void, t_ExportDirectDebitsQuerySchema, void, void>,
+  respond: ExportDirectDebitsResponder,
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>
 
 export type UpdatePaymentStatusResponder = {
-    with200(): ExpressRuntimeResponse<
-        t_BaseAPIResponse & {
-            payload?: {
-                updatedCount?: number;
-            };
-        }
-    >;
-} & ExpressRuntimeResponder;
+  with200(): ExpressRuntimeResponse<
+    t_BaseAPIResponse & {
+      payload?: {
+        updatedCount?: number
+      }
+    }
+  >
+} & ExpressRuntimeResponder
 
 export type UpdatePaymentStatus = (
-    params: Params<void, void, t_UpdatePaymentStatusRequestBodySchema, void>,
-    respond: UpdatePaymentStatusResponder,
-    req: Request,
-    res: Response,
-    next: NextFunction,
-) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>;
+  params: Params<void, void, t_UpdatePaymentStatusRequestBodySchema, void>,
+  respond: UpdatePaymentStatusResponder,
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>
 
 export type GetMonthlyRevenueResponder = {
-    with200(): ExpressRuntimeResponse<
-        t_BaseAPIResponse & {
-            payload?: {
-                month?: string;
-                revenueExclVat?: number;
-                revenueInclVat?: number;
-                vatAmount?: number;
-            }[];
-        }
-    >;
-} & ExpressRuntimeResponder;
+  with200(): ExpressRuntimeResponse<
+    t_BaseAPIResponse & {
+      payload?: {
+        month?: string
+        revenueExclVat?: number
+        revenueInclVat?: number
+        vatAmount?: number
+      }[]
+    }
+  >
+} & ExpressRuntimeResponder
 
 export type GetMonthlyRevenue = (
-    params: Params<void, t_GetMonthlyRevenueQuerySchema, void, void>,
-    respond: GetMonthlyRevenueResponder,
-    req: Request,
-    res: Response,
-    next: NextFunction,
-) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>;
+  params: Params<void, t_GetMonthlyRevenueQuerySchema, void, void>,
+  respond: GetMonthlyRevenueResponder,
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => Promise<ExpressRuntimeResponse<unknown> | typeof SkipResponse>
 
 export type Implementation = {
-    login: Login;
-    adminLogin: AdminLogin;
-    createUser: CreateUser;
-    listUsers: ListUsers;
-    getUser: GetUser;
-    updateUser: UpdateUser;
-    deleteUser: DeleteUser;
-    updateUserStatus: UpdateUserStatus;
-    listSubscriptions: ListSubscriptions;
-    createSubscription: CreateSubscription;
-    getSubscription: GetSubscription;
-    updateSubscription: UpdateSubscription;
-    cancelSubscription: CancelSubscription;
-    generateMonthlyBilling: GenerateMonthlyBilling;
-    listInvoices: ListInvoices;
-    exportDirectDebits: ExportDirectDebits;
-    updatePaymentStatus: UpdatePaymentStatus;
-    getMonthlyRevenue: GetMonthlyRevenue;
-};
+  login: Login
+  adminLogin: AdminLogin
+  createUser: CreateUser
+  listUsers: ListUsers
+  getUser: GetUser
+  updateUser: UpdateUser
+  deleteUser: DeleteUser
+  updateUserStatus: UpdateUserStatus
+  listSubscriptions: ListSubscriptions
+  createSubscription: CreateSubscription
+  getSubscription: GetSubscription
+  updateSubscription: UpdateSubscription
+  cancelSubscription: CancelSubscription
+  generateMonthlyBilling: GenerateMonthlyBilling
+  listInvoices: ListInvoices
+  exportDirectDebits: ExportDirectDebits
+  updatePaymentStatus: UpdatePaymentStatus
+  getMonthlyRevenue: GetMonthlyRevenue
+}
 
 export function createRouter(implementation: Implementation): Router {
-    const router = Router();
+  const router = Router()
 
-    const loginRequestBodySchema = s_LoginRequest;
+  const loginRequestBodySchema = s_LoginRequest
 
-    const loginResponseBodyValidator = responseValidationFactory(
-        [
-            ['200', s_BaseAPIResponse.merge(z.object({ payload: s_LoginResponse.optional() }))],
-            ['401', s_BaseAPIResponse.merge(z.object({ payload: z.object({}).nullable().optional() }))],
-        ],
-        undefined,
-    );
+  const loginResponseBodyValidator = responseValidationFactory(
+    [
+      [
+        "200",
+        s_BaseAPIResponse.merge(
+          z.object({ payload: s_LoginResponse.optional() }),
+        ),
+      ],
+      [
+        "401",
+        s_BaseAPIResponse.merge(
+          z.object({ payload: z.object({}).nullable().optional() }),
+        ),
+      ],
+    ],
+    undefined,
+  )
 
-    // login
-    router.post(`/auth/login`, async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            const input = {
-                params: undefined,
-                query: undefined,
-                body: parseRequestInput(loginRequestBodySchema, req.body, RequestInputType.RequestBody),
-                headers: undefined,
-            };
-
-            const responder = {
-                with200() {
-                    return new ExpressRuntimeResponse<
-                        t_BaseAPIResponse & {
-                            payload?: t_LoginResponse;
-                        }
-                    >(200);
-                },
-                with401() {
-                    return new ExpressRuntimeResponse<
-                        t_BaseAPIResponse & {
-                            payload?: EmptyObject | null;
-                        }
-                    >(401);
-                },
-                withStatus(status: StatusCode) {
-                    return new ExpressRuntimeResponse(status);
-                },
-            };
-
-            const response = await implementation.login(input, responder, req, res, next).catch((err) => {
-                throw ExpressRuntimeError.HandlerError(err);
-            });
-
-            // escape hatch to allow responses to be sent by the implementation handler
-            if (response === SkipResponse) {
-                return;
-            }
-
-            const { status, body } = response instanceof ExpressRuntimeResponse ? response.unpack() : response;
-
-            res.status(status);
-
-            if (body !== undefined) {
-                res.json(loginResponseBodyValidator(status, body));
-            } else {
-                res.end();
-            }
-        } catch (error) {
-            next(error);
+  // login
+  router.post(
+    `/auth/login`,
+    async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const input = {
+          params: undefined,
+          query: undefined,
+          body: parseRequestInput(
+            loginRequestBodySchema,
+            req.body,
+            RequestInputType.RequestBody,
+          ),
+          headers: undefined,
         }
-    });
 
-    const adminLoginRequestBodySchema = s_LoginRequest;
-
-    const adminLoginResponseBodyValidator = responseValidationFactory(
-        [
-            ['200', s_BaseAPIResponse.merge(z.object({ payload: s_AdminLoginResponse.optional() }))],
-            ['401', s_BaseAPIResponse.merge(z.object({ payload: z.object({}).nullable().optional() }))],
-        ],
-        undefined,
-    );
-
-    // adminLogin
-    router.post(`/auth/admin/login`, async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            const input = {
-                params: undefined,
-                query: undefined,
-                body: parseRequestInput(adminLoginRequestBodySchema, req.body, RequestInputType.RequestBody),
-                headers: undefined,
-            };
-
-            const responder = {
-                with200() {
-                    return new ExpressRuntimeResponse<
-                        t_BaseAPIResponse & {
-                            payload?: t_AdminLoginResponse;
-                        }
-                    >(200);
-                },
-                with401() {
-                    return new ExpressRuntimeResponse<
-                        t_BaseAPIResponse & {
-                            payload?: EmptyObject | null;
-                        }
-                    >(401);
-                },
-                withStatus(status: StatusCode) {
-                    return new ExpressRuntimeResponse(status);
-                },
-            };
-
-            const response = await implementation.adminLogin(input, responder, req, res, next).catch((err) => {
-                throw ExpressRuntimeError.HandlerError(err);
-            });
-
-            // escape hatch to allow responses to be sent by the implementation handler
-            if (response === SkipResponse) {
-                return;
-            }
-
-            const { status, body } = response instanceof ExpressRuntimeResponse ? response.unpack() : response;
-
-            res.status(status);
-
-            if (body !== undefined) {
-                res.json(adminLoginResponseBodyValidator(status, body));
-            } else {
-                res.end();
-            }
-        } catch (error) {
-            next(error);
+        const responder = {
+          with200() {
+            return new ExpressRuntimeResponse<
+              t_BaseAPIResponse & {
+                payload?: t_LoginResponse
+              }
+            >(200)
+          },
+          with401() {
+            return new ExpressRuntimeResponse<
+              t_BaseAPIResponse & {
+                payload?: EmptyObject | null
+              }
+            >(401)
+          },
+          withStatus(status: StatusCode) {
+            return new ExpressRuntimeResponse(status)
+          },
         }
-    });
 
-    const createUserRequestBodySchema = s_UserCreate;
+        const response = await implementation
+          .login(input, responder, req, res, next)
+          .catch((err) => {
+            throw ExpressRuntimeError.HandlerError(err)
+          })
 
-    const createUserResponseBodyValidator = responseValidationFactory(
-        [['201', s_BaseAPIResponse.merge(z.object({ payload: s_User.optional() }))]],
-        undefined,
-    );
-
-    // createUser
-    router.post(`/users`, async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            const input = {
-                params: undefined,
-                query: undefined,
-                body: parseRequestInput(createUserRequestBodySchema, req.body, RequestInputType.RequestBody),
-                headers: undefined,
-            };
-
-            const responder = {
-                with201() {
-                    return new ExpressRuntimeResponse<
-                        t_BaseAPIResponse & {
-                            payload?: t_User;
-                        }
-                    >(201);
-                },
-                withStatus(status: StatusCode) {
-                    return new ExpressRuntimeResponse(status);
-                },
-            };
-
-            const response = await implementation.createUser(input, responder, req, res, next).catch((err) => {
-                throw ExpressRuntimeError.HandlerError(err);
-            });
-
-            // escape hatch to allow responses to be sent by the implementation handler
-            if (response === SkipResponse) {
-                return;
-            }
-
-            const { status, body } = response instanceof ExpressRuntimeResponse ? response.unpack() : response;
-
-            res.status(status);
-
-            if (body !== undefined) {
-                res.json(createUserResponseBodyValidator(status, body));
-            } else {
-                res.end();
-            }
-        } catch (error) {
-            next(error);
+        // escape hatch to allow responses to be sent by the implementation handler
+        if (response === SkipResponse) {
+          return
         }
-    });
 
-    const listUsersQuerySchema = z.object({ status: s_UserStatus.optional() });
+        const { status, body } =
+          response instanceof ExpressRuntimeResponse
+            ? response.unpack()
+            : response
 
-    const listUsersResponseBodyValidator = responseValidationFactory(
-        [
-            ['200', s_BaseAPIResponse.merge(z.object({ payload: z.array(s_User).optional() }))],
-            ['403', s_BaseAPIResponse],
-        ],
-        undefined,
-    );
+        res.status(status)
 
-    // listUsers
-    router.get(`/users`, async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            const input = {
-                params: undefined,
-                query: parseRequestInput(listUsersQuerySchema, req.query, RequestInputType.QueryString),
-                body: undefined,
-                headers: undefined,
-            };
-
-            const responder = {
-                with200() {
-                    return new ExpressRuntimeResponse<
-                        t_BaseAPIResponse & {
-                            payload?: t_User[];
-                        }
-                    >(200);
-                },
-                with403() {
-                    return new ExpressRuntimeResponse<t_BaseAPIResponse>(403);
-                },
-                withStatus(status: StatusCode) {
-                    return new ExpressRuntimeResponse(status);
-                },
-            };
-
-            const response = await implementation.listUsers(input, responder, req, res, next).catch((err) => {
-                throw ExpressRuntimeError.HandlerError(err);
-            });
-
-            // escape hatch to allow responses to be sent by the implementation handler
-            if (response === SkipResponse) {
-                return;
-            }
-
-            const { status, body } = response instanceof ExpressRuntimeResponse ? response.unpack() : response;
-
-            res.status(status);
-
-            if (body !== undefined) {
-                res.json(listUsersResponseBodyValidator(status, body));
-            } else {
-                res.end();
-            }
-        } catch (error) {
-            next(error);
+        if (body !== undefined) {
+          res.json(loginResponseBodyValidator(status, body))
+        } else {
+          res.end()
         }
-    });
+      } catch (error) {
+        next(error)
+      }
+    },
+  )
 
-    const getUserParamSchema = z.object({ userId: z.string() });
+  const adminLoginRequestBodySchema = s_LoginRequest
 
-    const getUserResponseBodyValidator = responseValidationFactory(
-        [
-            ['200', s_BaseAPIResponse.merge(z.object({ payload: s_User.optional() }))],
-            ['403', s_BaseAPIResponse],
-            ['404', s_BaseAPIResponse.merge(z.object({ payload: z.object({}).nullable().optional() }))],
-        ],
-        undefined,
-    );
+  const adminLoginResponseBodyValidator = responseValidationFactory(
+    [
+      [
+        "200",
+        s_BaseAPIResponse.merge(
+          z.object({ payload: s_AdminLoginResponse.optional() }),
+        ),
+      ],
+      [
+        "401",
+        s_BaseAPIResponse.merge(
+          z.object({ payload: z.object({}).nullable().optional() }),
+        ),
+      ],
+    ],
+    undefined,
+  )
 
-    // getUser
-    router.get(`/users/:userId`, async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            const input = {
-                params: parseRequestInput(getUserParamSchema, req.params, RequestInputType.RouteParam),
-                query: undefined,
-                body: undefined,
-                headers: undefined,
-            };
-
-            const responder = {
-                with200() {
-                    return new ExpressRuntimeResponse<
-                        t_BaseAPIResponse & {
-                            payload?: t_User;
-                        }
-                    >(200);
-                },
-                with403() {
-                    return new ExpressRuntimeResponse<t_BaseAPIResponse>(403);
-                },
-                with404() {
-                    return new ExpressRuntimeResponse<
-                        t_BaseAPIResponse & {
-                            payload?: EmptyObject | null;
-                        }
-                    >(404);
-                },
-                withStatus(status: StatusCode) {
-                    return new ExpressRuntimeResponse(status);
-                },
-            };
-
-            const response = await implementation.getUser(input, responder, req, res, next).catch((err) => {
-                throw ExpressRuntimeError.HandlerError(err);
-            });
-
-            // escape hatch to allow responses to be sent by the implementation handler
-            if (response === SkipResponse) {
-                return;
-            }
-
-            const { status, body } = response instanceof ExpressRuntimeResponse ? response.unpack() : response;
-
-            res.status(status);
-
-            if (body !== undefined) {
-                res.json(getUserResponseBodyValidator(status, body));
-            } else {
-                res.end();
-            }
-        } catch (error) {
-            next(error);
+  // adminLogin
+  router.post(
+    `/auth/admin/login`,
+    async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const input = {
+          params: undefined,
+          query: undefined,
+          body: parseRequestInput(
+            adminLoginRequestBodySchema,
+            req.body,
+            RequestInputType.RequestBody,
+          ),
+          headers: undefined,
         }
-    });
 
-    const updateUserParamSchema = z.object({ userId: z.string() });
-
-    const updateUserRequestBodySchema = s_UserUpdate;
-
-    const updateUserResponseBodyValidator = responseValidationFactory(
-        [
-            ['200', s_BaseAPIResponse.merge(z.object({ payload: s_User.optional() }))],
-            ['403', s_BaseAPIResponse],
-            ['404', s_BaseAPIResponse.merge(z.object({ payload: z.object({}).nullable().optional() }))],
-        ],
-        undefined,
-    );
-
-    // updateUser
-    router.put(`/users/:userId`, async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            const input = {
-                params: parseRequestInput(updateUserParamSchema, req.params, RequestInputType.RouteParam),
-                query: undefined,
-                body: parseRequestInput(updateUserRequestBodySchema, req.body, RequestInputType.RequestBody),
-                headers: undefined,
-            };
-
-            const responder = {
-                with200() {
-                    return new ExpressRuntimeResponse<
-                        t_BaseAPIResponse & {
-                            payload?: t_User;
-                        }
-                    >(200);
-                },
-                with403() {
-                    return new ExpressRuntimeResponse<t_BaseAPIResponse>(403);
-                },
-                with404() {
-                    return new ExpressRuntimeResponse<
-                        t_BaseAPIResponse & {
-                            payload?: EmptyObject | null;
-                        }
-                    >(404);
-                },
-                withStatus(status: StatusCode) {
-                    return new ExpressRuntimeResponse(status);
-                },
-            };
-
-            const response = await implementation.updateUser(input, responder, req, res, next).catch((err) => {
-                throw ExpressRuntimeError.HandlerError(err);
-            });
-
-            // escape hatch to allow responses to be sent by the implementation handler
-            if (response === SkipResponse) {
-                return;
-            }
-
-            const { status, body } = response instanceof ExpressRuntimeResponse ? response.unpack() : response;
-
-            res.status(status);
-
-            if (body !== undefined) {
-                res.json(updateUserResponseBodyValidator(status, body));
-            } else {
-                res.end();
-            }
-        } catch (error) {
-            next(error);
+        const responder = {
+          with200() {
+            return new ExpressRuntimeResponse<
+              t_BaseAPIResponse & {
+                payload?: t_AdminLoginResponse
+              }
+            >(200)
+          },
+          with401() {
+            return new ExpressRuntimeResponse<
+              t_BaseAPIResponse & {
+                payload?: EmptyObject | null
+              }
+            >(401)
+          },
+          withStatus(status: StatusCode) {
+            return new ExpressRuntimeResponse(status)
+          },
         }
-    });
 
-    const deleteUserParamSchema = z.object({ userId: z.string() });
+        const response = await implementation
+          .adminLogin(input, responder, req, res, next)
+          .catch((err) => {
+            throw ExpressRuntimeError.HandlerError(err)
+          })
 
-    const deleteUserResponseBodyValidator = responseValidationFactory(
-        [
-            ['200', s_BaseAPIResponse.merge(z.object({ payload: z.object({}).nullable().optional() }))],
-            ['404', s_BaseAPIResponse.merge(z.object({ payload: z.object({}).nullable().optional() }))],
-        ],
-        undefined,
-    );
-
-    // deleteUser
-    router.delete(`/users/:userId`, async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            const input = {
-                params: parseRequestInput(deleteUserParamSchema, req.params, RequestInputType.RouteParam),
-                query: undefined,
-                body: undefined,
-                headers: undefined,
-            };
-
-            const responder = {
-                with200() {
-                    return new ExpressRuntimeResponse<
-                        t_BaseAPIResponse & {
-                            payload?: EmptyObject | null;
-                        }
-                    >(200);
-                },
-                with404() {
-                    return new ExpressRuntimeResponse<
-                        t_BaseAPIResponse & {
-                            payload?: EmptyObject | null;
-                        }
-                    >(404);
-                },
-                withStatus(status: StatusCode) {
-                    return new ExpressRuntimeResponse(status);
-                },
-            };
-
-            const response = await implementation.deleteUser(input, responder, req, res, next).catch((err) => {
-                throw ExpressRuntimeError.HandlerError(err);
-            });
-
-            // escape hatch to allow responses to be sent by the implementation handler
-            if (response === SkipResponse) {
-                return;
-            }
-
-            const { status, body } = response instanceof ExpressRuntimeResponse ? response.unpack() : response;
-
-            res.status(status);
-
-            if (body !== undefined) {
-                res.json(deleteUserResponseBodyValidator(status, body));
-            } else {
-                res.end();
-            }
-        } catch (error) {
-            next(error);
+        // escape hatch to allow responses to be sent by the implementation handler
+        if (response === SkipResponse) {
+          return
         }
-    });
 
-    const updateUserStatusParamSchema = z.object({ userId: z.string() });
+        const { status, body } =
+          response instanceof ExpressRuntimeResponse
+            ? response.unpack()
+            : response
 
-    const updateUserStatusRequestBodySchema = z.object({
-        status: s_UserStatus.optional(),
-    });
+        res.status(status)
 
-    const updateUserStatusResponseBodyValidator = responseValidationFactory(
-        [
-            ['200', s_BaseAPIResponse.merge(z.object({ payload: s_User.optional() }))],
-            ['404', s_BaseAPIResponse.merge(z.object({ payload: z.object({}).nullable().optional() }))],
-        ],
-        undefined,
-    );
-
-    // updateUserStatus
-    router.patch(`/users/:userId/status`, async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            const input = {
-                params: parseRequestInput(updateUserStatusParamSchema, req.params, RequestInputType.RouteParam),
-                query: undefined,
-                body: parseRequestInput(updateUserStatusRequestBodySchema, req.body, RequestInputType.RequestBody),
-                headers: undefined,
-            };
-
-            const responder = {
-                with200() {
-                    return new ExpressRuntimeResponse<
-                        t_BaseAPIResponse & {
-                            payload?: t_User;
-                        }
-                    >(200);
-                },
-                with404() {
-                    return new ExpressRuntimeResponse<
-                        t_BaseAPIResponse & {
-                            payload?: EmptyObject | null;
-                        }
-                    >(404);
-                },
-                withStatus(status: StatusCode) {
-                    return new ExpressRuntimeResponse(status);
-                },
-            };
-
-            const response = await implementation.updateUserStatus(input, responder, req, res, next).catch((err) => {
-                throw ExpressRuntimeError.HandlerError(err);
-            });
-
-            // escape hatch to allow responses to be sent by the implementation handler
-            if (response === SkipResponse) {
-                return;
-            }
-
-            const { status, body } = response instanceof ExpressRuntimeResponse ? response.unpack() : response;
-
-            res.status(status);
-
-            if (body !== undefined) {
-                res.json(updateUserStatusResponseBodyValidator(status, body));
-            } else {
-                res.end();
-            }
-        } catch (error) {
-            next(error);
+        if (body !== undefined) {
+          res.json(adminLoginResponseBodyValidator(status, body))
+        } else {
+          res.end()
         }
-    });
+      } catch (error) {
+        next(error)
+      }
+    },
+  )
 
-    const listSubscriptionsQuerySchema = z.object({
-        userId: z.string().optional(),
-        status: s_SubscriptionStatus.optional(),
-    });
+  const createUserRequestBodySchema = s_UserCreate
 
-    const listSubscriptionsResponseBodyValidator = responseValidationFactory(
-        [['200', s_BaseAPIResponse.merge(z.object({ payload: z.array(s_SubscriptionDetailed).optional() }))]],
-        undefined,
-    );
+  const createUserResponseBodyValidator = responseValidationFactory(
+    [
+      [
+        "201",
+        s_BaseAPIResponse.merge(z.object({ payload: s_User.optional() })),
+      ],
+    ],
+    undefined,
+  )
 
-    // listSubscriptions
-    router.get(`/subscriptions`, async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            const input = {
-                params: undefined,
-                query: parseRequestInput(listSubscriptionsQuerySchema, req.query, RequestInputType.QueryString),
-                body: undefined,
-                headers: undefined,
-            };
-
-            const responder = {
-                with200() {
-                    return new ExpressRuntimeResponse<
-                        t_BaseAPIResponse & {
-                            payload?: t_SubscriptionDetailed[];
-                        }
-                    >(200);
-                },
-                withStatus(status: StatusCode) {
-                    return new ExpressRuntimeResponse(status);
-                },
-            };
-
-            const response = await implementation.listSubscriptions(input, responder, req, res, next).catch((err) => {
-                throw ExpressRuntimeError.HandlerError(err);
-            });
-
-            // escape hatch to allow responses to be sent by the implementation handler
-            if (response === SkipResponse) {
-                return;
-            }
-
-            const { status, body } = response instanceof ExpressRuntimeResponse ? response.unpack() : response;
-
-            res.status(status);
-
-            if (body !== undefined) {
-                res.json(listSubscriptionsResponseBodyValidator(status, body));
-            } else {
-                res.end();
-            }
-        } catch (error) {
-            next(error);
+  // createUser
+  router.post(
+    `/users`,
+    async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const input = {
+          params: undefined,
+          query: undefined,
+          body: parseRequestInput(
+            createUserRequestBodySchema,
+            req.body,
+            RequestInputType.RequestBody,
+          ),
+          headers: undefined,
         }
-    });
 
-    const createSubscriptionRequestBodySchema = s_SubscriptionCreate;
-
-    const createSubscriptionResponseBodyValidator = responseValidationFactory(
-        [['201', s_BaseAPIResponse.merge(z.object({ payload: s_Subscription.optional() }))]],
-        undefined,
-    );
-
-    // createSubscription
-    router.post(`/subscriptions`, async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            const input = {
-                params: undefined,
-                query: undefined,
-                body: parseRequestInput(createSubscriptionRequestBodySchema, req.body, RequestInputType.RequestBody),
-                headers: undefined,
-            };
-
-            const responder = {
-                with201() {
-                    return new ExpressRuntimeResponse<
-                        t_BaseAPIResponse & {
-                            payload?: t_Subscription;
-                        }
-                    >(201);
-                },
-                withStatus(status: StatusCode) {
-                    return new ExpressRuntimeResponse(status);
-                },
-            };
-
-            const response = await implementation.createSubscription(input, responder, req, res, next).catch((err) => {
-                throw ExpressRuntimeError.HandlerError(err);
-            });
-
-            // escape hatch to allow responses to be sent by the implementation handler
-            if (response === SkipResponse) {
-                return;
-            }
-
-            const { status, body } = response instanceof ExpressRuntimeResponse ? response.unpack() : response;
-
-            res.status(status);
-
-            if (body !== undefined) {
-                res.json(createSubscriptionResponseBodyValidator(status, body));
-            } else {
-                res.end();
-            }
-        } catch (error) {
-            next(error);
+        const responder = {
+          with201() {
+            return new ExpressRuntimeResponse<
+              t_BaseAPIResponse & {
+                payload?: t_User
+              }
+            >(201)
+          },
+          withStatus(status: StatusCode) {
+            return new ExpressRuntimeResponse(status)
+          },
         }
-    });
 
-    const getSubscriptionParamSchema = z.object({ subscriptionId: z.string() });
+        const response = await implementation
+          .createUser(input, responder, req, res, next)
+          .catch((err) => {
+            throw ExpressRuntimeError.HandlerError(err)
+          })
 
-    const getSubscriptionResponseBodyValidator = responseValidationFactory(
-        [
-            ['200', s_BaseAPIResponse.merge(z.object({ payload: s_SubscriptionDetailed.optional() }))],
-            ['404', s_BaseAPIResponse.merge(z.object({ payload: z.object({}).nullable().optional() }))],
-        ],
-        undefined,
-    );
-
-    // getSubscription
-    router.get(`/subscriptions/:subscriptionId`, async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            const input = {
-                params: parseRequestInput(getSubscriptionParamSchema, req.params, RequestInputType.RouteParam),
-                query: undefined,
-                body: undefined,
-                headers: undefined,
-            };
-
-            const responder = {
-                with200() {
-                    return new ExpressRuntimeResponse<
-                        t_BaseAPIResponse & {
-                            payload?: t_SubscriptionDetailed;
-                        }
-                    >(200);
-                },
-                with404() {
-                    return new ExpressRuntimeResponse<
-                        t_BaseAPIResponse & {
-                            payload?: EmptyObject | null;
-                        }
-                    >(404);
-                },
-                withStatus(status: StatusCode) {
-                    return new ExpressRuntimeResponse(status);
-                },
-            };
-
-            const response = await implementation.getSubscription(input, responder, req, res, next).catch((err) => {
-                throw ExpressRuntimeError.HandlerError(err);
-            });
-
-            // escape hatch to allow responses to be sent by the implementation handler
-            if (response === SkipResponse) {
-                return;
-            }
-
-            const { status, body } = response instanceof ExpressRuntimeResponse ? response.unpack() : response;
-
-            res.status(status);
-
-            if (body !== undefined) {
-                res.json(getSubscriptionResponseBodyValidator(status, body));
-            } else {
-                res.end();
-            }
-        } catch (error) {
-            next(error);
+        // escape hatch to allow responses to be sent by the implementation handler
+        if (response === SkipResponse) {
+          return
         }
-    });
 
-    const updateSubscriptionParamSchema = z.object({ subscriptionId: z.string() });
+        const { status, body } =
+          response instanceof ExpressRuntimeResponse
+            ? response.unpack()
+            : response
 
-    const updateSubscriptionRequestBodySchema = s_SubscriptionUpdate;
+        res.status(status)
 
-    const updateSubscriptionResponseBodyValidator = responseValidationFactory(
-        [
-            ['200', s_BaseAPIResponse.merge(z.object({ payload: s_Subscription.optional() }))],
-            ['404', s_BaseAPIResponse.merge(z.object({ payload: z.object({}).nullable().optional() }))],
-        ],
-        undefined,
-    );
-
-    // updateSubscription
-    router.put(`/subscriptions/:subscriptionId`, async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            const input = {
-                params: parseRequestInput(updateSubscriptionParamSchema, req.params, RequestInputType.RouteParam),
-                query: undefined,
-                body: parseRequestInput(updateSubscriptionRequestBodySchema, req.body, RequestInputType.RequestBody),
-                headers: undefined,
-            };
-
-            const responder = {
-                with200() {
-                    return new ExpressRuntimeResponse<
-                        t_BaseAPIResponse & {
-                            payload?: t_Subscription;
-                        }
-                    >(200);
-                },
-                with404() {
-                    return new ExpressRuntimeResponse<
-                        t_BaseAPIResponse & {
-                            payload?: EmptyObject | null;
-                        }
-                    >(404);
-                },
-                withStatus(status: StatusCode) {
-                    return new ExpressRuntimeResponse(status);
-                },
-            };
-
-            const response = await implementation.updateSubscription(input, responder, req, res, next).catch((err) => {
-                throw ExpressRuntimeError.HandlerError(err);
-            });
-
-            // escape hatch to allow responses to be sent by the implementation handler
-            if (response === SkipResponse) {
-                return;
-            }
-
-            const { status, body } = response instanceof ExpressRuntimeResponse ? response.unpack() : response;
-
-            res.status(status);
-
-            if (body !== undefined) {
-                res.json(updateSubscriptionResponseBodyValidator(status, body));
-            } else {
-                res.end();
-            }
-        } catch (error) {
-            next(error);
+        if (body !== undefined) {
+          res.json(createUserResponseBodyValidator(status, body))
+        } else {
+          res.end()
         }
-    });
+      } catch (error) {
+        next(error)
+      }
+    },
+  )
 
-    const cancelSubscriptionParamSchema = z.object({ subscriptionId: z.string() });
+  const listUsersQuerySchema = z.object({ status: s_UserStatus.optional() })
 
-    const cancelSubscriptionResponseBodyValidator = responseValidationFactory(
-        [
-            ['200', s_BaseAPIResponse.merge(z.object({ payload: s_Subscription.optional() }))],
-            ['404', s_BaseAPIResponse.merge(z.object({ payload: z.object({}).nullable().optional() }))],
-        ],
-        undefined,
-    );
+  const listUsersResponseBodyValidator = responseValidationFactory(
+    [
+      [
+        "200",
+        s_BaseAPIResponse.merge(
+          z.object({ payload: z.array(s_User).optional() }),
+        ),
+      ],
+      ["403", s_BaseAPIResponse],
+    ],
+    undefined,
+  )
 
-    // cancelSubscription
-    router.delete(`/subscriptions/:subscriptionId`, async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            const input = {
-                params: parseRequestInput(cancelSubscriptionParamSchema, req.params, RequestInputType.RouteParam),
-                query: undefined,
-                body: undefined,
-                headers: undefined,
-            };
-
-            const responder = {
-                with200() {
-                    return new ExpressRuntimeResponse<
-                        t_BaseAPIResponse & {
-                            payload?: t_Subscription;
-                        }
-                    >(200);
-                },
-                with404() {
-                    return new ExpressRuntimeResponse<
-                        t_BaseAPIResponse & {
-                            payload?: EmptyObject | null;
-                        }
-                    >(404);
-                },
-                withStatus(status: StatusCode) {
-                    return new ExpressRuntimeResponse(status);
-                },
-            };
-
-            const response = await implementation.cancelSubscription(input, responder, req, res, next).catch((err) => {
-                throw ExpressRuntimeError.HandlerError(err);
-            });
-
-            // escape hatch to allow responses to be sent by the implementation handler
-            if (response === SkipResponse) {
-                return;
-            }
-
-            const { status, body } = response instanceof ExpressRuntimeResponse ? response.unpack() : response;
-
-            res.status(status);
-
-            if (body !== undefined) {
-                res.json(cancelSubscriptionResponseBodyValidator(status, body));
-            } else {
-                res.end();
-            }
-        } catch (error) {
-            next(error);
+  // listUsers
+  router.get(
+    `/users`,
+    async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const input = {
+          params: undefined,
+          query: parseRequestInput(
+            listUsersQuerySchema,
+            req.query,
+            RequestInputType.QueryString,
+          ),
+          body: undefined,
+          headers: undefined,
         }
-    });
 
-    const generateMonthlyBillingRequestBodySchema = z.object({
-        billingDate: z.string().optional(),
-    });
-
-    const generateMonthlyBillingResponseBodyValidator = responseValidationFactory(
-        [
-            [
-                '200',
-                s_BaseAPIResponse.merge(
-                    z.object({
-                        payload: z
-                            .object({
-                                billingDate: z.string().optional(),
-                                invoices: z.array(s_InvoiceDetailed).optional(),
-                            })
-                            .optional(),
-                    }),
-                ),
-            ],
-        ],
-        undefined,
-    );
-
-    // generateMonthlyBilling
-    router.post(`/billing/monthly`, async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            const input = {
-                params: undefined,
-                query: undefined,
-                body: parseRequestInput(
-                    generateMonthlyBillingRequestBodySchema,
-                    req.body,
-                    RequestInputType.RequestBody,
-                ),
-                headers: undefined,
-            };
-
-            const responder = {
-                with200() {
-                    return new ExpressRuntimeResponse<
-                        t_BaseAPIResponse & {
-                            payload?: {
-                                billingDate?: string;
-                                invoices?: t_InvoiceDetailed[];
-                            };
-                        }
-                    >(200);
-                },
-                withStatus(status: StatusCode) {
-                    return new ExpressRuntimeResponse(status);
-                },
-            };
-
-            const response = await implementation
-                .generateMonthlyBilling(input, responder, req, res, next)
-                .catch((err) => {
-                    throw ExpressRuntimeError.HandlerError(err);
-                });
-
-            // escape hatch to allow responses to be sent by the implementation handler
-            if (response === SkipResponse) {
-                return;
-            }
-
-            const { status, body } = response instanceof ExpressRuntimeResponse ? response.unpack() : response;
-
-            res.status(status);
-
-            if (body !== undefined) {
-                res.json(generateMonthlyBillingResponseBodyValidator(status, body));
-            } else {
-                res.end();
-            }
-        } catch (error) {
-            next(error);
+        const responder = {
+          with200() {
+            return new ExpressRuntimeResponse<
+              t_BaseAPIResponse & {
+                payload?: t_User[]
+              }
+            >(200)
+          },
+          with403() {
+            return new ExpressRuntimeResponse<t_BaseAPIResponse>(403)
+          },
+          withStatus(status: StatusCode) {
+            return new ExpressRuntimeResponse(status)
+          },
         }
-    });
 
-    const listInvoicesQuerySchema = z.object({
-        userId: z.string().optional(),
-        subscriptionId: z.string().optional(),
-        status: z.enum(['PENDING', 'SENT', 'PAID', 'FAILED']).optional(),
-    });
+        const response = await implementation
+          .listUsers(input, responder, req, res, next)
+          .catch((err) => {
+            throw ExpressRuntimeError.HandlerError(err)
+          })
 
-    const listInvoicesResponseBodyValidator = responseValidationFactory(
-        [['200', s_BaseAPIResponse.merge(z.object({ payload: z.array(s_InvoiceDetailed).optional() }))]],
-        undefined,
-    );
-
-    // listInvoices
-    router.get(`/invoices`, async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            const input = {
-                params: undefined,
-                query: parseRequestInput(listInvoicesQuerySchema, req.query, RequestInputType.QueryString),
-                body: undefined,
-                headers: undefined,
-            };
-
-            const responder = {
-                with200() {
-                    return new ExpressRuntimeResponse<
-                        t_BaseAPIResponse & {
-                            payload?: t_InvoiceDetailed[];
-                        }
-                    >(200);
-                },
-                withStatus(status: StatusCode) {
-                    return new ExpressRuntimeResponse(status);
-                },
-            };
-
-            const response = await implementation.listInvoices(input, responder, req, res, next).catch((err) => {
-                throw ExpressRuntimeError.HandlerError(err);
-            });
-
-            // escape hatch to allow responses to be sent by the implementation handler
-            if (response === SkipResponse) {
-                return;
-            }
-
-            const { status, body } = response instanceof ExpressRuntimeResponse ? response.unpack() : response;
-
-            res.status(status);
-
-            if (body !== undefined) {
-                res.json(listInvoicesResponseBodyValidator(status, body));
-            } else {
-                res.end();
-            }
-        } catch (error) {
-            next(error);
+        // escape hatch to allow responses to be sent by the implementation handler
+        if (response === SkipResponse) {
+          return
         }
-    });
 
-    const exportDirectDebitsQuerySchema = z.object({ executionDate: z.string() });
+        const { status, body } =
+          response instanceof ExpressRuntimeResponse
+            ? response.unpack()
+            : response
 
-    const exportDirectDebitsResponseBodyValidator = responseValidationFactory(
-        [['200', s_BaseAPIResponse.merge(z.object({ payload: z.array(s_DirectDebitOrder).optional() }))]],
-        undefined,
-    );
+        res.status(status)
 
-    // exportDirectDebits
-    router.get(`/exports/banking/direct-debits`, async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            const input = {
-                params: undefined,
-                query: parseRequestInput(exportDirectDebitsQuerySchema, req.query, RequestInputType.QueryString),
-                body: undefined,
-                headers: undefined,
-            };
-
-            const responder = {
-                with200() {
-                    return new ExpressRuntimeResponse<
-                        t_BaseAPIResponse & {
-                            payload?: t_DirectDebitOrder[];
-                        }
-                    >(200);
-                },
-                withStatus(status: StatusCode) {
-                    return new ExpressRuntimeResponse(status);
-                },
-            };
-
-            const response = await implementation.exportDirectDebits(input, responder, req, res, next).catch((err) => {
-                throw ExpressRuntimeError.HandlerError(err);
-            });
-
-            // escape hatch to allow responses to be sent by the implementation handler
-            if (response === SkipResponse) {
-                return;
-            }
-
-            const { status, body } = response instanceof ExpressRuntimeResponse ? response.unpack() : response;
-
-            res.status(status);
-
-            if (body !== undefined) {
-                res.json(exportDirectDebitsResponseBodyValidator(status, body));
-            } else {
-                res.end();
-            }
-        } catch (error) {
-            next(error);
+        if (body !== undefined) {
+          res.json(listUsersResponseBodyValidator(status, body))
+        } else {
+          res.end()
         }
-    });
+      } catch (error) {
+        next(error)
+      }
+    },
+  )
 
-    const updatePaymentStatusRequestBodySchema = z.array(s_PaymentUpdate);
+  const getUserParamSchema = z.object({ userId: z.string() })
 
-    const updatePaymentStatusResponseBodyValidator = responseValidationFactory(
-        [
-            [
-                '200',
-                s_BaseAPIResponse.merge(
-                    z.object({
-                        payload: z.object({ updatedCount: z.coerce.number().optional() }).optional(),
-                    }),
-                ),
-            ],
-        ],
-        undefined,
-    );
+  const getUserResponseBodyValidator = responseValidationFactory(
+    [
+      [
+        "200",
+        s_BaseAPIResponse.merge(z.object({ payload: s_User.optional() })),
+      ],
+      ["403", s_BaseAPIResponse],
+      [
+        "404",
+        s_BaseAPIResponse.merge(
+          z.object({ payload: z.object({}).nullable().optional() }),
+        ),
+      ],
+    ],
+    undefined,
+  )
 
-    // updatePaymentStatus
-    router.post(`/bank/payment-updates`, async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            const input = {
-                params: undefined,
-                query: undefined,
-                body: parseRequestInput(updatePaymentStatusRequestBodySchema, req.body, RequestInputType.RequestBody),
-                headers: undefined,
-            };
-
-            const responder = {
-                with200() {
-                    return new ExpressRuntimeResponse<
-                        t_BaseAPIResponse & {
-                            payload?: {
-                                updatedCount?: number;
-                            };
-                        }
-                    >(200);
-                },
-                withStatus(status: StatusCode) {
-                    return new ExpressRuntimeResponse(status);
-                },
-            };
-
-            const response = await implementation.updatePaymentStatus(input, responder, req, res, next).catch((err) => {
-                throw ExpressRuntimeError.HandlerError(err);
-            });
-
-            // escape hatch to allow responses to be sent by the implementation handler
-            if (response === SkipResponse) {
-                return;
-            }
-
-            const { status, body } = response instanceof ExpressRuntimeResponse ? response.unpack() : response;
-
-            res.status(status);
-
-            if (body !== undefined) {
-                res.json(updatePaymentStatusResponseBodyValidator(status, body));
-            } else {
-                res.end();
-            }
-        } catch (error) {
-            next(error);
+  // getUser
+  router.get(
+    `/users/:userId`,
+    async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const input = {
+          params: parseRequestInput(
+            getUserParamSchema,
+            req.params,
+            RequestInputType.RouteParam,
+          ),
+          query: undefined,
+          body: undefined,
+          headers: undefined,
         }
-    });
 
-    const getMonthlyRevenueQuerySchema = z.object({
-        from: z.string().regex(new RegExp('^[0-9]{4}-(0[1-9]|1[0-2])$')).optional(),
-        to: z.string().regex(new RegExp('^[0-9]{4}-(0[1-9]|1[0-2])$')).optional(),
-    });
-
-    const getMonthlyRevenueResponseBodyValidator = responseValidationFactory(
-        [
-            [
-                '200',
-                s_BaseAPIResponse.merge(
-                    z.object({
-                        payload: z
-                            .array(
-                                z.object({
-                                    month: z.string().optional(),
-                                    revenueExclVat: z.coerce.number().optional(),
-                                    vatAmount: z.coerce.number().optional(),
-                                    revenueInclVat: z.coerce.number().optional(),
-                                }),
-                            )
-                            .optional(),
-                    }),
-                ),
-            ],
-        ],
-        undefined,
-    );
-
-    // getMonthlyRevenue
-    router.get(`/reports/revenue/monthly`, async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            const input = {
-                params: undefined,
-                query: parseRequestInput(getMonthlyRevenueQuerySchema, req.query, RequestInputType.QueryString),
-                body: undefined,
-                headers: undefined,
-            };
-
-            const responder = {
-                with200() {
-                    return new ExpressRuntimeResponse<
-                        t_BaseAPIResponse & {
-                            payload?: {
-                                month?: string;
-                                revenueExclVat?: number;
-                                revenueInclVat?: number;
-                                vatAmount?: number;
-                            }[];
-                        }
-                    >(200);
-                },
-                withStatus(status: StatusCode) {
-                    return new ExpressRuntimeResponse(status);
-                },
-            };
-
-            const response = await implementation.getMonthlyRevenue(input, responder, req, res, next).catch((err) => {
-                throw ExpressRuntimeError.HandlerError(err);
-            });
-
-            // escape hatch to allow responses to be sent by the implementation handler
-            if (response === SkipResponse) {
-                return;
-            }
-
-            const { status, body } = response instanceof ExpressRuntimeResponse ? response.unpack() : response;
-
-            res.status(status);
-
-            if (body !== undefined) {
-                res.json(getMonthlyRevenueResponseBodyValidator(status, body));
-            } else {
-                res.end();
-            }
-        } catch (error) {
-            next(error);
+        const responder = {
+          with200() {
+            return new ExpressRuntimeResponse<
+              t_BaseAPIResponse & {
+                payload?: t_User
+              }
+            >(200)
+          },
+          with403() {
+            return new ExpressRuntimeResponse<t_BaseAPIResponse>(403)
+          },
+          with404() {
+            return new ExpressRuntimeResponse<
+              t_BaseAPIResponse & {
+                payload?: EmptyObject | null
+              }
+            >(404)
+          },
+          withStatus(status: StatusCode) {
+            return new ExpressRuntimeResponse(status)
+          },
         }
-    });
 
-    return router;
+        const response = await implementation
+          .getUser(input, responder, req, res, next)
+          .catch((err) => {
+            throw ExpressRuntimeError.HandlerError(err)
+          })
+
+        // escape hatch to allow responses to be sent by the implementation handler
+        if (response === SkipResponse) {
+          return
+        }
+
+        const { status, body } =
+          response instanceof ExpressRuntimeResponse
+            ? response.unpack()
+            : response
+
+        res.status(status)
+
+        if (body !== undefined) {
+          res.json(getUserResponseBodyValidator(status, body))
+        } else {
+          res.end()
+        }
+      } catch (error) {
+        next(error)
+      }
+    },
+  )
+
+  const updateUserParamSchema = z.object({ userId: z.string() })
+
+  const updateUserRequestBodySchema = s_UserUpdate
+
+  const updateUserResponseBodyValidator = responseValidationFactory(
+    [
+      [
+        "200",
+        s_BaseAPIResponse.merge(z.object({ payload: s_User.optional() })),
+      ],
+      ["403", s_BaseAPIResponse],
+      [
+        "404",
+        s_BaseAPIResponse.merge(
+          z.object({ payload: z.object({}).nullable().optional() }),
+        ),
+      ],
+    ],
+    undefined,
+  )
+
+  // updateUser
+  router.put(
+    `/users/:userId`,
+    async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const input = {
+          params: parseRequestInput(
+            updateUserParamSchema,
+            req.params,
+            RequestInputType.RouteParam,
+          ),
+          query: undefined,
+          body: parseRequestInput(
+            updateUserRequestBodySchema,
+            req.body,
+            RequestInputType.RequestBody,
+          ),
+          headers: undefined,
+        }
+
+        const responder = {
+          with200() {
+            return new ExpressRuntimeResponse<
+              t_BaseAPIResponse & {
+                payload?: t_User
+              }
+            >(200)
+          },
+          with403() {
+            return new ExpressRuntimeResponse<t_BaseAPIResponse>(403)
+          },
+          with404() {
+            return new ExpressRuntimeResponse<
+              t_BaseAPIResponse & {
+                payload?: EmptyObject | null
+              }
+            >(404)
+          },
+          withStatus(status: StatusCode) {
+            return new ExpressRuntimeResponse(status)
+          },
+        }
+
+        const response = await implementation
+          .updateUser(input, responder, req, res, next)
+          .catch((err) => {
+            throw ExpressRuntimeError.HandlerError(err)
+          })
+
+        // escape hatch to allow responses to be sent by the implementation handler
+        if (response === SkipResponse) {
+          return
+        }
+
+        const { status, body } =
+          response instanceof ExpressRuntimeResponse
+            ? response.unpack()
+            : response
+
+        res.status(status)
+
+        if (body !== undefined) {
+          res.json(updateUserResponseBodyValidator(status, body))
+        } else {
+          res.end()
+        }
+      } catch (error) {
+        next(error)
+      }
+    },
+  )
+
+  const deleteUserParamSchema = z.object({ userId: z.string() })
+
+  const deleteUserResponseBodyValidator = responseValidationFactory(
+    [
+      [
+        "200",
+        s_BaseAPIResponse.merge(
+          z.object({ payload: z.object({}).nullable().optional() }),
+        ),
+      ],
+      [
+        "404",
+        s_BaseAPIResponse.merge(
+          z.object({ payload: z.object({}).nullable().optional() }),
+        ),
+      ],
+    ],
+    undefined,
+  )
+
+  // deleteUser
+  router.delete(
+    `/users/:userId`,
+    async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const input = {
+          params: parseRequestInput(
+            deleteUserParamSchema,
+            req.params,
+            RequestInputType.RouteParam,
+          ),
+          query: undefined,
+          body: undefined,
+          headers: undefined,
+        }
+
+        const responder = {
+          with200() {
+            return new ExpressRuntimeResponse<
+              t_BaseAPIResponse & {
+                payload?: EmptyObject | null
+              }
+            >(200)
+          },
+          with404() {
+            return new ExpressRuntimeResponse<
+              t_BaseAPIResponse & {
+                payload?: EmptyObject | null
+              }
+            >(404)
+          },
+          withStatus(status: StatusCode) {
+            return new ExpressRuntimeResponse(status)
+          },
+        }
+
+        const response = await implementation
+          .deleteUser(input, responder, req, res, next)
+          .catch((err) => {
+            throw ExpressRuntimeError.HandlerError(err)
+          })
+
+        // escape hatch to allow responses to be sent by the implementation handler
+        if (response === SkipResponse) {
+          return
+        }
+
+        const { status, body } =
+          response instanceof ExpressRuntimeResponse
+            ? response.unpack()
+            : response
+
+        res.status(status)
+
+        if (body !== undefined) {
+          res.json(deleteUserResponseBodyValidator(status, body))
+        } else {
+          res.end()
+        }
+      } catch (error) {
+        next(error)
+      }
+    },
+  )
+
+  const updateUserStatusParamSchema = z.object({ userId: z.string() })
+
+  const updateUserStatusRequestBodySchema = z.object({
+    status: s_UserStatus.optional(),
+  })
+
+  const updateUserStatusResponseBodyValidator = responseValidationFactory(
+    [
+      [
+        "200",
+        s_BaseAPIResponse.merge(z.object({ payload: s_User.optional() })),
+      ],
+      [
+        "404",
+        s_BaseAPIResponse.merge(
+          z.object({ payload: z.object({}).nullable().optional() }),
+        ),
+      ],
+    ],
+    undefined,
+  )
+
+  // updateUserStatus
+  router.patch(
+    `/users/:userId/status`,
+    async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const input = {
+          params: parseRequestInput(
+            updateUserStatusParamSchema,
+            req.params,
+            RequestInputType.RouteParam,
+          ),
+          query: undefined,
+          body: parseRequestInput(
+            updateUserStatusRequestBodySchema,
+            req.body,
+            RequestInputType.RequestBody,
+          ),
+          headers: undefined,
+        }
+
+        const responder = {
+          with200() {
+            return new ExpressRuntimeResponse<
+              t_BaseAPIResponse & {
+                payload?: t_User
+              }
+            >(200)
+          },
+          with404() {
+            return new ExpressRuntimeResponse<
+              t_BaseAPIResponse & {
+                payload?: EmptyObject | null
+              }
+            >(404)
+          },
+          withStatus(status: StatusCode) {
+            return new ExpressRuntimeResponse(status)
+          },
+        }
+
+        const response = await implementation
+          .updateUserStatus(input, responder, req, res, next)
+          .catch((err) => {
+            throw ExpressRuntimeError.HandlerError(err)
+          })
+
+        // escape hatch to allow responses to be sent by the implementation handler
+        if (response === SkipResponse) {
+          return
+        }
+
+        const { status, body } =
+          response instanceof ExpressRuntimeResponse
+            ? response.unpack()
+            : response
+
+        res.status(status)
+
+        if (body !== undefined) {
+          res.json(updateUserStatusResponseBodyValidator(status, body))
+        } else {
+          res.end()
+        }
+      } catch (error) {
+        next(error)
+      }
+    },
+  )
+
+  const listSubscriptionsQuerySchema = z.object({
+    userId: z.string().optional(),
+    status: s_SubscriptionStatus.optional(),
+  })
+
+  const listSubscriptionsResponseBodyValidator = responseValidationFactory(
+    [
+      [
+        "200",
+        s_BaseAPIResponse.merge(
+          z.object({ payload: z.array(s_SubscriptionDetailed).optional() }),
+        ),
+      ],
+    ],
+    undefined,
+  )
+
+  // listSubscriptions
+  router.get(
+    `/subscriptions`,
+    async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const input = {
+          params: undefined,
+          query: parseRequestInput(
+            listSubscriptionsQuerySchema,
+            req.query,
+            RequestInputType.QueryString,
+          ),
+          body: undefined,
+          headers: undefined,
+        }
+
+        const responder = {
+          with200() {
+            return new ExpressRuntimeResponse<
+              t_BaseAPIResponse & {
+                payload?: t_SubscriptionDetailed[]
+              }
+            >(200)
+          },
+          withStatus(status: StatusCode) {
+            return new ExpressRuntimeResponse(status)
+          },
+        }
+
+        const response = await implementation
+          .listSubscriptions(input, responder, req, res, next)
+          .catch((err) => {
+            throw ExpressRuntimeError.HandlerError(err)
+          })
+
+        // escape hatch to allow responses to be sent by the implementation handler
+        if (response === SkipResponse) {
+          return
+        }
+
+        const { status, body } =
+          response instanceof ExpressRuntimeResponse
+            ? response.unpack()
+            : response
+
+        res.status(status)
+
+        if (body !== undefined) {
+          res.json(listSubscriptionsResponseBodyValidator(status, body))
+        } else {
+          res.end()
+        }
+      } catch (error) {
+        next(error)
+      }
+    },
+  )
+
+  const createSubscriptionRequestBodySchema = s_SubscriptionCreate
+
+  const createSubscriptionResponseBodyValidator = responseValidationFactory(
+    [
+      [
+        "201",
+        s_BaseAPIResponse.merge(
+          z.object({ payload: s_Subscription.optional() }),
+        ),
+      ],
+    ],
+    undefined,
+  )
+
+  // createSubscription
+  router.post(
+    `/subscriptions`,
+    async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const input = {
+          params: undefined,
+          query: undefined,
+          body: parseRequestInput(
+            createSubscriptionRequestBodySchema,
+            req.body,
+            RequestInputType.RequestBody,
+          ),
+          headers: undefined,
+        }
+
+        const responder = {
+          with201() {
+            return new ExpressRuntimeResponse<
+              t_BaseAPIResponse & {
+                payload?: t_Subscription
+              }
+            >(201)
+          },
+          withStatus(status: StatusCode) {
+            return new ExpressRuntimeResponse(status)
+          },
+        }
+
+        const response = await implementation
+          .createSubscription(input, responder, req, res, next)
+          .catch((err) => {
+            throw ExpressRuntimeError.HandlerError(err)
+          })
+
+        // escape hatch to allow responses to be sent by the implementation handler
+        if (response === SkipResponse) {
+          return
+        }
+
+        const { status, body } =
+          response instanceof ExpressRuntimeResponse
+            ? response.unpack()
+            : response
+
+        res.status(status)
+
+        if (body !== undefined) {
+          res.json(createSubscriptionResponseBodyValidator(status, body))
+        } else {
+          res.end()
+        }
+      } catch (error) {
+        next(error)
+      }
+    },
+  )
+
+  const getSubscriptionParamSchema = z.object({ subscriptionId: z.string() })
+
+  const getSubscriptionResponseBodyValidator = responseValidationFactory(
+    [
+      [
+        "200",
+        s_BaseAPIResponse.merge(
+          z.object({ payload: s_SubscriptionDetailed.optional() }),
+        ),
+      ],
+      [
+        "404",
+        s_BaseAPIResponse.merge(
+          z.object({ payload: z.object({}).nullable().optional() }),
+        ),
+      ],
+    ],
+    undefined,
+  )
+
+  // getSubscription
+  router.get(
+    `/subscriptions/:subscriptionId`,
+    async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const input = {
+          params: parseRequestInput(
+            getSubscriptionParamSchema,
+            req.params,
+            RequestInputType.RouteParam,
+          ),
+          query: undefined,
+          body: undefined,
+          headers: undefined,
+        }
+
+        const responder = {
+          with200() {
+            return new ExpressRuntimeResponse<
+              t_BaseAPIResponse & {
+                payload?: t_SubscriptionDetailed
+              }
+            >(200)
+          },
+          with404() {
+            return new ExpressRuntimeResponse<
+              t_BaseAPIResponse & {
+                payload?: EmptyObject | null
+              }
+            >(404)
+          },
+          withStatus(status: StatusCode) {
+            return new ExpressRuntimeResponse(status)
+          },
+        }
+
+        const response = await implementation
+          .getSubscription(input, responder, req, res, next)
+          .catch((err) => {
+            throw ExpressRuntimeError.HandlerError(err)
+          })
+
+        // escape hatch to allow responses to be sent by the implementation handler
+        if (response === SkipResponse) {
+          return
+        }
+
+        const { status, body } =
+          response instanceof ExpressRuntimeResponse
+            ? response.unpack()
+            : response
+
+        res.status(status)
+
+        if (body !== undefined) {
+          res.json(getSubscriptionResponseBodyValidator(status, body))
+        } else {
+          res.end()
+        }
+      } catch (error) {
+        next(error)
+      }
+    },
+  )
+
+  const updateSubscriptionParamSchema = z.object({ subscriptionId: z.string() })
+
+  const updateSubscriptionRequestBodySchema = s_SubscriptionUpdate
+
+  const updateSubscriptionResponseBodyValidator = responseValidationFactory(
+    [
+      [
+        "200",
+        s_BaseAPIResponse.merge(
+          z.object({ payload: s_Subscription.optional() }),
+        ),
+      ],
+      [
+        "404",
+        s_BaseAPIResponse.merge(
+          z.object({ payload: z.object({}).nullable().optional() }),
+        ),
+      ],
+    ],
+    undefined,
+  )
+
+  // updateSubscription
+  router.put(
+    `/subscriptions/:subscriptionId`,
+    async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const input = {
+          params: parseRequestInput(
+            updateSubscriptionParamSchema,
+            req.params,
+            RequestInputType.RouteParam,
+          ),
+          query: undefined,
+          body: parseRequestInput(
+            updateSubscriptionRequestBodySchema,
+            req.body,
+            RequestInputType.RequestBody,
+          ),
+          headers: undefined,
+        }
+
+        const responder = {
+          with200() {
+            return new ExpressRuntimeResponse<
+              t_BaseAPIResponse & {
+                payload?: t_Subscription
+              }
+            >(200)
+          },
+          with404() {
+            return new ExpressRuntimeResponse<
+              t_BaseAPIResponse & {
+                payload?: EmptyObject | null
+              }
+            >(404)
+          },
+          withStatus(status: StatusCode) {
+            return new ExpressRuntimeResponse(status)
+          },
+        }
+
+        const response = await implementation
+          .updateSubscription(input, responder, req, res, next)
+          .catch((err) => {
+            throw ExpressRuntimeError.HandlerError(err)
+          })
+
+        // escape hatch to allow responses to be sent by the implementation handler
+        if (response === SkipResponse) {
+          return
+        }
+
+        const { status, body } =
+          response instanceof ExpressRuntimeResponse
+            ? response.unpack()
+            : response
+
+        res.status(status)
+
+        if (body !== undefined) {
+          res.json(updateSubscriptionResponseBodyValidator(status, body))
+        } else {
+          res.end()
+        }
+      } catch (error) {
+        next(error)
+      }
+    },
+  )
+
+  const cancelSubscriptionParamSchema = z.object({ subscriptionId: z.string() })
+
+  const cancelSubscriptionResponseBodyValidator = responseValidationFactory(
+    [
+      [
+        "200",
+        s_BaseAPIResponse.merge(
+          z.object({ payload: s_Subscription.optional() }),
+        ),
+      ],
+      [
+        "404",
+        s_BaseAPIResponse.merge(
+          z.object({ payload: z.object({}).nullable().optional() }),
+        ),
+      ],
+    ],
+    undefined,
+  )
+
+  // cancelSubscription
+  router.delete(
+    `/subscriptions/:subscriptionId`,
+    async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const input = {
+          params: parseRequestInput(
+            cancelSubscriptionParamSchema,
+            req.params,
+            RequestInputType.RouteParam,
+          ),
+          query: undefined,
+          body: undefined,
+          headers: undefined,
+        }
+
+        const responder = {
+          with200() {
+            return new ExpressRuntimeResponse<
+              t_BaseAPIResponse & {
+                payload?: t_Subscription
+              }
+            >(200)
+          },
+          with404() {
+            return new ExpressRuntimeResponse<
+              t_BaseAPIResponse & {
+                payload?: EmptyObject | null
+              }
+            >(404)
+          },
+          withStatus(status: StatusCode) {
+            return new ExpressRuntimeResponse(status)
+          },
+        }
+
+        const response = await implementation
+          .cancelSubscription(input, responder, req, res, next)
+          .catch((err) => {
+            throw ExpressRuntimeError.HandlerError(err)
+          })
+
+        // escape hatch to allow responses to be sent by the implementation handler
+        if (response === SkipResponse) {
+          return
+        }
+
+        const { status, body } =
+          response instanceof ExpressRuntimeResponse
+            ? response.unpack()
+            : response
+
+        res.status(status)
+
+        if (body !== undefined) {
+          res.json(cancelSubscriptionResponseBodyValidator(status, body))
+        } else {
+          res.end()
+        }
+      } catch (error) {
+        next(error)
+      }
+    },
+  )
+
+  const generateMonthlyBillingRequestBodySchema = z.object({
+    billingDate: z.string().optional(),
+  })
+
+  const generateMonthlyBillingResponseBodyValidator = responseValidationFactory(
+    [
+      [
+        "200",
+        s_BaseAPIResponse.merge(
+          z.object({
+            payload: z
+              .object({
+                billingDate: z.string().optional(),
+                invoices: z.array(s_InvoiceDetailed).optional(),
+              })
+              .optional(),
+          }),
+        ),
+      ],
+    ],
+    undefined,
+  )
+
+  // generateMonthlyBilling
+  router.post(
+    `/billing/monthly`,
+    async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const input = {
+          params: undefined,
+          query: undefined,
+          body: parseRequestInput(
+            generateMonthlyBillingRequestBodySchema,
+            req.body,
+            RequestInputType.RequestBody,
+          ),
+          headers: undefined,
+        }
+
+        const responder = {
+          with200() {
+            return new ExpressRuntimeResponse<
+              t_BaseAPIResponse & {
+                payload?: {
+                  billingDate?: string
+                  invoices?: t_InvoiceDetailed[]
+                }
+              }
+            >(200)
+          },
+          withStatus(status: StatusCode) {
+            return new ExpressRuntimeResponse(status)
+          },
+        }
+
+        const response = await implementation
+          .generateMonthlyBilling(input, responder, req, res, next)
+          .catch((err) => {
+            throw ExpressRuntimeError.HandlerError(err)
+          })
+
+        // escape hatch to allow responses to be sent by the implementation handler
+        if (response === SkipResponse) {
+          return
+        }
+
+        const { status, body } =
+          response instanceof ExpressRuntimeResponse
+            ? response.unpack()
+            : response
+
+        res.status(status)
+
+        if (body !== undefined) {
+          res.json(generateMonthlyBillingResponseBodyValidator(status, body))
+        } else {
+          res.end()
+        }
+      } catch (error) {
+        next(error)
+      }
+    },
+  )
+
+  const listInvoicesQuerySchema = z.object({
+    userId: z.string().optional(),
+    subscriptionId: z.string().optional(),
+    status: z.enum(["PENDING", "SENT", "PAID", "FAILED"]).optional(),
+  })
+
+  const listInvoicesResponseBodyValidator = responseValidationFactory(
+    [
+      [
+        "200",
+        s_BaseAPIResponse.merge(
+          z.object({ payload: z.array(s_InvoiceDetailed).optional() }),
+        ),
+      ],
+    ],
+    undefined,
+  )
+
+  // listInvoices
+  router.get(
+    `/invoices`,
+    async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const input = {
+          params: undefined,
+          query: parseRequestInput(
+            listInvoicesQuerySchema,
+            req.query,
+            RequestInputType.QueryString,
+          ),
+          body: undefined,
+          headers: undefined,
+        }
+
+        const responder = {
+          with200() {
+            return new ExpressRuntimeResponse<
+              t_BaseAPIResponse & {
+                payload?: t_InvoiceDetailed[]
+              }
+            >(200)
+          },
+          withStatus(status: StatusCode) {
+            return new ExpressRuntimeResponse(status)
+          },
+        }
+
+        const response = await implementation
+          .listInvoices(input, responder, req, res, next)
+          .catch((err) => {
+            throw ExpressRuntimeError.HandlerError(err)
+          })
+
+        // escape hatch to allow responses to be sent by the implementation handler
+        if (response === SkipResponse) {
+          return
+        }
+
+        const { status, body } =
+          response instanceof ExpressRuntimeResponse
+            ? response.unpack()
+            : response
+
+        res.status(status)
+
+        if (body !== undefined) {
+          res.json(listInvoicesResponseBodyValidator(status, body))
+        } else {
+          res.end()
+        }
+      } catch (error) {
+        next(error)
+      }
+    },
+  )
+
+  const exportDirectDebitsQuerySchema = z.object({ executionDate: z.string() })
+
+  const exportDirectDebitsResponseBodyValidator = responseValidationFactory(
+    [
+      [
+        "200",
+        s_BaseAPIResponse.merge(
+          z.object({ payload: z.array(s_DirectDebitOrder).optional() }),
+        ),
+      ],
+    ],
+    undefined,
+  )
+
+  // exportDirectDebits
+  router.get(
+    `/exports/banking/direct-debits`,
+    async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const input = {
+          params: undefined,
+          query: parseRequestInput(
+            exportDirectDebitsQuerySchema,
+            req.query,
+            RequestInputType.QueryString,
+          ),
+          body: undefined,
+          headers: undefined,
+        }
+
+        const responder = {
+          with200() {
+            return new ExpressRuntimeResponse<
+              t_BaseAPIResponse & {
+                payload?: t_DirectDebitOrder[]
+              }
+            >(200)
+          },
+          withStatus(status: StatusCode) {
+            return new ExpressRuntimeResponse(status)
+          },
+        }
+
+        const response = await implementation
+          .exportDirectDebits(input, responder, req, res, next)
+          .catch((err) => {
+            throw ExpressRuntimeError.HandlerError(err)
+          })
+
+        // escape hatch to allow responses to be sent by the implementation handler
+        if (response === SkipResponse) {
+          return
+        }
+
+        const { status, body } =
+          response instanceof ExpressRuntimeResponse
+            ? response.unpack()
+            : response
+
+        res.status(status)
+
+        if (body !== undefined) {
+          res.json(exportDirectDebitsResponseBodyValidator(status, body))
+        } else {
+          res.end()
+        }
+      } catch (error) {
+        next(error)
+      }
+    },
+  )
+
+  const updatePaymentStatusRequestBodySchema = z.array(s_PaymentUpdate)
+
+  const updatePaymentStatusResponseBodyValidator = responseValidationFactory(
+    [
+      [
+        "200",
+        s_BaseAPIResponse.merge(
+          z.object({
+            payload: z
+              .object({ updatedCount: z.coerce.number().optional() })
+              .optional(),
+          }),
+        ),
+      ],
+    ],
+    undefined,
+  )
+
+  // updatePaymentStatus
+  router.post(
+    `/bank/payment-updates`,
+    async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const input = {
+          params: undefined,
+          query: undefined,
+          body: parseRequestInput(
+            updatePaymentStatusRequestBodySchema,
+            req.body,
+            RequestInputType.RequestBody,
+          ),
+          headers: undefined,
+        }
+
+        const responder = {
+          with200() {
+            return new ExpressRuntimeResponse<
+              t_BaseAPIResponse & {
+                payload?: {
+                  updatedCount?: number
+                }
+              }
+            >(200)
+          },
+          withStatus(status: StatusCode) {
+            return new ExpressRuntimeResponse(status)
+          },
+        }
+
+        const response = await implementation
+          .updatePaymentStatus(input, responder, req, res, next)
+          .catch((err) => {
+            throw ExpressRuntimeError.HandlerError(err)
+          })
+
+        // escape hatch to allow responses to be sent by the implementation handler
+        if (response === SkipResponse) {
+          return
+        }
+
+        const { status, body } =
+          response instanceof ExpressRuntimeResponse
+            ? response.unpack()
+            : response
+
+        res.status(status)
+
+        if (body !== undefined) {
+          res.json(updatePaymentStatusResponseBodyValidator(status, body))
+        } else {
+          res.end()
+        }
+      } catch (error) {
+        next(error)
+      }
+    },
+  )
+
+  const getMonthlyRevenueQuerySchema = z.object({
+    from: z.string().regex(new RegExp("^[0-9]{4}-(0[1-9]|1[0-2])$")).optional(),
+    to: z.string().regex(new RegExp("^[0-9]{4}-(0[1-9]|1[0-2])$")).optional(),
+  })
+
+  const getMonthlyRevenueResponseBodyValidator = responseValidationFactory(
+    [
+      [
+        "200",
+        s_BaseAPIResponse.merge(
+          z.object({
+            payload: z
+              .array(
+                z.object({
+                  month: z.string().optional(),
+                  revenueExclVat: z.coerce.number().optional(),
+                  vatAmount: z.coerce.number().optional(),
+                  revenueInclVat: z.coerce.number().optional(),
+                }),
+              )
+              .optional(),
+          }),
+        ),
+      ],
+    ],
+    undefined,
+  )
+
+  // getMonthlyRevenue
+  router.get(
+    `/reports/revenue/monthly`,
+    async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const input = {
+          params: undefined,
+          query: parseRequestInput(
+            getMonthlyRevenueQuerySchema,
+            req.query,
+            RequestInputType.QueryString,
+          ),
+          body: undefined,
+          headers: undefined,
+        }
+
+        const responder = {
+          with200() {
+            return new ExpressRuntimeResponse<
+              t_BaseAPIResponse & {
+                payload?: {
+                  month?: string
+                  revenueExclVat?: number
+                  revenueInclVat?: number
+                  vatAmount?: number
+                }[]
+              }
+            >(200)
+          },
+          withStatus(status: StatusCode) {
+            return new ExpressRuntimeResponse(status)
+          },
+        }
+
+        const response = await implementation
+          .getMonthlyRevenue(input, responder, req, res, next)
+          .catch((err) => {
+            throw ExpressRuntimeError.HandlerError(err)
+          })
+
+        // escape hatch to allow responses to be sent by the implementation handler
+        if (response === SkipResponse) {
+          return
+        }
+
+        const { status, body } =
+          response instanceof ExpressRuntimeResponse
+            ? response.unpack()
+            : response
+
+        res.status(status)
+
+        if (body !== undefined) {
+          res.json(getMonthlyRevenueResponseBodyValidator(status, body))
+        } else {
+          res.end()
+        }
+      } catch (error) {
+        next(error)
+      }
+    },
+  )
+
+  return router
 }
 
 export async function bootstrap(config: ServerConfig) {
-    // Gamers ERP - Backoffice Abonnés
-    return startServer(config);
+  // Gamers ERP - Backoffice Abonnés
+  return startServer(config)
 }

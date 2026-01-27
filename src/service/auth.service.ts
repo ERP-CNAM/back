@@ -1,5 +1,6 @@
 import type { UserRepository } from '../repository/user.repository';
 import type { AdminRepository } from '../repository/admin.repository';
+import type { SubscriptionRepository } from '../repository/subscription.repository';
 import { security } from '../utils/security';
 import type { t_LoginRequestBodySchema, t_AdminLoginRequestBodySchema } from '../../api/models';
 
@@ -7,7 +8,8 @@ export class AuthService {
     constructor(
         private readonly userRepository: UserRepository,
         private readonly adminRepository: AdminRepository,
-    ) {}
+        private readonly subscriptionRepository: SubscriptionRepository,
+    ) { }
 
     async login(credentials: t_LoginRequestBodySchema) {
         const { email, password } = credentials;
@@ -22,14 +24,18 @@ export class AuthService {
         if (!isValid) {
             return { success: false, reason: 'Invalid password' };
         }
+        const isSubscribed = await this.subscriptionRepository.hasActiveSubscription(user.id!);
 
         const token = security.generateToken(user);
         const { password: _, ...userWithoutPassword } = user;
 
         return {
             success: true,
-            user: userWithoutPassword,
-            token,
+            user: {
+                ...userWithoutPassword,
+                isSubscribed,
+            },
+            token
         };
     }
 
