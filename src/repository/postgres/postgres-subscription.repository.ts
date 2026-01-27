@@ -15,7 +15,7 @@ import { generateUUID } from '../../utils/uuid';
 const VALID_SUBSCRIPTION_STATUSES: t_SubscriptionStatus[] = ['ACTIVE', 'CANCELLED', 'PENDING_CANCEL'];
 
 export class PostgresSubscriptionRepository implements SubscriptionRepository {
-    constructor(private db: NodePgDatabase) {}
+    constructor(private db: NodePgDatabase) { }
 
     private toSubscription(row: typeof subscriptions.$inferSelect): t_Subscription {
         const startDate = row.startDate ? row.startDate.toISOString().slice(0, 10) : undefined;
@@ -162,6 +162,17 @@ export class PostgresSubscriptionRepository implements SubscriptionRepository {
             .returning();
 
         return updated ? this.toSubscription(updated) : null;
+    }
+
+    async hasActiveSubscription(userId: string): Promise<boolean> {
+        const rows = await this.db
+            .select({ id: subscriptions.id })
+            .from(subscriptions)
+            .where(and(eq(subscriptions.userId, userId), eq(subscriptions.status, 'ACTIVE')))
+            .limit(1)
+            .execute();
+
+        return rows.length > 0;
     }
 
     async cancel(id: string): Promise<t_Subscription | null> {

@@ -52,4 +52,12 @@ export interface SubscriptionRepository {
      * @returns The cancelled subscription
      */
     cancel(id: string): Promise<t_Subscription | null>;
+
+    /**
+     * Checks if a user has at least one active subscription
+     *
+     * @param userId The user id
+     * @returns True if an ACTIVE subscription exists, false otherwise
+     */
+    hasActiveSubscription(userId: string): Promise<boolean>;
 }

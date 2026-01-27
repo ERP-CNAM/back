@@ -15,7 +15,7 @@ import { generateUUID } from '../../utils/uuid';
 const VALID_SUBSCRIPTION_STATUSES: t_SubscriptionStatus[] = ['ACTIVE', 'CANCELLED', 'PENDING_CANCEL'];
 
 export class InMemorySubscriptionRepository implements SubscriptionRepository {
-    constructor(private db: BetterSQLite3Database) {}
+    constructor(private db: BetterSQLite3Database) { }
 
     private toSubscriptionDetailed(row: any): t_SubscriptionDetailed {
         return {
@@ -136,6 +136,17 @@ export class InMemorySubscriptionRepository implements SubscriptionRepository {
             .run();
 
         return updated;
+    }
+
+    async hasActiveSubscription(userId: string): Promise<boolean> {
+        const rows = this.db
+            .select({ id: subscriptions.id })
+            .from(subscriptions)
+            .where(and(eq(subscriptions.userId, userId), eq(subscriptions.status, 'ACTIVE')))
+            .limit(1)
+            .all();
+
+        return rows.length > 0;
     }
 
     async cancel(id: string): Promise<t_Subscription | null> {
