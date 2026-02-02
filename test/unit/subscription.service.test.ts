@@ -16,6 +16,7 @@ describe('SubscriptionService', () => {
             create: vi.fn(),
             update: vi.fn(),
             cancel: vi.fn(),
+            findLastContractCode: vi.fn().mockResolvedValue(null),
         } as unknown as SubscriptionRepository;
 
         userRepoMock = {
@@ -85,6 +86,22 @@ describe('SubscriptionService', () => {
                 }),
             );
             expect(userRepoMock.updateStatus).toHaveBeenCalledWith('other-user', 'OK');
+        });
+
+        it('should generate contractCode automatically if missing', async () => {
+            const adminUser: UserPayload = { userId: 'admin', userType: 'admin', permission: 2 };
+            const body: any = { monthlyAmount: 10, startDate: '2023-01-01', userId: 'u1' };
+
+            vi.mocked(repoMock.findLastContractCode).mockResolvedValue('C003');
+            vi.mocked(repoMock.create).mockResolvedValue({ id: 's1', ...body, contractCode: 'C004' });
+
+            await service.create(adminUser, body);
+
+            expect(repoMock.create).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    contractCode: 'C004',
+                }),
+            );
         });
     });
 

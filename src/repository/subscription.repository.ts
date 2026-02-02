@@ -54,6 +54,13 @@ export interface SubscriptionRepository {
     cancel(id: string): Promise<t_Subscription | null>;
 
     /**
+     * Finds the last contract code used
+     *
+     * @returns The last contract code or null if none exist
+     */
+    findLastContractCode(): Promise<string | null>;
+
+    /**
      * Checks if a user has at least one active subscription
      *
      * @param userId The user id

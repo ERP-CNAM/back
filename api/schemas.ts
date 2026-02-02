@@ -58,7 +58,7 @@ export const s_PaymentUpdate = z.object({
 
 export const s_SubscriptionCreate = z.object({
   userId: z.string(),
-  contractCode: z.string(),
+  contractCode: z.string().optional(),
   startDate: z.string(),
   monthlyAmount: z.coerce.number(),
   promoCode: z.string().nullable().optional(),
