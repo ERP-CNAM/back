@@ -11,7 +11,7 @@ describe('SubscriptionService', () => {
 
     beforeEach(() => {
         repoMock = {
-            findAll: vi.fn().mockResolvedValue([]),
+            findAll: vi.fn(),
             findById: vi.fn(),
             create: vi.fn(),
             update: vi.fn(),
@@ -49,8 +49,6 @@ describe('SubscriptionService', () => {
             vi.mocked(repoMock.create).mockResolvedValue({ id: 's1', ...body, userId: 'u1' });
             vi.mocked(userRepoMock.findById).mockResolvedValue({ id: 'u1', status: 'BLOCKED' } as any);
 
-            vi.mocked(repoMock.findAll).mockResolvedValue([{ id: 's1', status: 'ACTIVE' }] as any);
-
             await service.create(normalUser, body);
 
             expect(repoMock.create).toHaveBeenCalledWith(
@@ -67,7 +65,6 @@ describe('SubscriptionService', () => {
 
             vi.mocked(repoMock.create).mockResolvedValue({ id: 's1', ...body, userId: 'u1' });
             vi.mocked(userRepoMock.findById).mockResolvedValue({ id: 'u1', status: 'OK' } as any);
-            vi.mocked(repoMock.findAll).mockResolvedValue([{ id: 's1', status: 'ACTIVE' }] as any);
 
             await service.create(normalUser, body);
 
@@ -80,8 +77,6 @@ describe('SubscriptionService', () => {
 
             vi.mocked(repoMock.create).mockResolvedValue({ id: 's1', ...body });
             vi.mocked(userRepoMock.findById).mockResolvedValue({ id: 'other-user', status: 'BLOCKED' } as any);
-
-            vi.mocked(repoMock.findAll).mockResolvedValue([{ id: 's1', status: 'ACTIVE' }] as any);
 
             await service.create(adminUser, body);
 
