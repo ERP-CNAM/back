@@ -1,5 +1,5 @@
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
-import { and, eq } from 'drizzle-orm';
+import { and, eq, desc } from 'drizzle-orm';
 import type { SubscriptionQueryOptions, SubscriptionRepository } from '../subscription.repository';
 import type {
     t_CreateSubscriptionRequestBodySchema,
@@ -106,7 +106,7 @@ export class PostgresSubscriptionRepository implements SubscriptionRepository {
         const values: typeof subscriptions.$inferInsert = {
             id,
             userId: data.userId,
-            contractCode: data.contractCode,
+            contractCode: data.contractCode!,
             startDate: new Date(data.startDate),
             endDate: null,
             monthlyAmount: String(data.monthlyAmount),
@@ -193,5 +193,15 @@ export class PostgresSubscriptionRepository implements SubscriptionRepository {
             .returning();
 
         return updated ? this.toSubscription(updated) : null;
+    }
+    async findLastContractCode(): Promise<string | null> {
+        const rows = await this.db
+            .select({ contractCode: subscriptions.contractCode })
+            .from(subscriptions)
+            .orderBy(desc(subscriptions.contractCode))
+            .limit(1)
+            .execute();
+
+        return rows[0]?.contractCode ?? null;
     }
 }

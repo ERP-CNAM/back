@@ -1,5 +1,5 @@
 import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
-import { and, eq } from 'drizzle-orm';
+import { and, eq, desc } from 'drizzle-orm';
 import type { SubscriptionQueryOptions, SubscriptionRepository } from '../subscription.repository';
 import type {
     t_CreateSubscriptionRequestBodySchema,
@@ -172,5 +172,16 @@ export class InMemorySubscriptionRepository implements SubscriptionRepository {
             .run();
 
         return updated;
+    }
+
+    async findLastContractCode(): Promise<string | null> {
+        const rows = this.db
+            .select({ contractCode: subscriptions.contractCode })
+            .from(subscriptions)
+            .orderBy(desc(subscriptions.contractCode))
+            .limit(1)
+            .all();
+
+        return rows[0]?.contractCode ?? null;
     }
 }

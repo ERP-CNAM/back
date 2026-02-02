@@ -7,7 +7,7 @@ export class SubscriptionService {
     constructor(
         private readonly repository: SubscriptionRepository,
         private readonly userRepository: UserRepository,
-    ) {}
+    ) { }
 
     async list(user: UserPayload | undefined, query: any): Promise<t_Subscription[]> {
         const queryOptions = query ? { ...query } : {};
@@ -24,19 +24,18 @@ export class SubscriptionService {
         // Non-admin users can only create subscriptions for themselves
         const userId = user?.userType !== 'admin' && user?.userId ? user.userId : body.userId;
 
+        const contractCode = body.contractCode || (await this.generateNextContractCode());
+
         const payload = {
             ...body,
             userId,
+            contractCode,
         };
 
         const subscription = await this.repository.create(payload);
 
-        // If the user was BLOCKED, we transition them to OK upon subscription
         if (userId) {
-            const userData = await this.userRepository.findById(userId);
-            if (userData && userData.status === 'BLOCKED') {
-                await this.userRepository.updateStatus(userId, 'OK');
-            }
+            await this.refreshUserStatus(userId);
         }
 
         return subscription;
@@ -62,7 +61,13 @@ export class SubscriptionService {
             return null;
         }
 
-        return this.repository.update(subscriptionId, updates);
+        const updated = await this.repository.update(subscriptionId, updates);
+
+        if (updated && existing.userId) {
+            await this.refreshUserStatus(existing.userId);
+        }
+
+        return updated;
     }
 
     async cancel(user: UserPayload | undefined, subscriptionId: string): Promise<t_Subscription | null> {
@@ -71,7 +76,13 @@ export class SubscriptionService {
             return null;
         }
 
-        return this.repository.cancel(subscriptionId);
+        const cancelled = await this.repository.cancel(subscriptionId);
+
+        if (existing.userId) {
+            await this.refreshUserStatus(existing.userId);
+        }
+
+        return cancelled;
     }
 
     private hasAccess(user: UserPayload | undefined, subscriptionUserId?: string): boolean {
@@ -90,5 +101,35 @@ export class SubscriptionService {
         }
 
         return user.userId === subscriptionUserId;
+    }
+
+    private async generateNextContractCode(): Promise<string> {
+        const lastCode = await this.repository.findLastContractCode();
+        let nextNumber = 1;
+
+        if (lastCode && /^C\d{3}$/.test(lastCode)) {
+            nextNumber = parseInt(lastCode.substring(1), 10) + 1;
+        } else if (lastCode) {
+            const match = lastCode.match(/\d+$/);
+            if (match) {
+                nextNumber = parseInt(match[0], 10) + 1;
+            }
+        }
+
+        return `C${nextNumber.toString().padStart(3, '0')}`;
+    }
+
+    private async refreshUserStatus(userId: string): Promise<void> {
+        const activeSubscriptions = await this.repository.findAll({
+            userId,
+            status: 'ACTIVE',
+        });
+
+        const targetStatus = activeSubscriptions.length > 0 ? 'OK' : 'BLOCKED';
+
+        const user = await this.userRepository.findById(userId);
+        if (user && user.status !== targetStatus) {
+            await this.userRepository.updateStatus(userId, targetStatus);
+        }
     }
 }

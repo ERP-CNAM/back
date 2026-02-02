@@ -11,11 +11,12 @@ describe('SubscriptionService', () => {
 
     beforeEach(() => {
         repoMock = {
-            findAll: vi.fn(),
+            findAll: vi.fn().mockResolvedValue([]),
             findById: vi.fn(),
             create: vi.fn(),
             update: vi.fn(),
             cancel: vi.fn(),
+            findLastContractCode: vi.fn().mockResolvedValue(null),
         } as unknown as SubscriptionRepository;
 
         userRepoMock = {
@@ -48,6 +49,8 @@ describe('SubscriptionService', () => {
             vi.mocked(repoMock.create).mockResolvedValue({ id: 's1', ...body, userId: 'u1' });
             vi.mocked(userRepoMock.findById).mockResolvedValue({ id: 'u1', status: 'BLOCKED' } as any);
 
+            vi.mocked(repoMock.findAll).mockResolvedValue([{ id: 's1', status: 'ACTIVE' }] as any);
+
             await service.create(normalUser, body);
 
             expect(repoMock.create).toHaveBeenCalledWith(
@@ -64,6 +67,7 @@ describe('SubscriptionService', () => {
 
             vi.mocked(repoMock.create).mockResolvedValue({ id: 's1', ...body, userId: 'u1' });
             vi.mocked(userRepoMock.findById).mockResolvedValue({ id: 'u1', status: 'OK' } as any);
+            vi.mocked(repoMock.findAll).mockResolvedValue([{ id: 's1', status: 'ACTIVE' }] as any);
 
             await service.create(normalUser, body);
 
@@ -77,6 +81,8 @@ describe('SubscriptionService', () => {
             vi.mocked(repoMock.create).mockResolvedValue({ id: 's1', ...body });
             vi.mocked(userRepoMock.findById).mockResolvedValue({ id: 'other-user', status: 'BLOCKED' } as any);
 
+            vi.mocked(repoMock.findAll).mockResolvedValue([{ id: 's1', status: 'ACTIVE' }] as any);
+
             await service.create(adminUser, body);
 
             expect(repoMock.create).toHaveBeenCalledWith(
@@ -85,6 +91,22 @@ describe('SubscriptionService', () => {
                 }),
             );
             expect(userRepoMock.updateStatus).toHaveBeenCalledWith('other-user', 'OK');
+        });
+
+        it('should generate contractCode automatically if missing', async () => {
+            const adminUser: UserPayload = { userId: 'admin', userType: 'admin', permission: 2 };
+            const body: any = { monthlyAmount: 10, startDate: '2023-01-01', userId: 'u1' };
+
+            vi.mocked(repoMock.findLastContractCode).mockResolvedValue('C003');
+            vi.mocked(repoMock.create).mockResolvedValue({ id: 's1', ...body, contractCode: 'C004' });
+
+            await service.create(adminUser, body);
+
+            expect(repoMock.create).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    contractCode: 'C004',
+                }),
+            );
         });
     });
 

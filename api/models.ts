@@ -122,7 +122,7 @@ export type t_CancelSubscriptionParamSchema = {
 }
 
 export type t_CreateSubscriptionRequestBodySchema = {
-  contractCode: string
+  contractCode?: string
   monthlyAmount: number
   promoCode?: string | null
   startDate: string
