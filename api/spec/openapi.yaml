@@ -937,7 +937,7 @@ components:
 
     SubscriptionCreate:
       type: object
-      required: [userId, contractCode, startDate, monthlyAmount]
+      required: [userId, startDate, monthlyAmount]
       properties:
         userId:
           type: string

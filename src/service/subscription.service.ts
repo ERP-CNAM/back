@@ -7,7 +7,7 @@ export class SubscriptionService {
     constructor(
         private readonly repository: SubscriptionRepository,
         private readonly userRepository: UserRepository,
-    ) {}
+    ) { }
 
     async list(user: UserPayload | undefined, query: any): Promise<t_Subscription[]> {
         const queryOptions = query ? { ...query } : {};
@@ -24,9 +24,12 @@ export class SubscriptionService {
         // Non-admin users can only create subscriptions for themselves
         const userId = user?.userType !== 'admin' && user?.userId ? user.userId : body.userId;
 
+        const contractCode = await this.generateNextContractCode();
+
         const payload = {
             ...body,
             userId,
+            contractCode,
         };
 
         const subscription = await this.repository.create(payload);
@@ -90,5 +93,21 @@ export class SubscriptionService {
         }
 
         return user.userId === subscriptionUserId;
+    }
+
+    private async generateNextContractCode(): Promise<string> {
+        const lastCode = await this.repository.findLastContractCode();
+        let nextNumber = 1;
+
+        if (lastCode && /^C\d{3}$/.test(lastCode)) {
+            nextNumber = parseInt(lastCode.substring(1), 10) + 1;
+        } else if (lastCode) {
+            const match = lastCode.match(/\d+$/);
+            if (match) {
+                nextNumber = parseInt(match[0], 10) + 1;
+            }
+        }
+
+        return `C${nextNumber.toString().padStart(3, '0')}`;
     }
 }
