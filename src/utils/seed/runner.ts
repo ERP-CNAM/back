@@ -22,7 +22,13 @@ const SEED_STEPS: SeedStep[] = [
 export async function runDatabaseSeed() {
     logger.info('[DATABASE] Starting database seeding...');
 
-    for (const step of SEED_STEPS) {
+    const seedInvoiceSubscriptionEnabled = process.env.SEED_INVOICE_SUBSCRIPTION_ENABLED === 'true';
+
+    const filteredSteps = seedInvoiceSubscriptionEnabled
+        ? SEED_STEPS
+        : SEED_STEPS.filter((step) => step.name !== 'Subscriptions' && step.name !== 'Invoices');
+
+    for (const step of filteredSteps) {
         try {
             logger.info(`[DATABASE] Running seed: ${step.name}...`);
             await step.function();
