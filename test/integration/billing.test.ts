@@ -136,7 +136,7 @@ describe('Billing Integration', () => {
             expect(inv1!.amountInclVat).toBe(100);
             expect(inv1!.amountExclVat).toBe(83.33); // 100 / 1.2
             expect(inv1!.vatAmount).toBe(16.67);
-            expect(inv1!.invoiceRef).toMatch(/^INV-2026-03-C001$/); // Verify Ref format
+            expect(inv1!.invoiceRef).toMatch(/^INV-2026-03-C001-[A-Z0-9]{8}$/); // Verify Ref format
 
             const inv2 = payload.invoices.find((i: any) => i.subscriptionId === activeSub2.id);
             expect(inv2).toBeDefined();

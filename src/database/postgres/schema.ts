@@ -48,7 +48,7 @@ export const subscriptions = pgTable('subscriptions', {
 
 export const invoices = pgTable('invoices', {
     id: uuid('id').primaryKey().notNull(),
-    invoiceRef: varchar('invoiceRef', { length: 50 }).notNull(),
+    invoiceRef: varchar('invoiceRef', { length: 50 }).notNull().unique(),
     subscriptionId: uuid('subscriptionId').notNull(),
     userId: uuid('userId').notNull(),
     billingDate: timestamp('billingDate').notNull(),

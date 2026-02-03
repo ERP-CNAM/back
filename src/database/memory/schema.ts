@@ -47,7 +47,7 @@ export const subscriptions = sqliteTable('subscriptions', {
 
 export const invoices = sqliteTable('invoices', {
     id: text('id').primaryKey().notNull(),
-    invoiceRef: text('invoiceRef').notNull(),
+    invoiceRef: text('invoiceRef').notNull().unique(),
     subscriptionId: text('subscriptionId').notNull(),
     userId: text('userId').notNull(),
     billingDate: text('billingDate').notNull(),

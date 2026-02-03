@@ -68,6 +68,14 @@ export interface InvoiceRepository {
     countBySubscriptionId(subscriptionId: string): Promise<number>;
 
     /**
+     * Finds an invoice by its reference
+     *
+     * @param invoiceRef The invoice reference
+     * @returns The invoice if found, or null
+     */
+    findByReference(invoiceRef: string): Promise<t_Invoice | null>;
+
+    /**
      * Updates the status of an invoice
      *
      * @param id The id of the invoice
