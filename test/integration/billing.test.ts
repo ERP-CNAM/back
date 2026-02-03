@@ -133,16 +133,16 @@ describe('Billing Integration', () => {
             // 4. Verify Calculations
             const inv1 = payload.invoices.find((i: any) => i.subscriptionId === activeSub1.id);
             expect(inv1).toBeDefined();
-            expect(inv1!.amountExclVat).toBe(100);
-            expect(inv1!.vatAmount).toBe(20); // 20% of 100
-            expect(inv1!.amountInclVat).toBe(120);
+            expect(inv1!.amountInclVat).toBe(100);
+            expect(inv1!.amountExclVat).toBe(83.33); // 100 / 1.2
+            expect(inv1!.vatAmount).toBe(16.67);
             expect(inv1!.invoiceRef).toMatch(/^INV-2026-03-C001$/); // Verify Ref format
 
             const inv2 = payload.invoices.find((i: any) => i.subscriptionId === activeSub2.id);
             expect(inv2).toBeDefined();
-            expect(inv2!.amountExclVat).toBe(100); // 200 * 0.5 (First month promo)
-            expect(inv2!.vatAmount).toBe(20);
-            expect(inv2!.amountInclVat).toBe(120);
+            expect(inv2!.amountInclVat).toBe(100); // 200 * 0.5 (First month promo)
+            expect(inv2!.amountExclVat).toBe(83.33);
+            expect(inv2!.vatAmount).toBe(16.67);
 
             // 5. Verify Persistence
             const storedInvoices = await invoiceRepo.findAllByDate(billingDate);
@@ -168,7 +168,7 @@ describe('Billing Integration', () => {
                 userId: userPromo.id!,
                 contractCode: 'PROMO1',
                 startDate: '2026-01-01',
-                monthlyAmount: 100,
+                monthlyAmount: 15.0,
                 promoCode: 'B1M20',
             });
 
@@ -192,8 +192,8 @@ describe('Billing Integration', () => {
             };
 
             const invoice1 = result1.body.payload.invoices[0];
-            expect(invoice1.amountExclVat).toBe(50); // 100 * 0.5
-            expect(invoice1.amountInclVat).toBe(60); // 50 + 20%
+            expect(invoice1.amountInclVat).toBe(7.5); // 15 * 0.5
+            expect(invoice1.amountExclVat).toBe(6.25); // 7.5 / 1.2
 
             // 2nd Billing Run (Next Month)
             const billingDate2 = '2026-02-28';
@@ -215,8 +215,8 @@ describe('Billing Integration', () => {
 
             const invoice2 = result2.body.payload.invoices.find((i: any) => i.subscriptionId === subWithPromo.id);
             expect(invoice2).toBeDefined();
-            expect(invoice2!.amountExclVat).toBe(100); // Full price
-            expect(invoice2!.amountInclVat).toBe(120);
+            expect(invoice2!.amountInclVat).toBe(15); // Full price
+            expect(invoice2!.amountExclVat).toBe(12.5); // 15 / 1.2
         });
 
         it('should handle no active subscriptions gracefully', async () => {

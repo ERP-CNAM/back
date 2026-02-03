@@ -9,7 +9,7 @@ export class BillingService {
         private readonly invoiceRepository: InvoiceRepository,
         private readonly subscriptionRepository: SubscriptionRepository,
         private readonly userRepository: UserRepository,
-    ) {}
+    ) { }
 
     /**
      * Generates monthly billing invoices for active subscriptions.
@@ -25,19 +25,20 @@ export class BillingService {
 
         // 2. Generate invoices in parallel
         const invoicePromises = activeSubscriptions.map(async (sub) => {
-            let amountExclVat = sub.monthlyAmount || 0;
+            let amountInclVat = Number(sub.monthlyAmount) || 0;
 
             // Apply 50% discount on first payment if promo code is 'B1M20'
             if (sub.promoCode === PROMO_CODES.WELCOME_OFFER) {
                 const previousInvoicesCount = await this.invoiceRepository.countBySubscriptionId(sub.id!);
                 if (previousInvoicesCount === 0) {
-                    amountExclVat = amountExclVat * PROMO_RULES.WELCOME_OFFER_DISCOUNT;
+                    amountInclVat = amountInclVat * PROMO_RULES.WELCOME_OFFER_DISCOUNT;
                 }
             }
 
             const vatRate = VAT_RATE;
-            const vatAmount = Number((amountExclVat * vatRate).toFixed(2));
-            const amountInclVat = Number((amountExclVat + vatAmount).toFixed(2));
+            // TTC = HT * (1 + rate) => HT = TTC / (1 + rate)
+            const amountExclVat = Number((amountInclVat / (1 + vatRate)).toFixed(2));
+            const vatAmount = Number((amountInclVat - amountExclVat).toFixed(2));
 
             // Define period (full month)
             const periodStart = new Date(dateObj.getFullYear(), dateObj.getMonth(), 1).toISOString().slice(0, 10);

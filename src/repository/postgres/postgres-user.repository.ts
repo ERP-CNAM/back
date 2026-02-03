@@ -126,7 +126,7 @@ export class PostgresUserRepository implements UserRepository {
         const [updated] = await this.db
             .update(users)
             .set({
-                status: 'BLOCKED',
+                status: 'DELETED',
                 updatedAt: new Date(),
             })
             .where(eq(users.id, id))
