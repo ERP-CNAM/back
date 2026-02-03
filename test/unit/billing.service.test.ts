@@ -36,9 +36,9 @@ describe('BillingService', () => {
             expect(result.invoices).toHaveLength(1);
             expect(invoiceRepo.create).toHaveBeenCalledWith(
                 expect.objectContaining({
-                    amountExclVat: 100,
-                    vatAmount: 20, // 20%
-                    amountInclVat: 120,
+                    amountExclVat: 83.33,
+                    vatAmount: 16.67,
+                    amountInclVat: 100,
                     subscriptionId: 's1',
                     userId: 'u1',
                 }),
@@ -56,9 +56,9 @@ describe('BillingService', () => {
 
             expect(invoiceRepo.create).toHaveBeenCalledWith(
                 expect.objectContaining({
-                    amountExclVat: 50, // 100 * 0.5
-                    vatAmount: 10, // 50 * 0.2
-                    amountInclVat: 60,
+                    amountExclVat: 41.67,
+                    vatAmount: 8.33,
+                    amountInclVat: 50,
                 }),
             );
         });
@@ -73,7 +73,7 @@ describe('BillingService', () => {
 
             expect(invoiceRepo.create).toHaveBeenCalledWith(
                 expect.objectContaining({
-                    amountExclVat: 100,
+                    amountExclVat: 83.33,
                 }),
             );
         });
