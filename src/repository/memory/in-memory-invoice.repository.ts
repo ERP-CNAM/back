@@ -6,7 +6,7 @@ import { invoices } from '../../database/memory/schema';
 import { generateUUID } from '../../utils/uuid';
 
 export class InMemoryInvoiceRepository implements InvoiceRepository {
-    constructor(private db: BetterSQLite3Database) {}
+    constructor(private db: BetterSQLite3Database) { }
 
     private toInvoice(row: any): t_Invoice {
         return {
@@ -90,6 +90,11 @@ export class InMemoryInvoiceRepository implements InvoiceRepository {
     async countBySubscriptionId(subscriptionId: string): Promise<number> {
         const rows = this.db.select().from(invoices).where(eq(invoices.subscriptionId, subscriptionId)).all();
         return rows.length;
+    }
+
+    async findByReference(invoiceRef: string): Promise<t_Invoice | null> {
+        const row = this.db.select().from(invoices).where(eq(invoices.invoiceRef, invoiceRef)).get();
+        return row ? this.toInvoice(row) : null;
     }
 
     async updateStatus(id: string, status: 'PAID' | 'FAILED'): Promise<t_Invoice | null> {

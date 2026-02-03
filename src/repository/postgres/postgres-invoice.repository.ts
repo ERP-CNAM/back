@@ -6,7 +6,7 @@ import { invoices } from '../../database/postgres/schema';
 import { generateUUID } from '../../utils/uuid';
 
 export class PostgresInvoiceRepository implements InvoiceRepository {
-    constructor(private db: NodePgDatabase) {}
+    constructor(private db: NodePgDatabase) { }
 
     private toInvoice(row: typeof invoices.$inferSelect): t_Invoice {
         return {
@@ -123,6 +123,11 @@ export class PostgresInvoiceRepository implements InvoiceRepository {
             .execute();
 
         return result[0]?.value || 0;
+    }
+
+    async findByReference(invoiceRef: string): Promise<t_Invoice | null> {
+        const [row] = await this.db.select().from(invoices).where(eq(invoices.invoiceRef, invoiceRef)).execute();
+        return row ? this.toInvoice(row) : null;
     }
 
     async updateStatus(id: string, status: 'PAID' | 'FAILED'): Promise<t_Invoice | null> {

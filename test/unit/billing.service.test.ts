@@ -15,6 +15,7 @@ describe('BillingService', () => {
             create: vi.fn(),
             countBySubscriptionId: vi.fn(),
             updateStatus: vi.fn(),
+            findByReference: vi.fn(),
         } as unknown as InvoiceRepository;
         subscriptionRepo = { findAll: vi.fn() } as unknown as SubscriptionRepository;
         userRepo = {
@@ -74,6 +75,33 @@ describe('BillingService', () => {
             expect(invoiceRepo.create).toHaveBeenCalledWith(
                 expect.objectContaining({
                     amountExclVat: 83.33,
+                }),
+            );
+        });
+
+        it('should skip invoice generation if an invoice with base reference already exists', async () => {
+            const subs = [{ id: 's1', userId: 'u1', monthlyAmount: 100, status: 'ACTIVE', contractCode: 'C1' }];
+            vi.mocked(subscriptionRepo.findAll).mockResolvedValue(subs as any);
+            // Simulate existing invoice with the base reference
+            vi.mocked(invoiceRepo.findByReference).mockResolvedValue({ id: 'existing-inv', status: 'PENDING' } as any);
+
+            const result = await service.generateMonthlyBilling('2023-01-01');
+
+            expect(result.invoices).toHaveLength(0);
+            expect(invoiceRepo.create).not.toHaveBeenCalled();
+        });
+
+        it('should generate a unique reference with a suffix', async () => {
+            const subs = [{ id: 's1', userId: 'u1', monthlyAmount: 100, status: 'ACTIVE', contractCode: 'C1' }];
+            vi.mocked(subscriptionRepo.findAll).mockResolvedValue(subs as any);
+            vi.mocked(invoiceRepo.findByReference).mockResolvedValue(null);
+            vi.mocked(invoiceRepo.create).mockResolvedValue({ id: 'inv-1' } as any);
+
+            const result = await service.generateMonthlyBilling('2023-01-01');
+
+            expect(invoiceRepo.create).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    invoiceRef: expect.stringMatching(/^INV-2023-01-C1-[A-Z0-9]{8}$/),
                 }),
             );
         });
