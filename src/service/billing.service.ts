@@ -3,6 +3,7 @@ import type { SubscriptionRepository } from '../repository/subscription.reposito
 import type { UserRepository } from '../repository/user.repository';
 import type { t_Invoice } from '../../api/models';
 import { VAT_RATE, PROMO_CODES, PROMO_RULES } from '../config/constants';
+import { generateUUID } from '../utils/uuid';
 
 export class BillingService {
     constructor(
@@ -44,8 +45,24 @@ export class BillingService {
             const periodStart = new Date(dateObj.getFullYear(), dateObj.getMonth(), 1).toISOString().slice(0, 10);
             const periodEnd = new Date(dateObj.getFullYear(), dateObj.getMonth() + 1, 0).toISOString().slice(0, 10);
 
+            // Generate a deterministic part for the reference
+            const baseRef = `INV-${dateObj.getFullYear()}-${(dateObj.getMonth() + 1).toString().padStart(2, '0')}-${sub.contractCode}`;
+
+            // Check if an invoice for this subscription and period already exists (simplified check by ref)
+            const existingInvoice = await this.invoiceRepository.findByReference(baseRef);
+            if (existingInvoice) {
+                // If it already exists and is not FAILED, we skip. If it's FAILED, we might want to retry with a new reference.
+                if (existingInvoice.status !== 'FAILED') {
+                    return null;
+                }
+            }
+
+            // Create a unique reference for this specific attempt
+            const uniqueSuffix = generateUUID().split('-')[0]!.toUpperCase();
+            const finalRef = `${baseRef}-${uniqueSuffix}`;
+
             return this.invoiceRepository.create({
-                invoiceRef: `INV-${dateObj.getFullYear()}-${(dateObj.getMonth() + 1).toString().padStart(2, '0')}-${sub.contractCode}`,
+                invoiceRef: finalRef,
                 subscriptionId: sub.id!,
                 userId: sub.userId!,
                 billingDate: billingDate,
@@ -58,7 +75,8 @@ export class BillingService {
             });
         });
 
-        const invoices = await Promise.all(invoicePromises);
+        const results = await Promise.all(invoicePromises);
+        const invoices = results.filter((inv): inv is t_Invoice => inv !== null);
 
         return {
             billingDate,
